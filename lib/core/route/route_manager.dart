@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../presentation/bottom_nav/view/bottom_nav_bar_screen.dart';
 import '../../presentation/splash/view/splash_screen.dart';
-import '../resource/strings_manager.dart';
+import '../resource/constants/strings_manager.dart';
 import 'routes_name.dart';
 
 
