@@ -5,4 +5,8 @@ class RoutesName {
   static const String registerRoute = "/register";
   static const String forgotPasswordRoute = "/forgotPassword";
   static const String bottomNavRoute = "/bottomNav";
+  //////////
+  static const String onboardingScreen  = "/onboardingScreen ";
+  static const String onBordingScreenWeight = "/onBordingScreenWeight ";
+  static const String welcomeScreen = "/welcomeScreen";
 }
