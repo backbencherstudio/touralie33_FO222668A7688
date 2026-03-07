@@ -1,8 +1,11 @@
 class ImageManager {
   static const String baseUrl = 'assets/images';
-  static const String splash = '$baseUrl/splash_image.png';
+  static const String splash = '$baseUrl/splash_screen.png';
+  static const String weight = '$baseUrl/splash_weight.png';
   static const String recoComics = '$baseUrl/reco_comics.png';
   static const String animeFev = '$baseUrl/anime_fev.png';
   static const String libraryPng = '$baseUrl/library.jpg';
   static const String bannerPng = '$baseUrl/banner.png';
+  static const String vector= '$baseUrl/vector.png';
+  static const String birthday= '$baseUrl/birthday.png';
 }

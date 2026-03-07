@@ -6,18 +6,22 @@ class ColorManager {
   ColorManager._();
 
   // ===== Primary Colors =====
-  static const Color primary = Color(0xFF00136B);
-  static const Color primaryLight = Color(0xFF334289);
+  static const Color primary = Color(0xFFF6FDEE);
+  static const Color splashBgColor = Color(0xFFECF6EB);
+  static const Color primaryLight = Color(0xFFECF6EB);
+  static const Color primary1 = Color(0xFFFBFDF8);
   static const Color primaryDark = Color(0xFF000C48);
 
   // ===== Background Colors =====
   static const Color background = Color(0xFFF5F5F5);
+  static const Color backgroundColorgreen = Color(0xFFA8E06A);
+  static const Color bgColorgrey= Color.fromARGB(255, 234, 244, 225);
   static const Color backgroundDark = Color(0xFF121212);
   static const Color scaffoldLight = Color(0xFFFFFFFF);
   static const Color scaffoldDark = Color(0xFF1E1E1E);
 
   // ===== Text Colors =====
-  static const Color textPrimary = Color(0xFF212121);
+  static const Color textPrimary = Color(0xFF1D1F2C);
   static const Color textSecondary = Color(0xFF757575);
   static const Color titleText = Color(0xFF2F3131);
   static const Color titleText1 = Color(0xFF535353);
