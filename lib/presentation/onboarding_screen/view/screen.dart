@@ -4,10 +4,12 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_birthday/view/onboarding_screen_birthday.dart';
+import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_brings/view/onboarding_screen_brigns.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_gender/view/onboarding_screen_gender.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_height/view/onboarding_screen_height.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/widget/custome_appBar.dart';
+import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/welcome_screen/view/welcome_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -71,7 +73,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   OnboardingScreenHeight(),
                   OnboardingScreenBirthday(),
                   OnboardingScreenGender(),
-                  Center(child: Text("Page 5: Activity")),
+                  OnboardingScreenBrigns(),
                 ],
               ),
             ),
@@ -89,6 +91,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         duration: Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       );
+                    }
+                    else{
+                      Navigator.pushReplacementNamed(context,RoutesName.welcomeScreen);
                     }
                   },
                   style: ElevatedButton.styleFrom(

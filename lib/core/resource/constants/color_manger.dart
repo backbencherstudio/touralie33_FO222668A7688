@@ -19,6 +19,7 @@ class ColorManager {
   static const Color backgroundDark = Color(0xFF121212);
   static const Color scaffoldLight = Color(0xFFFFFFFF);
   static const Color scaffoldDark = Color(0xFF1E1E1E);
+  static const Color buttonbgBrings = Color(0xFFECF6EB);
 
   // ===== Text Colors =====
   static const Color textPrimary = Color(0xFF1D1F2C);

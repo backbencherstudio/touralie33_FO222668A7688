@@ -31,7 +31,7 @@ class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight>
     final selectedUnit = ref.watch(heightUnitProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorManager.primary,
       body: SingleChildScrollView( 
         child: Center(
           child: Column(

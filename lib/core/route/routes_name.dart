@@ -8,4 +8,5 @@ class RoutesName {
   //////////
   static const String onboardingScreen  = "/onboardingScreen ";
   static const String onBordingScreenWeight = "/onBordingScreenWeight ";
+  static const String welcomeScreen = "/welcomeScreen";
 }

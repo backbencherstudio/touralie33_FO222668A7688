@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
+import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+
+final selectItem = StateProvider<bool>((ref)=>true);
 
 class OnboardingScreenGender extends ConsumerStatefulWidget {
   const OnboardingScreenGender({super.key});
@@ -20,6 +23,7 @@ class _OnboardingScreenGenderState
 
   @override
   Widget build(BuildContext context) {
+    final itemselect = ref.watch(selectItem);
     return Scaffold(
       backgroundColor: ColorManager.primary1,
       body: SingleChildScrollView(
@@ -30,7 +34,7 @@ class _OnboardingScreenGenderState
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 80.h),
-                Image.asset(ImageManager.birthday, width: 108.w, height: 108.h),
+                Image.asset(ImageManager.gender, width: 108.w, height: 108.h),
                 SizedBox(height: 16.h),
                 Text(
                   "What is your Gender",
@@ -39,13 +43,63 @@ class _OnboardingScreenGenderState
                   ).copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 40.h),
-               Container(
-                height: 120.h,
-                width: 130.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  color: ColorManager.backgroundColorgreen,
-                ),
+               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: [
+                   Expanded(
+                     child: InkWell(
+                      onTap: () {
+                        ref.read(selectItem.notifier).state = true;
+                      },
+                       child: Container(
+                        height: 120.h,
+                        width: 120.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          color: itemselect? ColorManager.backgroundColorgreen : ColorManager.backgroundColorgreen.withValues(alpha: .2),
+                        ),
+                        child: Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                             
+                              Image.asset(IconManager.male,width: 60.w,height: 73.h,),
+                              Text("Male",style: getMedium500Style14(color:itemselect ? Colors.white : ColorManager.backgroundColorgreen),)
+                            ],
+                          ),
+                        ),
+                       ),
+                     ),
+                   ),
+                   SizedBox(width: 20.w,),
+                   Expanded(
+                     child: InkWell(
+                      onTap: () {
+                        ref.read(selectItem.notifier).state = false;
+                      },
+                       child: Container(
+                        height: 120.h,
+                        width: 120.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          color: !itemselect? ColorManager.backgroundColorgreen : ColorManager.backgroundColorgreen.withValues(alpha: .2),
+                        ),
+                        child: Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                             
+                              Image.asset(IconManager.female,width: 60.w,height: 73.h,),
+                              Text("FeMale",style: getMedium500Style14(color:!itemselect ? Colors.white : ColorManager.backgroundColorgreen),)
+                            ],
+                          ),
+                        ),
+                       ),
+                     ),
+                   ),
+                 ],
                )
               ],
             ),
