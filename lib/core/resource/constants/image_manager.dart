@@ -10,4 +10,6 @@ class ImageManager {
   static const String vector= '$baseUrl/vector.png';
   static const String birthday= '$baseUrl/birthday.png';
   static const String gender= '$baseUrl/gender.png';
+  static const String vertical= '$baseUrl/vertical.png';
+
 }

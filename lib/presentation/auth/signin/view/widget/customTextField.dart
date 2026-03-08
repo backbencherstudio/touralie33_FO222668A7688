@@ -8,7 +8,7 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final bool obscureText;
   final String? hintText;
-  final String? suffixIcon;
+  final Widget? suffixIcon;
   final VoidCallback? onTap;
   final Color? borderColor;
 
@@ -42,7 +42,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 onTap: widget.onTap,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0), //
-                  child: Image.asset(widget.suffixIcon!, width: 20, height: 20),
+                  child: widget.suffixIcon!,
                 ),
               ) 
             : null,

@@ -16,6 +16,7 @@ class ColorManager {
   // ===== Background Colors =====
   static const Color background = Color(0xFFF5F5F5);
   static const Color backgroundColorgreen = Color(0xFFA8E06A);
+  static const Color backgroundColorgreen1 = Color(0xFF91C05D);
 
   static const Color bgColorgrey= Color.fromARGB(255, 234, 244, 225);
   static const Color backgroundDark = Color(0xFF121212);
@@ -26,6 +27,7 @@ class ColorManager {
   // ===== Text Colors =====
   static const Color textPrimary = Color(0xFF1D1F2C);
   static const Color subtextColor = Color(0xFF161616);
+  static const Color subtextColor1 = Color.fromARGB(255, 65, 65, 65);
   static const Color hintTextColor = Color(0xFF9DA09A);
   static const Color textSecondary = Color(0xFF757575);
   static const Color titleText = Color(0xFF2F3131);

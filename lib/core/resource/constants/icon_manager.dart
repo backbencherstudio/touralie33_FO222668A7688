@@ -4,4 +4,6 @@ class IconManager {
   static String arrowRight = '$baseUrl/arrow-right.png';
   static String female = '$baseUrl/female_icon.png';
   static  String male = '$baseUrl/male_icon.png';
+    static  String facebook= '$baseUrl/facebook.png';
+  static  String google= '$baseUrl/google.png';
 }
