@@ -11,4 +11,6 @@ class RoutesName {
   static const String welcomeScreen = "/welcomeScreen";
   static const String signInScreen = "/signInScreen";
   static const String forgotPassword = "/forgotPassword";
+  static const String otpScreen = "/otpScreen";
+  static const String newPasswordScreen = "/newPasswordScreen";
 }

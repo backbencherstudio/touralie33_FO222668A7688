@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/widget/customeApp.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
@@ -49,8 +50,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               "Send an OTP",
                               style: getMedium500Style20(
                                   color: ColorManager.subtextColor,
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w500),
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.w600),
                             ),
                             SizedBox(height: 8.h),
                             Text(
@@ -104,6 +105,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     SizedBox(height: 20.h),
                                     Customebutton(
                                       text: "Send OTP",
+                                      onTap: () {
+                                        Navigator.pushNamed(context, RoutesName.otpScreen);
+                                      },
                                     )
                                   ],
                                 ),

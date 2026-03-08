@@ -7,25 +7,34 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/widget/customeApp.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/widget/dialog_widget.dart';
 
 final eyeSecure = StateProvider<bool>((ref) => false);
+final eyeSecure1 = StateProvider<bool>((ref) => false);
 final checkIcon = StateProvider<bool>((ref) => false);
 
-class SigninScreen extends ConsumerStatefulWidget {
-  const SigninScreen({super.key});
+class NewPasswordScreen extends ConsumerStatefulWidget {
+  const NewPasswordScreen({super.key});
 
   @override
-  ConsumerState<SigninScreen> createState() => _SigninScreenState();
+  ConsumerState<NewPasswordScreen> createState() => _NewPasswordScreenState();
 }
 
-class _SigninScreenState extends ConsumerState<SigninScreen> {
+class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final isEyeon = ref.watch(eyeSecure);
+    final isEyeon1 = ref.watch(eyeSecure1);
     final isCheck = ref.watch(checkIcon);
     return Scaffold(
+       backgroundColor: ColorManager.primary,
+      appBar: CustomeApp(
+        text: "Change PassWord",
+        onBackTap: () => Navigator.pop(context),
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -36,45 +45,50 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
             colors: [ColorManager.primary, ColorManager.primarygrey],
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 60.h,),
-                Text(
-                  "Welcome Back",
-                  style: getMedium500Style22(
-                    color: ColorManager.textPrimary,
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+             
+              Divider(
+          color: Color.fromARGB(255, 231, 232, 231),
+          thickness: 1,
+        ),
+        SizedBox(height: 50.h,),
+              Text(
+                "Enter New Password",
+                style: getMedium500Style22(
+                  color: ColorManager.textPrimary,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w600,
                 ),
-                SizedBox(height: 5.h),
-                Text(
-                  "Login to your account below",
-                  style: getMedium500Style14(
-                    color: Color.fromARGB(255, 149, 149, 149),
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+              ),
+              SizedBox(height: 5.h),
+              Text(
+                "Enter Your New Password",
+                style: getMedium500Style14(
+                  color: ColorManager.subtextColor,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
                 ),
-                SizedBox(height: 38.h),
-                Container(
+              ),
+              SizedBox(height: 38.h),
+              Padding(
+                padding:  EdgeInsets.all(16.r),
+                child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
                     color: Colors.white,
                     boxShadow: [
-              BoxShadow(
+                            BoxShadow(
                 color: Colors.black.withValues(alpha: .05), 
                 blurRadius: 10.r,    
                 spreadRadius: 2.r,   
                 offset: Offset(0, 4), 
-              ),
-            ],
+                            ),
+                          ],
                   ),
                   
                   child: Padding(
@@ -84,22 +98,30 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Email Address",
+                          "New Password",
                           style: getMedium500Style14(
                             color: ColorManager.textPrimary,
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         SizedBox(height: 8.h),
-                        CustomTextField(hintText: "alexa.mate@example.com"),
+                        CustomTextField(hintText: "enter your password", obscureText: !isEyeon1,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              ref.read(eyeSecure1.notifier).state = !isEyeon1;
+                            },
+                            icon: Icon(
+                              isEyeon1 ? Icons.visibility_off : Icons.visibility,
+                            ),
+                          ),),
                         SizedBox(height: 12.h),
                         Text(
-                          "Password",
+                          "Re-Enter New Password",
                           style: getMedium500Style14(
                             color: ColorManager.textPrimary,
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         SizedBox(height: 5),
@@ -150,8 +172,8 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                                   "Remember Me",
                                   style: getMedium500Style14(
                                     color: ColorManager.textPrimary,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -161,86 +183,36 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                                 Navigator.pushNamed(context, RoutesName.forgotPassword);
                               },
                               child: Text(
-                                "Forgot Password",
+                                "Forgot Password?",
                                 style:
                                     getMedium500Style14(
                                       color: ColorManager.backgroundColorgreen1,
-                                      fontSize: 13.sp,
-                                    ).copyWith(
-                                      decoration: TextDecoration.underline,
-                                   
-                                      
-            
-                                      decorationColor:
-                                          ColorManager.backgroundColorgreen1,
-                                    ),
+                                      fontSize: 16.sp,
+                                    )
                               ),
                             ),
                           ],
                         ),
                         SizedBox(height: 15.h),
                         Customebutton(text: "Login",onTap: () {
-                          
+                          showDialog(
+  context: context,
+  barrierDismissible: false, 
+  
+  builder: (BuildContext context) {
+    return DialogWidget();
+  },
+);
                         },),
                         SizedBox(height: 8.h),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 10.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Image.asset(
-                        ImageManager.vertical,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-            
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        "Or Login With",
-                        style: getMedium500Style14(
-                          color: ColorManager.subtextColor,
-                        ),
-                      ),
-                    ),
-            
-                    Expanded(
-                      child: Image.asset(
-                        ImageManager.vertical,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h,),
-                Customebutton(
-                  image: IconManager.google,
-                  text:"Login With Google" ,
-                  color: Colors.white,
-                  borderColor: const Color.fromARGB(255, 235, 235, 235),
-                  border: 1.2.w,
-                ),  SizedBox(height: 8.h,),
-                Customebutton(
-                  image: IconManager.facebook,
-                  text:"Login With Facebook" ,
-                  color: Colors.white,
-                  borderColor: const Color.fromARGB(255, 235, 235, 235),
-                  border: 1.5.w,
-                ),
-                SizedBox(height: 12.h,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center
-                  ,
-                  children: [
-                    Text("Didn't have an account ?",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 16.sp),),
-                    Text(" SignUp",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 17.sp))
-                  ],
-                )
-              ],
-            ),
+              ),
+              SizedBox(height: 10.h),
+              
+            ],
           ),
         ),
       ),
