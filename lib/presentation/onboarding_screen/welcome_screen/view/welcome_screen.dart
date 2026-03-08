@@ -27,8 +27,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
                 colors: [
                   ColorManager.primary, 
                   Colors.white, 
@@ -101,7 +101,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    
+                    Navigator.pushReplacementNamed(context, RoutesName.signInScreen);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF98D14F),

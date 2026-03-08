@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/signin_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/welcome_screen/view/welcome_screen.dart';
@@ -23,6 +24,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => OnBordingScreenWeight());
       case RoutesName.welcomeScreen:
         return MaterialPageRoute(builder: (_) => WelcomeScreen());
+      case RoutesName.signInScreen:
+        return MaterialPageRoute(builder: (_) => SigninScreen());
      
 
       default:
