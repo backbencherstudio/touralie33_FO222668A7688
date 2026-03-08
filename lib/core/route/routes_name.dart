@@ -13,4 +13,6 @@ class RoutesName {
   static const String forgotPassword = "/forgotPassword";
   static const String otpScreen = "/otpScreen";
   static const String newPasswordScreen = "/newPasswordScreen";
+  static const String parentScreen = "/parentScreen";
+  static const String singInUpScreen = "/singInUpScreen";
 }

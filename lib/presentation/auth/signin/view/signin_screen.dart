@@ -180,7 +180,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                         ),
                         SizedBox(height: 15.h),
                         Customebutton(text: "Login",onTap: () {
-                          
+                          Navigator.pushReplacementNamed(context,RoutesName.parentScreen);
                         },),
                         SizedBox(height: 8.h),
                       ],
@@ -236,7 +236,11 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                   ,
                   children: [
                     Text("Didn't have an account ?",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 16.sp),),
-                    Text(" SignUp",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 17.sp))
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen);
+                      },
+                      child: Text(" SignUp",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 17.sp)))
                   ],
                 )
               ],

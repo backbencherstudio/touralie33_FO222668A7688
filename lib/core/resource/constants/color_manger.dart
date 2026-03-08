@@ -8,6 +8,7 @@ class ColorManager {
   // ===== Primary Colors =====
   static const Color primary = Color(0xFFF6FEED);
   static const Color splashBgColor = Color(0xFFECF6EB);
+  static const Color drawrColor = Color(0xFF528931);
   static const Color primarygrey = Color(0xFFFAFAFA);
   static const Color primaryLight = Color(0xFFECF6EB);
   static const Color primary1 = Color(0xFFFBFDF8);

@@ -12,5 +12,8 @@ class ImageManager {
   static const String gender= '$baseUrl/gender.png';
   static const String vertical= '$baseUrl/vertical.png';
   static const String success= '$baseUrl/successfull.png';
+  static const String profilePic= '$baseUrl/profile_pic.png';
+  static const String notification= '$baseUrl/notification_icon.png';
+
 
 }
