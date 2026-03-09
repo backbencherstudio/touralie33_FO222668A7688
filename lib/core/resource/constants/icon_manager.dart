@@ -12,4 +12,7 @@ class IconManager {
   static String subscriptionPlan= '$baseUrl/subscription_plan.png';
   static String playButton= '$baseUrl/play.png';
   static String clock= '$baseUrl/stopwatch.png';
+  static String videoICon= '$baseUrl/video_icon.png';
+  static String bookMark= '$baseUrl/bookmark-plus.png';
+  static String playCircle= '$baseUrl/play-circle.png';
 }

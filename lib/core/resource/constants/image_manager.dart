@@ -14,6 +14,7 @@ class ImageManager {
   static const String success= '$baseUrl/successfull.png';
   static const String profilePic= '$baseUrl/profile_pic.png';
   static const String notification= '$baseUrl/notification_icon.png';
+  static const String gymGuide= '$baseUrl/gymGuide.png';
 
 
 }

@@ -9,7 +9,7 @@ class Customebutton extends StatelessWidget {
   final Color? color;
   final String? image,sufImage; 
   final Color? borderColor;
-  final Color? textColor;
+  final Color? textColor,sufImageColor;
   final double? border;
 
   const Customebutton({
@@ -17,7 +17,7 @@ class Customebutton extends StatelessWidget {
     this.text,
     this.onTap,
     this.color,
-    this.image, this.borderColor, this.border, this.textColor, this.sufImage,
+    this.image, this.borderColor, this.border, this.textColor, this.sufImage, this.sufImageColor,
   });
 
   @override
@@ -64,6 +64,7 @@ class Customebutton extends StatelessWidget {
                 sufImage!, 
                 width: 20.w, 
                 height: 20.h,
+                color: sufImageColor,
               ),
               SizedBox(width: 10.w), 
             ],

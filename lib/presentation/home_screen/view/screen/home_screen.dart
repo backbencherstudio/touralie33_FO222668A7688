@@ -28,20 +28,23 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RemainingProgressWidget(),
-          SizedBox(height: 15.h,),
-          Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 16.w),
-            child: Text("Your Prescribed Video",style: getMedium500Style12(color: ColorManager.subtextColor,fontSize:18.sp,fontWeight: FontWeight.w500 ),),
-          ),
-          Padding(
-            padding:  EdgeInsets.all(16.r),
-            child: WorkoutWidget(),
-          )
-        ],
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RemainingProgressWidget(),
+            SizedBox(height: 15.h,),
+            Padding(
+              padding:  EdgeInsets.symmetric(horizontal: 16.w),
+              child: Text("Your Prescribed Video",style: getMedium500Style12(color: ColorManager.subtextColor,fontSize:18.sp,fontWeight: FontWeight.w500 ),),
+            ),
+            Padding(
+              padding:  EdgeInsets.all(16.r),
+              child: WorkoutWidget(),
+            )
+          ],
+        ),
       ),
     );
   }
