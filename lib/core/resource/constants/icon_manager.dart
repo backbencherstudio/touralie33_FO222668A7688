@@ -15,4 +15,9 @@ class IconManager {
   static String videoICon= '$baseUrl/video_icon.png';
   static String bookMark= '$baseUrl/bookmark-plus.png';
   static String playCircle= '$baseUrl/play-circle.png';
+  static String checkIcon= '$baseUrl/check_icon.png';
+  static String favourite= '$baseUrl/favourite.png';
+  static String profile= '$baseUrl/profile.png';
+  static String home= '$baseUrl/home.png';
+  static String playList= '$baseUrl/playList.png';
 }

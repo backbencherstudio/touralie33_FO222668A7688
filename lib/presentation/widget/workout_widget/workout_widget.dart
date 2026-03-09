@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:touralie33_fo222668a7688/presentation/widget/instruction_widget/instruction_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_video_player_screen/workout_video_player_screen.dart';
 import 'package:video_player/video_player.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
@@ -137,6 +138,11 @@ class WorkoutWidget extends StatelessWidget {
             ),
             SizedBox(height: 15.h,),
             Customebutton(
+              onTap: () {
+                showDialog(context: context,builder: (context) {
+                  return InstructionWidget();
+                },);
+              },
               text: "Watch Now",
               sufImage: IconManager.playButton,
               sufImageColor: ColorManager.blackColor,

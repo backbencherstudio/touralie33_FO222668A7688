@@ -227,12 +227,12 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center
                   ,
                   children: [
-                    Text("Didn't have an account ?",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 16.sp),),
+                    Text("Didn't have an account ?",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 14.sp),),
                     InkWell(
                       onTap: () {
                         Navigator.pushReplacementNamed(context, RoutesName.signInScreen);
                       },
-                      child: Text(" LogIn",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 17.sp)))
+                      child: Text(" LogIn",style: getMedium500Style16(color: ColorManager.drawrColor,fontSize: 16.sp)))
                   ],
                 ),
                 SizedBox(height: 30.h,)

@@ -235,12 +235,12 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                   mainAxisAlignment: MainAxisAlignment.center
                   ,
                   children: [
-                    Text("Didn't have an account ?",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 16.sp),),
+                    Text("Didn't have an account ?",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 15.sp),),
                     InkWell(
                       onTap: () {
                         Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen);
                       },
-                      child: Text(" SignUp",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 17.sp)))
+                      child: Text(" SignUp",style: getMedium500Style16(color: ColorManager.drawrColor,fontSize: 16.sp)))
                   ],
                 )
               ],

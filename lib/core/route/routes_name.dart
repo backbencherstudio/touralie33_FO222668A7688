@@ -15,4 +15,6 @@ class RoutesName {
   static const String newPasswordScreen = "/newPasswordScreen";
   static const String parentScreen = "/parentScreen";
   static const String singInUpScreen = "/singInUpScreen";
+  static const String prescribedScreen = "/prescribedScreen";
+  static const String prescibedDetailsScreen = "/prescibedDetailsScreen";
 }
