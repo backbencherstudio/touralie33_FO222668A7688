@@ -42,8 +42,10 @@ class FavouriteScreen extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       showModalBottomSheet(context: context, 
+                        isScrollControlled: true,
                       backgroundColor: ColorManager.playlistBox,
                       shape: RoundedRectangleBorder(
+                        
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25.r),
                           topRight: Radius.circular(25.r)

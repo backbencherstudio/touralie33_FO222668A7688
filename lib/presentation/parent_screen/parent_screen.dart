@@ -24,7 +24,9 @@ class ParentScreen extends ConsumerWidget {
       ),
       const PlaylistScreen(),
       const FavouriteScreen(),
-      const ProfileScreen(),
+     ProfileScreen(
+          onOpenDrawer: () => scaffoldKey.currentState?.openDrawer(),
+      ),
     ];
    final items = <({String icon, String label})>[
   (icon: IconManager.home, label: 'Home'),
