@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 
 class DrawerScreen extends StatelessWidget {
   const DrawerScreen({super.key});
@@ -51,7 +52,7 @@ class DrawerScreen extends StatelessWidget {
                 'Settings',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20.sp,
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -61,7 +62,11 @@ class DrawerScreen extends StatelessWidget {
                 title: 'Subscribe Plan',
               ),
                _DrawerItem(icon: IconManager.security, title: 'Security'),
-               _DrawerItem(icon: IconManager.setting, title: 'Settings'),
+               _DrawerItem(
+                ontap: () {
+                  Navigator.pushReplacementNamed(context, RoutesName.settingScreen);
+                },
+                icon: IconManager.setting, title: 'Settings'),
                _DrawerItem(
                 icon: IconManager.security,
                 title: 'Help and support',
@@ -79,15 +84,16 @@ class DrawerScreen extends StatelessWidget {
 class _DrawerItem extends StatelessWidget {
   final String icon;
   final String title;
+  final VoidCallback ? ontap;
 
-  const _DrawerItem({required this.icon, required this.title});
+  const _DrawerItem({required this.icon, required this.title, this.ontap});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 16.h),
       child: InkWell(
-        onTap: () {},
+        onTap:ontap,
         borderRadius: BorderRadius.circular(10.r),
         child: Row(
           children: [

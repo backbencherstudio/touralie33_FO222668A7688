@@ -9,12 +9,13 @@ class Customebar extends StatelessWidget {
   final String? text;
   final String? icon;
   final bool showBackIcon;
+  final VoidCallback? ontap;
 
   const Customebar({
     super.key,
     this.text,
     this.icon,
-    this.showBackIcon = true,
+    this.showBackIcon = true, this.ontap,
   });
 
   @override
@@ -24,7 +25,8 @@ class Customebar extends StatelessWidget {
       children: [
         showBackIcon
             ? InkWell(
-                onTap: () {
+
+                onTap:ontap ?? () {
                   Navigator.pop(context);
                 },
                 child: Image.asset(

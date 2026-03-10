@@ -17,4 +17,6 @@ class RoutesName {
   static const String singInUpScreen = "/singInUpScreen";
   static const String prescribedScreen = "/prescribedScreen";
   static const String prescibedDetailsScreen = "/prescibedDetailsScreen";
+  static const String settingScreen = "/settingScreen";
+  static const String homeScreen = "/homeScreen";
 }
