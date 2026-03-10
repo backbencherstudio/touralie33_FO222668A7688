@@ -20,4 +20,6 @@ class IconManager {
   static String profile= '$baseUrl/profile.png';
   static String home= '$baseUrl/home.png';
   static String playList= '$baseUrl/playList.png';
+  static String filter = '$baseUrl/filter.png';
+  static String upIcon = '$baseUrl/up_icon.png';
 }

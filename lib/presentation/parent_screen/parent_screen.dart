@@ -29,7 +29,7 @@ class ParentScreen extends ConsumerWidget {
    final items = <({String icon, String label})>[
   (icon: IconManager.home, label: 'Home'),
   (icon: IconManager.playList, label: 'Playlist'), 
-  (icon: IconManager.favourite, label: 'Favorite'),
+  (icon: IconManager.favourite, label: 'Favourite'),
   (icon: IconManager.profile, label: 'Profile'),
 ];
     return Scaffold(
@@ -38,7 +38,7 @@ class ParentScreen extends ConsumerWidget {
       drawer: const DrawerScreen(),
       body: screens[selectIndex],
       bottomNavigationBar: SafeArea(
-        minimum:  EdgeInsets.fromLTRB(50, 20, 40, 40),
+   minimum: const EdgeInsets.fromLTRB(16, 0, 16, 20), 
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(
