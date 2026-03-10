@@ -11,9 +11,9 @@ class PlayListScreenWidget extends StatelessWidget {
   final String ?title;          
   final String ?videoDuration;  
   final String? totalTime;      
-  final String ?buttonText, sufImage;     
+  final String ?buttonText, sufImage,bookMarkIcon;     
   final VoidCallback? onTap;   
-  final Color? buttonIconColor; 
+  final Color? buttonIconColor,colorbg; 
 
   const PlayListScreenWidget({
     super.key,
@@ -24,7 +24,7 @@ class PlayListScreenWidget extends StatelessWidget {
      this.totalTime,
     this.buttonText,
     this.onTap,
-    this.buttonIconColor, this.sufImage,
+    this.buttonIconColor, this.sufImage, this.colorbg, this.bookMarkIcon,
   });
 
   @override
@@ -34,7 +34,7 @@ class PlayListScreenWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
-          color: ColorManager.playlistBox,
+          color: colorbg?? ColorManager.playlistBox,
           border: Border.all(
             color: const Color.fromARGB(255, 195, 195, 195),
             width: .8.w,
@@ -135,7 +135,7 @@ class PlayListScreenWidget extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 40.h),
-                      Image.asset(IconManager.bookMark, width: 9.w, height: 12.h),
+                      Image.asset(bookMarkIcon ?? IconManager.bookMark, width: 9.w, height: 12.h),
                     ],
                   ),
                 ],

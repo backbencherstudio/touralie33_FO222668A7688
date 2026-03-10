@@ -13,10 +13,10 @@ class CustomeWidgetProfile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.r),
-        color: ColorManager.primary
+        color: const Color.fromARGB(255, 236, 243, 227)
       ),
       child: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 16.w,vertical: 21.h),
+        padding:  EdgeInsets.symmetric(horizontal: 16.w,vertical: 14.h),
         child: Column(
           children: [
             Text(title?? "",style: getMedium500Style12(color: const Color.fromARGB(255, 121, 121, 121),fontSize: 14.sp,fontWeight: FontWeight.w500),),

@@ -47,7 +47,7 @@ class PlaylistScreen extends StatelessWidget {
               title: "Back Mobility Program",
               videoDuration: "45 min",
               totalTime: "45 min",
-              buttonText: "Start Now",
+              buttonText: "In Progress",
               buttonIconColor: Colors.black,
               sufImage: IconManager.playButton,
               
