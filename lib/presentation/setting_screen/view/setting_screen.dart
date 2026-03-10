@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
+import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
@@ -76,19 +77,26 @@ class SettingScreen extends StatelessWidget {
                       ),
                       TextField(
                         decoration: InputDecoration(
-                          hintText: 'Jannatul',
+                          hintText: 'enter your username',
                           hintStyle: TextStyle(color: Colors.grey),
 
-                          suffixIcon: Icon(
-                            Icons.edit_outlined,
-                            color: Colors.grey,
+                          suffixIconConstraints: BoxConstraints(
+                            minHeight: 16.h,
+                            minWidth: 16.w,
+                          ),
+
+                          suffixIcon: Image.asset(
+                            IconManager.edit,
+                            height: 18.h,
+                            width: 18.w,
                           ),
 
                           enabledBorder: UnderlineInputBorder(
+                            
                             borderSide: BorderSide(color: Colors.grey.shade300),
                           ),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
+                            borderSide: BorderSide(color: ColorManager.hintTextColor),
                           ),
                         ),
                       ),

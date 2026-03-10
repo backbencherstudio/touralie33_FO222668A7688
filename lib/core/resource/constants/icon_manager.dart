@@ -23,4 +23,5 @@ class IconManager {
   static String filter = '$baseUrl/filter.png';
   static String upIcon = '$baseUrl/up_icon.png';
   static String bookMarkFill = '$baseUrl/bookmark-plus (1).png';
+  static String edit = '$baseUrl/edit.png';
 }
