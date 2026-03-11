@@ -225,7 +225,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                 ),  SizedBox(height: 8.h,),
                 Customebutton(
                   image: IconManager.facebook,
-                  text:"Login With Facebook" ,
+                  text:"Login With Apple" ,
                   color: Colors.white,
                   borderColor: const Color.fromARGB(255, 235, 235, 235),
                   border: 1.5.w,

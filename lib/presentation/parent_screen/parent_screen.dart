@@ -40,9 +40,9 @@ class ParentScreen extends ConsumerWidget {
       drawer: const DrawerScreen(),
       body: screens[selectIndex],
       bottomNavigationBar: SafeArea(
-   minimum: const EdgeInsets.fromLTRB(16, 0, 16, 20), 
+   minimum: const EdgeInsets.fromLTRB(16, 16, 16, 35), 
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
             boxShadow: [
     BoxShadow(
@@ -72,7 +72,7 @@ class ParentScreen extends ConsumerWidget {
                   curve: Curves.easeOut,
                   padding: EdgeInsets.symmetric(
                     horizontal: isSelected ? 12 : 13,
-                    vertical: 12,
+                    vertical: 13,
                   ),
                   decoration: BoxDecoration(
                     color: isSelected

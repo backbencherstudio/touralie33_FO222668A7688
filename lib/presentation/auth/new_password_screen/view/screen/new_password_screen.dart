@@ -197,7 +197,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                         Customebutton(text: "Login",onTap: () {
                           showDialog(
   context: context,
-  barrierDismissible: false, 
+  barrierDismissible: true, 
   
   builder: (BuildContext context) {
     return DialogWidget();

@@ -58,6 +58,9 @@ class DrawerScreen extends StatelessWidget {
               ),
               SizedBox(height: 14.h),
                _DrawerItem(
+                ontap: () {
+                          Navigator.pushReplacementNamed(context, RoutesName.subscriptionScreen);
+                },
                 icon: IconManager.subscriptionPlan,
                 title: 'Subscribe Plan',
               ),

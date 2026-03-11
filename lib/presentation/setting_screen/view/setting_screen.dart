@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/widget/dialog_widget.dart';
+import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/height_setting_widget.dart';
+import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/setting_widget.dart';
+import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/successfully_widget.dart';
+import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/weight_setting_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+     final heightUnitIndex = ref.watch(heightUnitProvider);
+     final weightUnitIndex = ref.watch(weightStateProvider);
+ 
+    final heightUnitText = heightUnitIndex == 0 ? "feet" : "cm";
+    final weightUnitText = weightUnitIndex  == 0 ? "Kg" : "Lb";
     return Scaffold(
       backgroundColor: ColorManager.primary,
       appBar: PreferredSize(
@@ -40,12 +52,11 @@ class SettingScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Padding(
+        child: SingleChildScrollView(
           padding: EdgeInsets.all(16.r),
           child: Column(
             children: [
               Container(
-                height: 394.h,
                 width: 343.w,
                 decoration: BoxDecoration(
                   color: ColorManager.playlistBox,
@@ -64,35 +75,32 @@ class SettingScreen extends StatelessWidget {
                         "Your Info",
                         style: getMedium500Style10(
                           color: ColorManager.textPrimary,
-                          fontSize: 16.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
-                      SizedBox(height: 10.h),
+                      SizedBox(height: 15.h),
+                      
+             
                       Text(
                         "UserName",
                         style: getMedium500Style10(
                           color: ColorManager.textPrimary,
-                          fontSize: 14.sp,
+                          fontSize: 16.sp,
                         ),
                       ),
                       TextField(
                         decoration: InputDecoration(
                           hintText: 'enter your username',
-                          hintStyle: TextStyle(color: Colors.grey),
-
-                          suffixIconConstraints: BoxConstraints(
-                            minHeight: 16.h,
-                            minWidth: 16.w,
+                          hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                          suffixIcon: Padding(
+                            padding:  EdgeInsets.all(11.r),
+                            child: Image.asset(
+                              IconManager.edit,
+                              height: 12.h,
+                              width: 12.w,
+                            ),
                           ),
-
-                          suffixIcon: Image.asset(
-                            IconManager.edit,
-                            height: 18.h,
-                            width: 18.w,
-                          ),
-
                           enabledBorder: UnderlineInputBorder(
-                            
                             borderSide: BorderSide(color: Colors.grey.shade300),
                           ),
                           focusedBorder: UnderlineInputBorder(
@@ -100,10 +108,170 @@ class SettingScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 20.h),
+
+               
+                      Text(
+                        "Gender",
+                        style: getMedium500Style10(
+                          color: ColorManager.textPrimary,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      const SettingWidgetGender(), 
+                      SizedBox(height: 20.h),
+
+                
+                      Text(
+                        "Weight",
+                        style: getMedium500Style10(
+                          color: ColorManager.textPrimary,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(color: ColorManager.borderColor),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(12.r),
+                          child: Column(
+                            children: [
+                              const WeightSettingWidget(), 
+                              SizedBox(height: 12.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      IntrinsicWidth(
+                                        child: TextField(
+                                          keyboardType: TextInputType.number,
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText: '52',
+                                            hintStyle: const TextStyle(color: Colors.grey),
+                                            border: InputBorder.none,
+                                            isDense: true,
+                                            contentPadding: EdgeInsets.zero,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 5.w,),
+                                      Text(
+                                        weightUnitText ,
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Image.asset(
+                                    IconManager.edit,
+                                    height: 18.h,
+                                    width: 18.w,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15.h,),
+                      Text(
+                        "Height",
+                        style: getMedium500Style10(
+                          color: ColorManager.textPrimary,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(color: ColorManager.borderColor),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(12.r),
+                          child: Column(
+                            children: [
+                              const HeightSettingWidget(), 
+                              SizedBox(height: 12.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      IntrinsicWidth(
+                                        child: TextField(
+                                          keyboardType: TextInputType.number,
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText: '52',
+                                            hintStyle: const TextStyle(color: Colors.grey),
+                                            border: InputBorder.none,
+                                            isDense: true,
+                                            contentPadding: EdgeInsets.zero,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 8.w,),
+                                      Text(
+                                        heightUnitText,
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Image.asset(
+                                    IconManager.edit,
+                                    height: 18.h,
+                                    width: 18.w,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                     
+                      
                     ],
                   ),
                 ),
               ),
+               SizedBox(height: 20.h,),
+              Customebutton(
+                onTap: () {
+                   showDialog(
+  context: context,
+  barrierDismissible: true, 
+  
+  builder: (BuildContext context) {
+    return SuccessfullyWidget();
+  },
+);
+                },
+                        text: "Save",
+                      )
             ],
           ),
         ),

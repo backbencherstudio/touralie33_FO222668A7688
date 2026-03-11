@@ -7,7 +7,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 
 
-final selectedCategoryProvider = StateProvider<int?>((ref) => 1);
+final selectedCategoryProvider = StateProvider<int?>((ref) => 0);
 
 class BottomsheetWidget extends ConsumerStatefulWidget {
   const BottomsheetWidget({super.key});

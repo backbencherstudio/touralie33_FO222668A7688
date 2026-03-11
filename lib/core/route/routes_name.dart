@@ -19,4 +19,6 @@ class RoutesName {
   static const String prescibedDetailsScreen = "/prescibedDetailsScreen";
   static const String settingScreen = "/settingScreen";
   static const String homeScreen = "/homeScreen";
+  static const String subscriptionScreen = "/subscriptionScreen";
+  static const String getInTouchScreen = "/getInTouchScreen";
 }

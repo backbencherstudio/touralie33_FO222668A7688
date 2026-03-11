@@ -24,4 +24,7 @@ class IconManager {
   static String upIcon = '$baseUrl/up_icon.png';
   static String bookMarkFill = '$baseUrl/bookmark-plus (1).png';
   static String edit = '$baseUrl/edit.png';
+  static String subscriptionIcon = '$baseUrl/subscription_icon.png';
+  static String checkMark = '$baseUrl/checkMark.png';
+  static String subtractIcon = '$baseUrl/Subtract.png';
 }

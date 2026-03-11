@@ -55,13 +55,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
             color: widget.borderColor ?? ColorManager.borderColor
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(
-            color: widget.borderColor ?? ColorManager.borderColor, 
-            width: 2,
-          ),
-        ),
+       focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16.r),
+            borderSide: BorderSide(
+              color: ColorManager.backgroundColorgreen, 
+              width: 1.5
+            ))
       ),
     );
   }
