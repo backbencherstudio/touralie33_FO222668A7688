@@ -53,8 +53,8 @@ class _OnboardingScreenBirthdayState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      height: 95.h,
-                      width: 98.w,
+                      height: 90.h,
+                      width: 95.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.r),
 
@@ -94,8 +94,8 @@ class _OnboardingScreenBirthdayState
                       ),
                     ),
                     Container(
-                      height: 95.h,
-                      width: 98.w,
+                        height: 90.h,
+                      width: 95.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.r),
                       
@@ -139,8 +139,8 @@ class _OnboardingScreenBirthdayState
                       ),
                     ),
                     Container(
-                      height: 95.h,
-                      width: 98.w,
+                 height: 90.h,
+                      width: 95.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.r),
                     

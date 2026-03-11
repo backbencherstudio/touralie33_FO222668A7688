@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
+import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 
@@ -39,11 +40,11 @@ class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight>
             children: [
               SizedBox(height: 80.h),
               Image.asset(
-                ImageManager.weight, 
+                IconManager.heightIcon, 
                 width: 108.w,
                 height: 108.h,
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 8.h),
               Text(
                 "What is your height",
                 style: getMedium500Style16(
@@ -52,7 +53,7 @@ class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight>
               ),
               SizedBox(height: 40.h),
 
-              // --- Feet / CM Toggle ---
+         
               Container(
                 height: 40.h,
                 width: 120.w,
@@ -113,7 +114,7 @@ class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight>
                 ),
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: 10.h),
 
            
               Padding(
