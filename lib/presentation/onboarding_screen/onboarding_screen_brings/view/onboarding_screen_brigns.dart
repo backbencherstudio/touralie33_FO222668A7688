@@ -36,10 +36,9 @@ class _OnboardingScreenBrignsState extends ConsumerState<OnboardingScreenBrigns>
   
     final selectedItems = ref.watch(selectItemsProvider);
 
-    return Scaffold(
-      backgroundColor: ColorManager.primary,
-      body: Padding(
-        padding: EdgeInsets.all(12.r),
+    return Padding(
+      padding: EdgeInsets.all(12.r),
+      child: SingleChildScrollView(
         child: Column(
           children: [
             Text(
@@ -50,8 +49,6 @@ class _OnboardingScreenBrignsState extends ConsumerState<OnboardingScreenBrigns>
                   fontSize: 20.sp),
             ),
             SizedBox(height: 16.h),
-            
-            // Row 1
             Row(
               children: [
                 _buildSelectableItem("Physiotherapy", selectedItems),
@@ -60,8 +57,6 @@ class _OnboardingScreenBrignsState extends ConsumerState<OnboardingScreenBrigns>
               ],
             ),
             SizedBox(height: 16.h),
-
-            // Row 2
             Row(
               children: [
                 _buildSelectableItem("Hydrotherapy", selectedItems),
@@ -72,7 +67,6 @@ class _OnboardingScreenBrignsState extends ConsumerState<OnboardingScreenBrigns>
               ],
             ),
             SizedBox(height: 16.h),
-
             Row(
               children: [
                 _buildSelectableItem("Spinal Regabiliation", selectedItems),
@@ -81,8 +75,6 @@ class _OnboardingScreenBrignsState extends ConsumerState<OnboardingScreenBrigns>
               ],
             ),
             SizedBox(height: 16.h),
-
-       
             Row(
               children: [
                 _buildSelectableItem("Program Membership", selectedItems),
@@ -91,13 +83,11 @@ class _OnboardingScreenBrignsState extends ConsumerState<OnboardingScreenBrigns>
               ],
             ),
             SizedBox(height: 16.h),
-
-         
             Row(
               children: [
                 _buildSelectableItem("Neurological Injuries", selectedItems),
               ],
-            )
+            ),
           ],
         ),
       ),

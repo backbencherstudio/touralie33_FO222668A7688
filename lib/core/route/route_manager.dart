@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/forgot_password.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/new_password_screen/view/screen/new_password_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/otp/view/otp_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/signin_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/signup/view/signup_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/get_in_touch/view/screen/get_in_touch_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/home_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/welcome_screen/view/welcome_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/parent_screen/parent_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/prescibed_details_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/prescribed_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/setting_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/subscription/view/screen/subscription_screen.dart';
 
 import '../../presentation/bottom_nav/view/bottom_nav_bar_screen.dart';
 import '../../presentation/splash/view/splash_screen.dart';
@@ -23,6 +35,30 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => OnBordingScreenWeight());
       case RoutesName.welcomeScreen:
         return MaterialPageRoute(builder: (_) => WelcomeScreen());
+      case RoutesName.signInScreen:
+        return MaterialPageRoute(builder: (_) => SigninScreen());
+      case RoutesName.forgotPassword:
+        return MaterialPageRoute(builder: (_) => ForgotPassword());
+      case RoutesName.otpScreen:
+        return MaterialPageRoute(builder: (_) => OtpScreen());
+      case RoutesName.newPasswordScreen:
+        return MaterialPageRoute(builder: (_) => NewPasswordScreen());
+      case RoutesName.singInUpScreen:
+        return MaterialPageRoute(builder: (_) => SingInUpScreen());
+      case RoutesName.parentScreen:
+        return MaterialPageRoute(builder: (_) => ParentScreen());
+      case RoutesName.prescribedScreen:
+        return MaterialPageRoute(builder: (_) => PrescribedScreen());
+      case RoutesName.prescibedDetailsScreen:
+        return MaterialPageRoute(builder: (_) => PrescibedDetailsScreen());
+      case RoutesName.settingScreen:
+        return MaterialPageRoute(builder: (_) => SettingScreen());
+      case RoutesName.homeScreen:
+        return MaterialPageRoute(builder: (_) => HomeScreen());
+      case RoutesName.subscriptionScreen :
+        return MaterialPageRoute(builder: (_) => SubscriptionScreen ());
+      case RoutesName.getInTouchScreen  :
+        return MaterialPageRoute(builder: (_) => GetInTouchScreen ());
      
 
       default:
