@@ -48,139 +48,142 @@ class _OnBordingScreenWeightState extends ConsumerState<OnBordingScreenWeight> {
     return Scaffold(
       backgroundColor: ColorManager.primary,
       body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 50.h), 
-            Image.asset(
-              ImageManager.weight,
-              width: 108.w,
-              height: 108.h,
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              "What is your Weight",
-              style: getMedium500Style16(
-                color: ColorManager.textPrimary,
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 50.h), 
+              Image.asset(
+                ImageManager.weight,
+                width: 108.w,
+                height: 108.h,
               ),
-            ),
-            SizedBox(height: 40.h),
-
-            SizedBox(
-              height: 70.h,
-              child: ListView.builder(
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                itemCount: 81, 
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width / 2 - (itemWidth.w / 2),
+              SizedBox(height: 16.h),
+              Text(
+                "What is your Weight",
+                style: getMedium500Style16(
+                  color: ColorManager.textPrimary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.sp,
                 ),
-                itemBuilder: (context, index) {
-                  int weightValue = index + 20;
-                  bool isSelected = selectedWeight == weightValue;
-
-                  return GestureDetector(
-                    onTap: () {
-                    
-                      ref.read(selectedWeightProvider.notifier).state = weightValue;
-
-                    
-                      _scrollController.animateTo(
-                        index * itemWidth.w,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                    child: Container(
-                      width: itemWidth.w,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected
-                            ? ColorManager.backgroundColorgreen
-                            : Colors.transparent,
-                      ),
-                      child: Text(
-                        "$weightValue",
-                        style: getMedium500Style16(
-                          color: isSelected ? Colors.black : Colors.grey.withOpacity(0.6),
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
-                          fontSize: isSelected ? 18.sp : 14.sp,
-                        ),
-                      ),
-                    ),
-                  );
-                },
               ),
-            ),
-
-            SizedBox(height: 30.h),
-
-            // --- Kg / Lb Toggle Switch ---
-            Container(
-              height: 35.h,
-              width: 110.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.r),
-                color: ColorManager.bgColorgrey,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Row(
-                  children: [
-               
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => ref.read(weightUnitProvider.notifier).state = "Kg",
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.r),
-                            color: selectedUnit == "Kg"
-                                ? ColorManager.backgroundColorgreen
-                                : Colors.transparent,
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Kg",
-                              style: getMedium500Style14(
-                                color: ColorManager.textPrimary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+              SizedBox(height: 40.h),
           
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => ref.read(weightUnitProvider.notifier).state = "Lb",
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.r),
-                            color: selectedUnit == "Lb"
-                                ? ColorManager.backgroundColorgreen
-                                : Colors.transparent,
+              SizedBox(
+                height: 70.h,
+                child: ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 81, 
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 2 - (itemWidth.w / 2),
+                  ),
+                  itemBuilder: (context, index) {
+                    int weightValue = index + 20;
+                    bool isSelected = selectedWeight == weightValue;
+          
+                    return GestureDetector(
+                      onTap: () {
+                      
+                        ref.read(selectedWeightProvider.notifier).state = weightValue;
+          
+                      
+                        _scrollController.animateTo(
+                          index * itemWidth.w,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: Container(
+                        width: itemWidth.w,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected
+                              ? ColorManager.backgroundColorgreen
+                              : Colors.transparent,
+                        ),
+                        child: Text(
+                          "$weightValue",
+                          style: getMedium500Style16(
+                            color: isSelected ? Colors.black : Colors.grey.withOpacity(0.6),
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
+                            fontSize: isSelected ? 18.sp : 14.sp,
                           ),
-                          child: Center(
-                            child: Text(
-                              "Lb",
-                              style: getMedium500Style14(
-                                color: ColorManager.textPrimary,
-                                fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+          
+              SizedBox(height: 30.h),
+          
+              // --- Kg / Lb Toggle Switch ---
+              Container(
+                height: 35.h,
+                width: 110.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: ColorManager.bgColorgrey,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Row(
+                    children: [
+                 
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => ref.read(weightUnitProvider.notifier).state = "Kg",
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+                              color: selectedUnit == "Kg"
+                                  ? ColorManager.backgroundColorgreen
+                                  : Colors.transparent,
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Kg",
+                                style: getMedium500Style14(
+                                  color: ColorManager.textPrimary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+            
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => ref.read(weightUnitProvider.notifier).state = "Lb",
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+                              color: selectedUnit == "Lb"
+                                  ? ColorManager.backgroundColorgreen
+                                  : Colors.transparent,
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Lb",
+                                style: getMedium500Style14(
+                                  color: ColorManager.textPrimary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

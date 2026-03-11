@@ -64,7 +64,7 @@ class _OnboardingScreenGenderState
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                              
-                              Image.asset(IconManager.male,width: 60.w,height: 73.h,),
+                              Image.asset(IconManager.male,width: 60.w,height: 73.h, color: itemselect ? ColorManager.drawrColor : ColorManager.whiteColor,),
                               Text("Male",style: getMedium500Style14(color:itemselect ? Colors.white : ColorManager.backgroundColorgreen),)
                             ],
                           ),
@@ -91,7 +91,7 @@ class _OnboardingScreenGenderState
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                              
-                              Image.asset(IconManager.female,width: 60.w,height: 73.h,),
+                              Image.asset(IconManager.female,width: 60.w,height: 73.h,color: !itemselect ? ColorManager.drawrColor : ColorManager.whiteColor,),
                               Text("FeMale",style: getMedium500Style14(color:!itemselect ? Colors.white : ColorManager.backgroundColorgreen),)
                             ],
                           ),

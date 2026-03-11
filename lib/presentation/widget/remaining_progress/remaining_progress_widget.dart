@@ -86,7 +86,7 @@ class RemainingProgressWidget extends StatelessWidget {
           ),
           Positioned(
             top: -6.h,
-            right: -12.w,
+            right: -13.w,
             child: Container(
               
               decoration: BoxDecoration(

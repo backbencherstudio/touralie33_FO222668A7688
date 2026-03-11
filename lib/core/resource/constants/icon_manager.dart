@@ -27,4 +27,6 @@ class IconManager {
   static String subscriptionIcon = '$baseUrl/subscription_icon.png';
   static String checkMark = '$baseUrl/checkMark.png';
   static String subtractIcon = '$baseUrl/Subtract.png';
+  static String heightIcon = '$baseUrl/heightIcon-removebg-preview.png';
+  static String notificationIcon = '$baseUrl/notificationIcon.png';
 }
