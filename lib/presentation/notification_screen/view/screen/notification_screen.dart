@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
@@ -25,13 +27,16 @@ class NotificationScreen1 extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min, 
           children: [
+            Text("All Notification",style: getMedium500Style12(color: ColorManager.blackColor,fontSize: 14.sp,fontWeight: FontWeight.w500),),
+            SizedBox(height: 16.h,),
             NotificationWidget(
               time: '15 minutes ago',
               title: "New Prescription Suggested",
               description: "You have prescription suggested. Please check it out! Adding more text to test auto-resize behavior.",
-          color:  ColorManager.errorColor
+              color:  ColorManager.errorColor
             ),
-       
+              SizedBox(height: 10.h,),
+       Divider(color: const Color.fromARGB(255, 231, 230, 230),),
             SizedBox(height: 16.h),
             NotificationWidget(
               time: '15 minutes ago',
@@ -39,9 +44,10 @@ class NotificationScreen1 extends StatelessWidget {
              
               description: "You have prescription suggested. Please check it out! Adding more text to test auto-resize behavior.",
             
-             color:  ColorManager.errorColor
+              color:  ColorManager.errorColor
             ),
-       
+            SizedBox(height: 10.h,),
+           Divider(color: const Color.fromARGB(255, 231, 230, 230),),
             SizedBox(height: 16.h),
             NotificationWidget(
               time: '15 minutes ago',

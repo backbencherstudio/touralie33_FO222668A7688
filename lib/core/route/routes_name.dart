@@ -21,4 +21,6 @@ class RoutesName {
   static const String homeScreen = "/homeScreen";
   static const String subscriptionScreen = "/subscriptionScreen";
   static const String getInTouchScreen = "/getInTouchScreen";
+  static const String playlistScreen  = "/playlistScreen ";
+  static const String favouriteScreen = "/favouriteScreen";
 }

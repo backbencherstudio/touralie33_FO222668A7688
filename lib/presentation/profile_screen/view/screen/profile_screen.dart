@@ -70,43 +70,44 @@ class ProfileScreen extends StatelessWidget {
             
             SizedBox(height: 15.h),
       
-           
+            Padding(
+              padding:  EdgeInsets.only(left: 18.w),
+              child: Text("Watch Your History",style: getMedium500Style10(fontSize: 14.sp,color: ColorManager.blackColor,fontWeight: FontWeight.w500),),
+            ),
+           SizedBox(height: 10.h,),
       Center(
-  child: ButtonsTabBar(
-    height: 35.h,
-  
-    contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-    backgroundColor: ColorManager.backgroundColorgreen, 
-    unselectedBackgroundColor: const Color(0XFFEDEFEB),
-
-    labelStyle: TextStyle(
-      color: ColorManager.blackColor,
-      fontWeight: FontWeight.bold,
-      fontSize: 14.sp,
-    ),
-
-    unselectedLabelStyle: TextStyle(
-      color: Colors.grey, 
-      fontWeight: FontWeight.bold,
-      fontSize: 14.sp,
-    ),
-
-    radius: 100,
-    tabs: [
-
-      Tab(text: "All"),
-      Tab(text: "Progress"),
-      Tab(text: "Completed"),
-    ],
-  ),
-),
+        child: ButtonsTabBar(
+          height: 34.h,
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 18.w, vertical: 4.h),
+          buttonMargin: EdgeInsets.symmetric(horizontal: 4.w),
+          backgroundColor: ColorManager.backgroundColorgreen,
+          unselectedBackgroundColor: const Color(0XFFEDEFEB),
+          labelStyle: TextStyle(
+            color: ColorManager.blackColor,
+            fontWeight: FontWeight.w600,
+            fontSize: 13.sp,
+          ),
+          unselectedLabelStyle: TextStyle(
+            color: const Color(0xFF7A7A7A),
+            fontWeight: FontWeight.w600,
+            fontSize: 13.sp,
+          ),
+          radius: 100,
+          tabs: [
+            Tab(text: "All"),
+            Tab(text: "Progress"),
+            Tab(text: "Completed"),
+          ],
+        ),
+      ),
             SizedBox(height: 8.h),
       
-          
+           
             Expanded(
               child: TabBarView(
                 children: [
-             
+                
                     AllScreen(),
                  ProgessScreen(),
                   CompletedScreen(),

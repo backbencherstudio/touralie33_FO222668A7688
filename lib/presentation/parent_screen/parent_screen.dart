@@ -30,7 +30,7 @@ class ParentScreen extends ConsumerWidget {
     ];
    final items = <({String icon, String label})>[
   (icon: IconManager.home, label: 'Home'),
-  (icon: IconManager.playList, label: 'Playlist'), 
+  (icon: IconManager.playList, label: 'Prescribed'), 
   (icon: IconManager.favourite, label: 'Favourite'),
   (icon: IconManager.profile, label: 'Profile'),
 ];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/instruction_widget/instruction_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_video_player_screen/workout_video_player_screen.dart';
@@ -97,11 +98,16 @@ class WorkoutWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                Image.asset(
-                  IconManager.bookMark,
-                  fit: BoxFit.cover,
-               
-                  height: 13.h,
+                InkWell(
+                  onTap: () {
+                     Navigator.pushNamed(context, RoutesName.favouriteScreen,  arguments: 2,);
+                  },
+                  child: Image.asset(
+                    IconManager.bookMark,
+                    fit: BoxFit.cover,
+                                 
+                    height: 13.h,
+                  ),
                 ),
               ],
             ),

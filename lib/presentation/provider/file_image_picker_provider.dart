@@ -37,7 +37,6 @@ class FileImagePickerNotifier extends StateNotifier<PickerState> {
 
   final ImagePicker _picker = ImagePicker();
 
-  /// ✅ Pick a single image from gallery
   Future<void> pickSingleImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
@@ -45,7 +44,6 @@ class FileImagePickerNotifier extends StateNotifier<PickerState> {
     }
   }
 
-  /// ✅ Pick multiple images
   Future<void> pickMultipleImages() async {
     final List<XFile> images = await _picker.pickMultiImage();
     if (images.isNotEmpty) {
@@ -53,7 +51,6 @@ class FileImagePickerNotifier extends StateNotifier<PickerState> {
     }
   }
 
-  /// ✅ Pick files (PDF, DOC, etc.)
   Future<void> pickFiles() async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -66,7 +63,7 @@ class FileImagePickerNotifier extends StateNotifier<PickerState> {
     }
   }
 
-  /// ✅ Clear all selections
+
   void clearAll() {
     state = const PickerState();
   }

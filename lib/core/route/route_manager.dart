@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/forgot_password.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/new_password_screen/view/screen/new_password_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/otp/view/otp_screen.dart';
@@ -10,6 +11,7 @@ import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboardi
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/welcome_screen/view/welcome_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/parent_screen/parent_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/playlist/view/screen/playlist_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/prescibed_details_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/prescribed_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/setting_screen.dart';
@@ -46,7 +48,27 @@ class RouteGenerator {
       case RoutesName.singInUpScreen:
         return MaterialPageRoute(builder: (_) => SingInUpScreen());
       case RoutesName.parentScreen:
-        return MaterialPageRoute(builder: (_) => ParentScreen());
+        final args = routeSettings.arguments;
+        final initialIndex = args is int ? args : 0;
+        return MaterialPageRoute(
+          builder: (_) => ProviderScope(
+            overrides: [
+              parentScreenIndexProvider.overrideWith((ref) => initialIndex),
+            ],
+            child: const ParentScreen(),
+          ),
+        );
+         case RoutesName.favouriteScreen:
+        final args = routeSettings.arguments;
+        final initialIndex = args is int ? args : 0;
+        return MaterialPageRoute(
+          builder: (_) => ProviderScope(
+            overrides: [
+              parentScreenIndexProvider.overrideWith((ref) => initialIndex),
+            ],
+            child: const ParentScreen(),
+          ),
+        );
       case RoutesName.prescribedScreen:
         return MaterialPageRoute(builder: (_) => PrescribedScreen());
       case RoutesName.prescibedDetailsScreen:
@@ -59,6 +81,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SubscriptionScreen ());
       case RoutesName.getInTouchScreen  :
         return MaterialPageRoute(builder: (_) => GetInTouchScreen ());
+      case RoutesName.playlistScreen  :
+        return MaterialPageRoute(builder: (_) => PlaylistScreen ());
      
 
       default:

@@ -12,7 +12,9 @@ class AllScreen extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
+     
         children: [
+     
           PlayListScreenWidget(
                 image: ImageManager.gymGuide,
                 videoCount: "0/4 videos",

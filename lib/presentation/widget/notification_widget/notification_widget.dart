@@ -11,55 +11,60 @@ class NotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start, 
+    return Column(
       children: [
-      
-        Image.asset(
-          IconManager.notificationIcon,
-          height: 24.h,
-          width: 24.w,
-          fit: BoxFit.contain,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start, 
+          children: [
+          
+            Image.asset(
+              IconManager.notificationIcon,
+              height: 24.h,
+              width: 24.w,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(width: 12.w),
+        
+         
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min, 
+                children: [
+                  Text(
+                    title ?? "",
+                    style: getLight300Style12(fontSize: 14.sp,fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    description ?? '',
+                    style: getLight300Style12(color: ColorManager.subtextColorGrey,fontSize: 12.sp,fontWeight: FontWeight.w400),
+                    softWrap: true, 
+                  ),
+                  SizedBox(height: 6.h),
+                  Text(
+                    time ?? '',
+                    style: getLight300Style12(color: ColorManager.subtextColorGrey,fontSize: 12.sp,fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
+            ),
+        
+            SizedBox(width: 8.w),
+        
+           
+            Container(
+              margin: EdgeInsets.only(top: 6.h),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color?? null,
+              ),
+              height: 8.h,
+              width: 8.w,
+            )
+          ],
         ),
-        SizedBox(width: 12.w),
-
-     
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, 
-            children: [
-              Text(
-                title ?? "",
-                style: getLight300Style12(fontSize: 14.sp,fontWeight: FontWeight.w500),
-              ),
-              SizedBox(height: 4.h),
-              Text(
-                description ?? '',
-                style: getLight300Style12(color: ColorManager.subtextColorGrey,fontSize: 12.sp,fontWeight: FontWeight.w400),
-                softWrap: true, 
-              ),
-              SizedBox(height: 6.h),
-              Text(
-                time ?? '',
-                style: getLight300Style12(color: ColorManager.subtextColorGrey,fontSize: 12.sp,fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(width: 8.w),
-
-   
-        Container(
-          margin: EdgeInsets.only(top: 6.h),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color?? null,
-          ),
-          height: 8.h,
-          width: 8.w,
-        )
+        
       ],
     );
   }

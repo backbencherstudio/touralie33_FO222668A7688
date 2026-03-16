@@ -29,4 +29,5 @@ class IconManager {
   static String subtractIcon = '$baseUrl/Subtract.png';
   static String heightIcon = '$baseUrl/heightIcon-removebg-preview.png';
   static String notificationIcon = '$baseUrl/notificationIcon.png';
+  static String camera = '$baseUrl/camera.png';
 }

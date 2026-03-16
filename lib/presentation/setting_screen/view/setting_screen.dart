@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +9,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.d
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/widget/dialog_widget.dart';
+import 'package:touralie33_fo222668a7688/presentation/provider/file_image_picker_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/height_setting_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/setting_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/successfully_widget.dart';
@@ -20,6 +23,7 @@ class SettingScreen extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
      final heightUnitIndex = ref.watch(heightUnitProvider);
      final weightUnitIndex = ref.watch(weightStateProvider);
+     final pickerState = ref.watch(fileImagePickerProvider);
  
     final heightUnitText = heightUnitIndex == 0 ? "feet" : "cm";
     final weightUnitText = weightUnitIndex  == 0 ? "Kg" : "Lb";
@@ -79,7 +83,65 @@ class SettingScreen extends ConsumerWidget {
                         ),
                       ),
                       SizedBox(height: 15.h),
-                      
+                      InkWell(
+                        borderRadius: BorderRadius.circular(999),
+                        onTap: () {
+                          ref
+                              .read(fileImagePickerProvider.notifier)
+                              .pickSingleImage();
+                        },
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: 96.w,
+                              height: 96.w,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F3F0),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: ColorManager.borderColor,
+                                  width: 1.2.w,
+                                ),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: pickerState.singleImage != null
+                                      ? FileImage(
+                                          File(pickerState.singleImage!.path),
+                                        )
+                                      : const AssetImage(
+                                          'assets/images/profile_pic.png',
+                                        ) as ImageProvider,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: -2.w,
+                              bottom: -2.h,
+                              child: Container(
+                                width: 30.w,
+                                height: 30.w,
+                                decoration: BoxDecoration(
+                                  color: ColorManager.backgroundColorgreen,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: ColorManager.whiteColor,
+                                    width: 2.w,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    IconManager.camera,
+                                    width: 14.w,
+                                    height: 14.w,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
              
                       Text(
                         "UserName",

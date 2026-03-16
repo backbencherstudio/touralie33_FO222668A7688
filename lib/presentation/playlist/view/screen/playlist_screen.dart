@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
+import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/play_list/playlist_screen_widget.dart';
 
@@ -26,9 +27,16 @@ class PlaylistScreen extends StatelessWidget {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Divider(),
-            SizedBox(height: 15.h,),
+            SizedBox(height: 10.h,),
+           
+Padding(
+  padding:  EdgeInsets.only(left: 12.w),
+  child: Text(" Watch your remaining prescribed videos",style: getMedium500Style12(color: ColorManager.blackColor,fontSize: 16.sp,fontWeight: FontWeight.w500)),
+),   
+     
             PlayListScreenWidget(
               image: ImageManager.gymGuide,
               videoCount: "0/4 videos",

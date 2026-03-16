@@ -4,6 +4,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 
 class RemainingProgressWidget extends StatelessWidget {
   const RemainingProgressWidget({super.key});
@@ -52,7 +53,13 @@ class RemainingProgressWidget extends StatelessWidget {
                 SizedBox(height: 12.h),
                 InkWell(
                   borderRadius: BorderRadius.circular(10.r),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      RoutesName.parentScreen,
+                      arguments: 1,
+                    );
+                  },
                   child: Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(vertical: 12.h),

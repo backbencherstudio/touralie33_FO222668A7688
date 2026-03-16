@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 
 
 class SuggestionVideoWidget extends StatelessWidget {
@@ -114,7 +115,11 @@ class SuggestionVideoWidget extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 5.w),
-                Image.asset(IconManager.bookMark, height: 12.h),
+                InkWell(
+                  onTap: () {
+                     Navigator.pushNamed(context, RoutesName.favouriteScreen,  arguments: 2,);
+                  },
+                  child: Image.asset(IconManager.bookMark, height: 12.h)),
               ],
             ),
             SizedBox(height: 8.h),

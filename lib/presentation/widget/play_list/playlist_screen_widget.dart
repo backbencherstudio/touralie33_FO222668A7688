@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 
 class PlayListScreenWidget extends StatelessWidget {
@@ -135,7 +136,11 @@ class PlayListScreenWidget extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 40.h),
-                      Image.asset(bookMarkIcon ?? IconManager.bookMark, width: 9.w, height: 12.h),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, RoutesName.favouriteScreen,  arguments: 2,);
+                        },
+                        child: Image.asset(bookMarkIcon ?? IconManager.bookMark, width: 9.w, height: 12.h)),
                     ],
                   ),
                 ],
