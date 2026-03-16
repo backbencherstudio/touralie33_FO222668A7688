@@ -83,7 +83,7 @@ class InstructionWidget extends StatelessWidget {
               SizedBox(height: 16.h,),
               Customebutton(
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, RoutesName.prescribedScreen);
+                 Navigator.pushReplacementNamed(context, RoutesName.prescibedDetailsScreen);
                 },
                 text: "I'm Ready — Begin",
               )

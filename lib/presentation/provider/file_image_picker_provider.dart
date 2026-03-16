@@ -62,8 +62,6 @@ class FileImagePickerNotifier extends StateNotifier<PickerState> {
       state = state.copyWith(files: result.files);
     }
   }
-
-
   void clearAll() {
     state = const PickerState();
   }
