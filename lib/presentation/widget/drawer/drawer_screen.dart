@@ -4,6 +4,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 
 class DrawerScreen extends StatelessWidget {
   const DrawerScreen({super.key});
@@ -75,7 +76,23 @@ class DrawerScreen extends StatelessWidget {
                 title: 'Help and support',
               ),
               const Spacer(),
-               _DrawerItem(icon: IconManager.logout, title: 'Logout'),
+               _DrawerItem(
+  ontap: () async {
+
+    await SharedPreferenceData.removeToken();
+    
+
+    if (context.mounted) {
+      Navigator.pushNamedAndRemoveUntil(
+        context, 
+        RoutesName.signInScreen, 
+        (route) => false,        
+      );
+    }
+  },
+  icon: IconManager.logout, 
+  title: 'Logout',
+),
             ],
           ),
         ),

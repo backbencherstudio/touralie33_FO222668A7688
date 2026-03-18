@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,13 +15,15 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 5),(){
-      if(mounted){
-
-        Navigator.pushReplacementNamed(context, RoutesName.onboardingScreen);
-      }
+    Future.delayed(const Duration(seconds: 5), () async {
+      if (!mounted) return;
+      final token = await SharedPreferenceData.getToken();
+      final completed = await SharedPreferenceData.getOnboardingCompleted();
+      Navigator.pushReplacementNamed(
+        context,
+      token != null && token !='null' && token.isNotEmpty ? RoutesName.parentScreen : completed ? RoutesName.signInScreen : RoutesName.onboardingScreen,
+      );
     });
   }
   @override

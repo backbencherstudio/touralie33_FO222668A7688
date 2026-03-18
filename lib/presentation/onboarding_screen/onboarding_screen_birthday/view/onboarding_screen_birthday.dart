@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
@@ -19,6 +19,27 @@ class _OnboardingScreenBirthdayState
   final TextEditingController _dayController = TextEditingController();
   final TextEditingController _MonthController  = TextEditingController();
   final TextEditingController _yearController  = TextEditingController();
+
+  void _saveDobIfPossible() {
+    final day = _dayController.text.trim();
+    final month = _MonthController.text.trim();
+    final year = _yearController.text.trim();
+    if (day.isEmpty || month.isEmpty || year.isEmpty) return;
+
+    final normalizedYear = year.length == 2 ? '20$year' : year;
+    final formatted =
+        '${normalizedYear.padLeft(4, '0')}-${month.padLeft(2, '0')}-${day.padLeft(2, '0')}';
+    SharedPreferenceData.setOnboardingDateOfBirth(formatted);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _dayController.addListener(_saveDobIfPossible);
+    _MonthController.addListener(_saveDobIfPossible);
+    _yearController.addListener(_saveDobIfPossible);
+  }
+
   @override
  void dispose() {
     // TODO: implement dispose

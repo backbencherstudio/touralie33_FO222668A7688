@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
@@ -32,6 +33,13 @@ class _OnBordingScreenWeightState extends ConsumerState<OnBordingScreenWeight> {
     _scrollController = ScrollController(
       initialScrollOffset: initialIndex * itemWidth.w,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SharedPreferenceData.setOnboardingWeight(
+        ref.read(selectedWeightProvider).toString(),
+      );
+      SharedPreferenceData.setOnboardingWeightUnit(ref.read(weightUnitProvider));
+    });
   }
 
   @override
@@ -87,6 +95,7 @@ class _OnBordingScreenWeightState extends ConsumerState<OnBordingScreenWeight> {
                       onTap: () {
                       
                         ref.read(selectedWeightProvider.notifier).state = weightValue;
+                        SharedPreferenceData.setOnboardingWeight("$weightValue");
           
                       
                         _scrollController.animateTo(
@@ -135,7 +144,10 @@ class _OnBordingScreenWeightState extends ConsumerState<OnBordingScreenWeight> {
                  
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => ref.read(weightUnitProvider.notifier).state = "Kg",
+                          onTap: () {
+                            ref.read(weightUnitProvider.notifier).state = "Kg";
+                            SharedPreferenceData.setOnboardingWeightUnit("Kg");
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.r),
@@ -158,7 +170,10 @@ class _OnBordingScreenWeightState extends ConsumerState<OnBordingScreenWeight> {
             
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => ref.read(weightUnitProvider.notifier).state = "Lb",
+                          onTap: () {
+                            ref.read(weightUnitProvider.notifier).state = "Lb";
+                            SharedPreferenceData.setOnboardingWeightUnit("Lb");
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.r),

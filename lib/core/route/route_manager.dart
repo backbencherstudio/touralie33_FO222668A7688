@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/email_otp_verify.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/forgot_password.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/new_password_screen/view/screen/new_password_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/otp/view/otp_screen.dart';
@@ -83,6 +84,19 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => GetInTouchScreen ());
       case RoutesName.playlistScreen  :
         return MaterialPageRoute(builder: (_) => PlaylistScreen ());
+      case RoutesName.emailOtpVerify  :
+        final args = routeSettings.arguments;
+        String? email;
+        if (args is String) {
+          email = args;
+        } else if (args is Map) {
+          final value = args['email'];
+          if (value != null) email = value.toString();
+        }
+        if (email == null || email.trim().isEmpty) {
+          return unDefineRoute();
+        }
+        return MaterialPageRoute(builder: (_) => EmailOtpVerify(email: email!.trim()));
      
 
       default:

@@ -101,7 +101,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, RoutesName.signInScreen);
+                    Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF98D14F),

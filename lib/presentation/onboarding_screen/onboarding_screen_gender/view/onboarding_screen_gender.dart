@@ -6,6 +6,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 
 final selectItem = StateProvider<bool>((ref)=>true);
 
@@ -20,6 +21,14 @@ class OnboardingScreenGender extends ConsumerStatefulWidget {
 class _OnboardingScreenGenderState
     extends ConsumerState<OnboardingScreenGender> {
   
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final isMale = ref.read(selectItem);
+      SharedPreferenceData.setOnboardingGender(isMale ? 'male' : 'female');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +57,9 @@ class _OnboardingScreenGenderState
                  children: [
                    Expanded(
                      child: InkWell(
-                      onTap: () {
+                     onTap: () {
                         ref.read(selectItem.notifier).state = true;
+                        SharedPreferenceData.setOnboardingGender('male');
                       },
                        child: Container(
                         height: 120.h,
@@ -75,8 +85,9 @@ class _OnboardingScreenGenderState
                    SizedBox(width: 20.w,),
                    Expanded(
                      child: InkWell(
-                      onTap: () {
+                     onTap: () {
                         ref.read(selectItem.notifier).state = false;
+                        SharedPreferenceData.setOnboardingGender('female');
                       },
                        child: Container(
                         height: 120.h,

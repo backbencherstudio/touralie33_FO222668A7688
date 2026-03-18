@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 
 // Provider for Height Unit
@@ -20,6 +20,19 @@ class OnboardingScreenHeight extends ConsumerStatefulWidget {
 class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight> {
 
   final TextEditingController _heightController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _heightController.addListener(() {
+      SharedPreferenceData.setOnboardingHeight(_heightController.text.trim());
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SharedPreferenceData.setOnboardingHeightUnit(ref.read(heightUnitProvider));
+      SharedPreferenceData.setOnboardingHeight(_heightController.text.trim());
+    });
+  }
 
   @override
   void dispose() {
@@ -67,7 +80,10 @@ class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight>
                     children: [
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => ref.read(heightUnitProvider.notifier).state = "feet",
+                          onTap: () {
+                            ref.read(heightUnitProvider.notifier).state = "feet";
+                            SharedPreferenceData.setOnboardingHeightUnit("feet");
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.r),
@@ -89,7 +105,10 @@ class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight>
                       ),
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => ref.read(heightUnitProvider.notifier).state = "cm",
+                          onTap: () {
+                            ref.read(heightUnitProvider.notifier).state = "cm";
+                            SharedPreferenceData.setOnboardingHeightUnit("cm");
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.r),

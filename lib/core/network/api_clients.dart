@@ -31,10 +31,9 @@ class ApiClient {
     };
   }
 
-  /// GET request
  Future<dynamic> getRequest({
     required String endpoints,
-    // Map<String, String>? headers,
+  
   }) async {
    
     try {
@@ -45,18 +44,23 @@ class ApiClient {
           headers: headers ?? {"Content-Type": "application/json"},
         ),
       );
-      // log("\n\n\nGET Request Successful: ${response.data}\n\n\n");
+ 
       return ResposeHandle.handleResponse(response);
-    } catch (e) {
+    } catch (e, st) {
       if (e is DioException) {
         ErrorHandle.handleDioError(e);
+        final status = e.response?.statusCode;
+        final data = e.response?.data;
+        log('GET request failed: $endpoints status=$status data=$data', stackTrace: st);
+        rethrow;
       } else {
-        log('Non-Dio error: $e');
+        log('Non-Dio error (GET): $e', stackTrace: st);
+        throw Exception(e.toString());
       }
     }
   }
 
-  /// POST request
+
    Future<dynamic> postRequest({
     required String endpoints,
     Map<String, dynamic>? body,
@@ -72,18 +76,23 @@ class ApiClient {
           headers: headers ?? {"Content-Type": "application/json"},
         ),
       );
-      //log("\nPOST Request Successful: ${response.data}\n");
+  
       return ResposeHandle.handleResponse(response);
-    } catch (e) {
+    } catch (e, st) {
       if (e is DioException) {
         ErrorHandle.handleDioError(e);
+        final status = e.response?.statusCode;
+        final data = e.response?.data;
+        log('POST request failed: $endpoints status=$status data=$data body=$body', stackTrace: st);
+        rethrow;
       } else {
-        log('Non-Dio error: $e');
+        log('Non-Dio error (POST): $e', stackTrace: st);
+        throw Exception(e.toString());
       }
     }
   }
 
-  /// PUT request
+
   static Future<dynamic> putRequest({
     required String endpoints,
     required Map<String, dynamic> body,
@@ -99,20 +108,24 @@ class ApiClient {
       );
       // debugPrint("\nPUT Request Successful: ${response.data}\n");
       return ResposeHandle.handleResponse(response);
-    } catch (e) {
+    } catch (e, st) {
       if (e is DioException) {
         ErrorHandle.handleDioError(e);
+        final status = e.response?.statusCode;
+        final data = e.response?.data;
+        log('PUT request failed: $endpoints status=$status data=$data body=$body', stackTrace: st);
+        rethrow;
       } else {
-        log('Non-Dio error: $e');
+        log('Non-Dio error (PUT): $e', stackTrace: st);
+        throw Exception(e.toString());
       }
     }
   }
 
-  /// PATCH request
   static Future<dynamic> patchRequest({
     required String endpoints,
     Map<String, dynamic>? body,
-    // Map<String, String>? headers,
+ 
     FormData? formData,
   }) async {
     try {
@@ -130,11 +143,16 @@ class ApiClient {
       debugPrint("Data: ${response.data}");
 
       return ResposeHandle.handleResponse(response);
-    } catch (e) {
+    } catch (e, st) {
       if (e is DioException) {
         ErrorHandle.handleDioError(e);
+        final status = e.response?.statusCode;
+        final data = e.response?.data;
+        log('PATCH request failed: $endpoints status=$status data=$data body=$body', stackTrace: st);
+        rethrow;
       } else {
-        log('Non-Dio error: $e');
+        log('Non-Dio error (PATCH): $e', stackTrace: st);
+        throw Exception(e.toString());
       }
     }
   }
@@ -159,11 +177,16 @@ class ApiClient {
       debugPrint("Data: ${response.data}");
 
       return ResposeHandle.handleResponse(response);
-    } catch (e) {
+    } catch (e, st) {
       if (e is DioException) {
         ErrorHandle.handleDioError(e);
+        final status = e.response?.statusCode;
+        final data = e.response?.data;
+        log('DELETE request failed: $endpoints status=$status data=$data', stackTrace: st);
+        rethrow;
       } else {
-        log('Non-Dio error: $e');
+        log('Non-Dio error (DELETE): $e', stackTrace: st);
+        throw Exception(e.toString());
       }
     }
   }

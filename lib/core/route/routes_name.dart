@@ -23,4 +23,5 @@ class RoutesName {
   static const String getInTouchScreen = "/getInTouchScreen";
   static const String playlistScreen  = "/playlistScreen ";
   static const String favouriteScreen = "/favouriteScreen";
+  static const String emailOtpVerify  = "/emailOtpVerify ";
 }

@@ -1,25 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_birthday/view/onboarding_screen_birthday.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_brings/view/onboarding_screen_brigns.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_gender/view/onboarding_screen_gender.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_height/view/onboarding_screen_height.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/widget/custome_appBar.dart';
-import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/welcome_screen/view/welcome_screen.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   int totalPages = 5;
+
+  Future<bool> _validateAndPersistCurrentStep() async {
+    switch (_currentPage) {
+      case 0:
+        await SharedPreferenceData.setOnboardingWeight(
+          ref.read(selectedWeightProvider).toString(),
+        );
+        await SharedPreferenceData.setOnboardingWeightUnit(
+          ref.read(weightUnitProvider),
+        );
+        return true;
+
+      case 1:
+        await SharedPreferenceData.setOnboardingHeightUnit(
+          ref.read(heightUnitProvider),
+        );
+        final height = (await SharedPreferenceData.getOnboardingHeight())?.trim();
+        if (height == null || height.isEmpty) {
+          _showSnack('Please enter your height.');
+          return false;
+        }
+        return true;
+
+      case 2:
+        final dob =
+            (await SharedPreferenceData.getOnboardingDateOfBirth())?.trim();
+        if (dob == null || dob.isEmpty) {
+          _showSnack('Please enter your date of birth.');
+          return false;
+        }
+        try {
+          DateTime.parse(dob);
+        } catch (_) {
+          _showSnack('Please enter a valid date of birth.');
+          return false;
+        }
+        return true;
+
+      case 3:
+        final isMale = ref.read(selectItem);
+        await SharedPreferenceData.setOnboardingGender(isMale ? 'male' : 'female');
+        return true;
+
+      case 4:
+        final selected = ref.read(selectItemsProvider);
+        await SharedPreferenceData.setOnboardingPersonalization(selected);
+        if (selected.isEmpty) {
+          _showSnack('Please select at least one option.');
+          return false;
+        }
+        return true;
+    }
+    return true;
+  }
+
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +146,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final ok = await _validateAndPersistCurrentStep();
+                    if (!ok) return;
                     if (_currentPage < totalPages - 1) {
                       _pageController.nextPage(
                         duration: Duration(milliseconds: 300),
@@ -93,6 +156,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       );
                     }
                     else{
+                      await SharedPreferenceData.setOnboardingCompleted(true);
                       Navigator.pushReplacementNamed(context,RoutesName.welcomeScreen);
                     }
                   },

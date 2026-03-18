@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
-
-final eyeSecure = StateProvider<bool>((ref) => false);
-final checkIcon = StateProvider<bool>((ref) => false);
+import 'package:touralie33_fo222668a7688/presentation/auth/signin/viewmodel/signin_viewmodel.dart';
 
 class SigninScreen extends ConsumerStatefulWidget {
   const SigninScreen({super.key});
@@ -21,10 +17,24 @@ class SigninScreen extends ConsumerStatefulWidget {
 }
 
 class _SigninScreenState extends ConsumerState<SigninScreen> {
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final signInState = ref.watch(signInViewModelProvider);
     final isEyeon = ref.watch(eyeSecure);
     final isCheck = ref.watch(checkIcon);
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -39,210 +49,139 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 60.h,),
-                Text(
-                  "Welcome Back",
-                  style: getMedium500Style22(
-                    color: ColorManager.textPrimary,
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 5.h),
-                Text(
-                  "Login to your account below",
-                  style: getMedium500Style14(
-                    color: Color.fromARGB(255, 149, 149, 149),
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 38.h),
+                SizedBox(height: 100.h), 
+                Text("Welcome Back", style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold)),
+                Text("Login to your account below", style: TextStyle(fontSize: 14.sp, color: Colors.grey)),
+                
+                SizedBox(height: 40.h),
+                
+        
                 Container(
+                  padding: EdgeInsets.all(16.r),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.r),
                     color: Colors.white,
-                    boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: .05), 
-                blurRadius: 10.r,    
-                spreadRadius: 2.r,   
-                offset: Offset(0, 4), 
-              ),
-            ],
+                    borderRadius: BorderRadius.circular(15.r),
+                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
                   ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Email Address"),
+                      SizedBox(height: 8.h),
+                      
+                    
+                      CustomTextField(
+                        controller: _emailController, 
+                        hintText: "alexa.mate@example.com",
+                      ),
+                      
+                      SizedBox(height: 15.h),
+                      Text("Password"),
+                      SizedBox(height: 8.h),
+        
+                      CustomTextField(
+                        controller: _passwordController, 
+                        hintText: "enter your password",
+                        obscureText: isEyeon,
+                        suffixIcon: IconButton(
+                          onPressed: () => ref.read(eyeSecure.notifier).state = !isEyeon,
+                          icon: Icon(isEyeon ? Icons.visibility_off : Icons.visibility),
+                        ),
+                      ),
+
+                      SizedBox(height: 15.h),
+
                   
-                  child: Padding(
-                    padding: EdgeInsets.all(16.r),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Email Address",
-                          style: getMedium500Style14(
-                            color: ColorManager.textPrimary,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        CustomTextField(hintText: "alexa.mate@example.com"),
-                        SizedBox(height: 12.h),
-                        Text(
-                          "Password",
-                          style: getMedium500Style14(
-                            color: ColorManager.textPrimary,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        CustomTextField(
-                          hintText: "enter your password",
-                          obscureText: !isEyeon,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              ref.read(eyeSecure.notifier).state = !isEyeon;
-                            },
-                            icon: Icon(
-                              isEyeon ? Icons.visibility_off : Icons.visibility,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () => ref.read(checkIcon.notifier).state = !isCheck,
+                            child: Row(
                               children: [
-                                InkWell(
-                                  onTap: () {
-                                    ref.read(checkIcon.notifier).state = !isCheck;
-                                  },
-                                  child: Container(
-                                    height: 18.h,
-                                    width: 20.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4.r),
-                                      color: isCheck? ColorManager.backgroundColorgreen1 : null,
-                                      border: Border.all(
-                                        color:isCheck? ColorManager.background : ColorManager.backgroundColorgreen,
-                                        
-                                      )
-                                    ),
-                                    child: isCheck?  Center(
-                                      child: Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 20.sp,
-                                      ),
-                                    ) : null
-                                  ),
-                                ),
-                                SizedBox(width: 10.w),
-                                Text(
-                                  "Remember Me",
-                                  style: getMedium500Style14(
-                                    color: ColorManager.textPrimary,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                                Icon(isCheck ? Icons.check_box : Icons.check_box_outline_blank),
+                                SizedBox(width: 5),
+                                Text("Remember Me"),
                               ],
                             ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, RoutesName.forgotPassword);
-                              },
-                              child: Text(
-                                "Forgot Password",
-                                style:
-                                    getMedium500Style14(
-                                      color: ColorManager.backgroundColorgreen1,
-                                      fontSize: 13.sp,
-                                    ).copyWith(
-                                      decoration: TextDecoration.underline,
-                                   
-                                      
-            
-                                      decorationColor:
-                                          ColorManager.backgroundColorgreen1,
-                                    ),
-                              ),
-                            ),
-                          ],
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, RoutesName.forgotPassword);
+                            },
+                            child: Text("Forgot Password?", style: TextStyle(color: Colors.green))),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 25.h),
+
+        
+                      signInState.isLoading 
+                      ? const Center(child: CircularProgressIndicator()) 
+                      : Customebutton(
+                          text: "Login",
+                          onTap: () async {
+                          
+                            if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Email and Password are required")),
+                              );
+                              return;
+                            }
+
+                   
+                            final success = await ref.read(signInViewModelProvider.notifier).signIn(
+                              email: _emailController.text.trim(),
+                              password: _passwordController.text.trim(),
+                            );
+
+                            if (success) {
+                            
+                              Navigator.pushReplacementNamed(context, RoutesName.parentScreen);
+                            } else {
+                             
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(signInState.errorMessage ?? "Login Failed!")),
+                              );
+                            }
+                          },
                         ),
-                        SizedBox(height: 15.h),
-                        Customebutton(text: "Login",onTap: () {
-                          Navigator.pushReplacementNamed(context,RoutesName.parentScreen);
-                        },),
-                        SizedBox(height: 8.h),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 10.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Image.asset(
-                        ImageManager.vertical,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-            
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        "Or Login With",
-                        style: getMedium500Style14(
-                          color: ColorManager.subtextColor,
-                        ),
-                      ),
-                    ),
-            
-                    Expanded(
-                      child: Image.asset(
-                        ImageManager.vertical,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12.h,),
-                Customebutton(
+            Customebutton(
                   image: IconManager.google,
-                  text:"Login With Google" ,
+                  text: "Login With Google",
                   color: Colors.white,
                   borderColor: const Color.fromARGB(255, 235, 235, 235),
                   border: 1.2.w,
-                ),  SizedBox(height: 8.h,),
+                  onTap: () { },
+                ),
+                SizedBox(height: 8.h),
                 Customebutton(
                   image: IconManager.facebook,
-                  text:"Login With Apple" ,
+                  text: "Login With Apple",
                   color: Colors.white,
                   borderColor: const Color.fromARGB(255, 235, 235, 235),
                   border: 1.5.w,
+                  onTap: () { },
                 ),
-                SizedBox(height: 12.h,),
+                SizedBox(height: 12.h),
+                
+     
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center
-                  ,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Didn't have an account ?",style: getMedium500Style16(color: ColorManager.subtextColor,fontSize: 15.sp),),
+                    Text("Didn't have an account ?", style: getMedium500Style16(color: ColorManager.subtextColor, fontSize: 15.sp)),
                     InkWell(
-                      onTap: () {
-                        Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen);
-                      },
-                      child: Text(" SignUp",style: getMedium500Style16(color: ColorManager.drawrColor,fontSize: 16.sp)))
+                      onTap: () => Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen),
+                      child: Text(" SignUp", style: getMedium500Style16(color: ColorManager.drawrColor, fontSize: 16.sp)),
+                    )
                   ],
-                )
+                ),
+                SizedBox(height: 20.h),
               ],
             ),
           ),
