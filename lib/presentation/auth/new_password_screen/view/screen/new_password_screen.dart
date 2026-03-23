@@ -1,34 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/widget/customeApp.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/new_password_screen/viewModel/resetPassword_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/widget/dialog_widget.dart';
 
-final eyeSecure = StateProvider<bool>((ref) => false);
-final eyeSecure1 = StateProvider<bool>((ref) => false);
-final checkIcon = StateProvider<bool>((ref) => false);
-
 class NewPasswordScreen extends ConsumerStatefulWidget {
-  const NewPasswordScreen({super.key});
+  final String? email;
+  final String? token;
+
+  const NewPasswordScreen({super.key, this.email, this.token});
 
   @override
   ConsumerState<NewPasswordScreen> createState() => _NewPasswordScreenState();
 }
 
 class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  bool _isEyeOn = false;
+  bool _isEyeOn1 = false;
+  bool _isCheck = false;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isEyeon = ref.watch(eyeSecure);
-    final isEyeon1 = ref.watch(eyeSecure1);
-    final isCheck = ref.watch(checkIcon);
+    final resetState = ref.watch(resetPasswordProvider);
     return Scaffold(
        backgroundColor: ColorManager.primary,
       appBar: CustomeApp(
@@ -106,15 +116,21 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                           ),
                         ),
                         SizedBox(height: 8.h),
-                        CustomTextField(hintText: "enter your password", obscureText: !isEyeon1,
+                        CustomTextField(
+                          controller: _passwordController,
+                          hintText: "enter your password",
+                          obscureText: !_isEyeOn1,
                           suffixIcon: IconButton(
                             onPressed: () {
-                              ref.read(eyeSecure1.notifier).state = !isEyeon1;
+                              setState(() {
+                                _isEyeOn1 = !_isEyeOn1;
+                              });
                             },
                             icon: Icon(
-                              isEyeon1 ? Icons.visibility_off : Icons.visibility,
+                              _isEyeOn1 ? Icons.visibility_off : Icons.visibility,
                             ),
-                          ),),
+                          ),
+                        ),
                         SizedBox(height: 12.h),
                         Text(
                           "Re-Enter New Password",
@@ -126,14 +142,17 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                         ),
                         SizedBox(height: 5),
                         CustomTextField(
+                          controller: _confirmPasswordController,
                           hintText: "enter your password",
-                          obscureText: !isEyeon,
+                          obscureText: !_isEyeOn,
                           suffixIcon: IconButton(
                             onPressed: () {
-                              ref.read(eyeSecure.notifier).state = !isEyeon;
+                              setState(() {
+                                _isEyeOn = !_isEyeOn;
+                              });
                             },
                             icon: Icon(
-                              isEyeon ? Icons.visibility_off : Icons.visibility,
+                              _isEyeOn ? Icons.visibility_off : Icons.visibility,
                             ),
                           ),
                         ),
@@ -145,20 +164,22 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    ref.read(checkIcon.notifier).state = !isCheck;
+                                    setState(() {
+                                      _isCheck = !_isCheck;
+                                    });
                                   },
                                   child: Container(
                                     height: 18.h,
                                     width: 20.w,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(4.r),
-                                      color: isCheck? ColorManager.backgroundColorgreen1 : null,
+                                      color: _isCheck? ColorManager.backgroundColorgreen1 : null,
                                       border: Border.all(
-                                        color:isCheck? ColorManager.background : ColorManager.backgroundColorgreen,
+                                        color:_isCheck? ColorManager.background : ColorManager.backgroundColorgreen,
                                         
                                       )
                                     ),
-                                    child: isCheck?  Center(
+                                    child: _isCheck?  Center(
                                       child: Icon(
                                         Icons.check,
                                         color: Colors.white,
@@ -194,16 +215,59 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                           ],
                         ),
                         SizedBox(height: 15.h),
-                        Customebutton(text: "Login",onTap: () {
-                          showDialog(
-  context: context,
-  barrierDismissible: true, 
-  
-  builder: (BuildContext context) {
-    return DialogWidget();
-  },
-);
-                        },),
+                        if (resetState.isLoading)
+                          const Center(child: CircularProgressIndicator())
+                        else
+                          Customebutton(
+                            text: "Reset Password",
+                            onTap: () async {
+                              final email = widget.email?.trim();
+                              final token = widget.token?.trim().toString();
+                              final pass = _passwordController.text.trim();
+                              final confirm = _confirmPasswordController.text.trim();
+
+                              if (email == null ||
+                                  email.isEmpty ||
+                                  token == null ||
+                                  token.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Email or token is missing')),
+                                );
+                                return;
+                              }
+                              if (pass.isEmpty || confirm.isEmpty) return;
+                              if (pass != confirm) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Passwords do not match')),
+                                );
+                                return;
+                              }
+
+                              final ok = await ref
+                                  .read(resetPasswordProvider.notifier)
+                                  .resetPass(email: email, token: token, pass: pass);
+
+                              if (!ok) {
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      ref.read(resetPasswordProvider).errorMessage ??
+                                          'Failed to reset password',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (!context.mounted) return;
+                              showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (context) => DialogWidget(),
+                              );
+                            },
+                          ),
                         SizedBox(height: 8.h),
                       ],
                     ),

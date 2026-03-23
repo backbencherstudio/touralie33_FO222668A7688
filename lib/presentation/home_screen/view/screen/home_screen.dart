@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customeAppBarHome/custome_app_bar_home.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/remaining_progress/remaining_progress_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/suggestion_video/suggestion_video_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_widget/workout_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, this.onOpenDrawer});
 
   final VoidCallback? onOpenDrawer;
 
   @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(getMeProvider);
+    final user = state.me?.data;
     return Scaffold(
       backgroundColor: ColorManager.primary,
       appBar: PreferredSize(
@@ -23,7 +32,10 @@ class HomeScreen extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: CustomeAppBarHome(
-              onProfileTap: onOpenDrawer,
+              onProfileTap: widget.onOpenDrawer,
+              name: user?.name,
+              email: user?.email,
+              avatarUrl: user?.avatar,
             ),
           ),
         ),

@@ -91,4 +91,20 @@ class AuthApiService {
       rethrow;
     }
   }
+  Future<bool> forgotPass({required String email,}) async {
+    try {
+      final body = {"email": email, };
+      final dynamic response = await apiClient.postRequest(
+        body: body,
+        endpoints: ApiEndpoints.forgotPass,
+      );
+      if (response['success'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

@@ -43,9 +43,28 @@ class RouteGenerator {
       case RoutesName.forgotPassword:
         return MaterialPageRoute(builder: (_) => ForgotPassword());
       case RoutesName.otpScreen:
-        return MaterialPageRoute(builder: (_) => OtpScreen());
+        final args = routeSettings.arguments;
+        String? email;
+        if (args is String) {
+          email = args;
+        } else if (args is Map) {
+          final value = args['email'];
+          if (value != null) email = value.toString();
+        }
+        return MaterialPageRoute(builder: (_) => OtpScreen(email: email?.trim()));
       case RoutesName.newPasswordScreen:
-        return MaterialPageRoute(builder: (_) => NewPasswordScreen());
+        final args = routeSettings.arguments;
+        String? email;
+        String? token;
+        if (args is Map) {
+          final e = args['email'];
+          final t = args['token'];
+          if (e != null) email = e.toString();
+          if (t != null) token = t.toString();
+        }
+        return MaterialPageRoute(
+          builder: (_) => NewPasswordScreen(email: email?.trim(), token: token?.trim()),
+        );
       case RoutesName.singInUpScreen:
         return MaterialPageRoute(builder: (_) => SingInUpScreen());
       case RoutesName.parentScreen:

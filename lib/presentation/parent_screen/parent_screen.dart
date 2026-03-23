@@ -5,17 +5,29 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/view/screen/favourite_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/home_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/playlist/view/screen/playlist_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/screen/profile_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/drawer/drawer_screen.dart';
 
 final parentScreenIndexProvider = StateProvider<int>((ref) => 0);
 
-class ParentScreen extends ConsumerWidget {
+class ParentScreen extends ConsumerStatefulWidget {
   const ParentScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ParentScreen> createState() => _ParentScreenState();
+}
+
+class _ParentScreenState extends ConsumerState<ParentScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(getMeProvider.notifier).getMe());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final selectIndex = ref.watch(parentScreenIndexProvider);
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final List<Widget> screens = [

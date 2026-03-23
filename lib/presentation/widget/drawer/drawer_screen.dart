@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 
-class DrawerScreen extends StatelessWidget {
+class DrawerScreen extends ConsumerWidget {
   const DrawerScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(getMeProvider);
+    final user = state.me?.data;
+
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.68,
       backgroundColor: ColorManager.drawrColor,
@@ -23,13 +28,18 @@ class DrawerScreen extends StatelessWidget {
               Center(
                 child: CircleAvatar(
                   radius: 30.r,
-                  backgroundImage: const AssetImage(ImageManager.profilePic),
+                  backgroundImage:
+                      (user?.avatar != null && user!.avatar!.trim().isNotEmpty)
+                          ? NetworkImage(user.avatar!.trim())
+                          : const AssetImage(ImageManager.profilePic),
                 ),
               ),
               SizedBox(height: 12.h),
               Center(
                 child: Text(
-                  'Jannatul',
+                  (user?.name != null && user!.name!.trim().isNotEmpty)
+                      ? user.name!.trim()
+                      : '',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24.sp,
@@ -40,7 +50,9 @@ class DrawerScreen extends StatelessWidget {
               SizedBox(height: 2.h),
               Center(
                 child: Text(
-                  'jannatul@gmail.com',
+                  (user?.email != null && user!.email!.trim().isNotEmpty)
+                      ? user.email!.trim()
+                      : '',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: .9),
                     fontSize: 13.sp,

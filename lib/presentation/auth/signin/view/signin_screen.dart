@@ -115,7 +115,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                         ],
                       ),
                       
-                      SizedBox(height: 25.h),
+                      SizedBox(height: 30.h),
 
         
                       signInState.isLoading 
@@ -151,6 +151,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                     ],
                   ),
                 ),
+                SizedBox(height: 10.h,),
             Customebutton(
                   image: IconManager.google,
                   text: "Login With Google",

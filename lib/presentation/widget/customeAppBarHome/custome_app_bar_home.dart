@@ -7,8 +7,17 @@ import 'package:touralie33_fo222668a7688/presentation/widget/notification/notifi
 
 class CustomeAppBarHome extends StatelessWidget {
   final VoidCallback? onProfileTap;
+  final String? name;
+  final String? email;
+  final String? avatarUrl;
 
-  const CustomeAppBarHome({super.key, this.onProfileTap});
+  const CustomeAppBarHome({
+    super.key,
+    this.onProfileTap,
+    this.name,
+    this.email,
+    this.avatarUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +33,15 @@ class CustomeAppBarHome extends StatelessWidget {
               onTap: () {
                 onProfileTap?.call();
               },
-              child: Container(
+             child: Container(
                 height: 42.h,
                 width: 42.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                    image: AssetImage(ImageManager.profilePic),
+                    image: (avatarUrl != null && avatarUrl!.trim().isNotEmpty)
+                        ? NetworkImage(avatarUrl!.trim())
+                        : const AssetImage(ImageManager.profilePic),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -42,14 +53,16 @@ class CustomeAppBarHome extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Jannatul",
+                  (name != null && name!.trim().isNotEmpty) ? name!.trim() : "Jannatul",
                   style: getMedium500Style18(
                     color: ColorManager.subtextColor,
                     fontSize: 16.sp,
                   ),
                 ),
                 Text(
-                  "jannatul@gmail.com",
+                  (email != null && email!.trim().isNotEmpty)
+                      ? email!.trim()
+                      : "jannatul@gmail.com",
                   style: getMedium500Style10(
                     color: const Color(0xFFA2A1A1), 
                     fontSize: 12.sp,
