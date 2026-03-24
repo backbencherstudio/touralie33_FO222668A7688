@@ -93,7 +93,7 @@ class ApiClient {
   }
 
 
-  static Future<dynamic> putRequest({
+   Future<dynamic> putRequest({
     required String endpoints,
     required Map<String, dynamic> body,
   }) async {
@@ -122,7 +122,7 @@ class ApiClient {
     }
   }
 
-  static Future<dynamic> patchRequest({
+   Future<dynamic> patchRequest({
     required String endpoints,
     Map<String, dynamic>? body,
  
@@ -131,10 +131,15 @@ class ApiClient {
     try {
       log("\n\nurl :${ApiEndpoints.baseUrl}/$endpoints\n\n");
       final response = await _dio.patch(
-        '${ApiEndpoints.baseUrl}/$endpoints',
+        '/$endpoints',
         data: body ?? formData,
         options: Options(
-          headers: headers ?? {"Content-Type": "multipart/form-data"},
+          headers: headers ??
+              {
+                "Content-Type": formData != null
+                    ? "multipart/form-data"
+                    : "application/json",
+              },
         ),
       );
 
@@ -158,7 +163,7 @@ class ApiClient {
   }
 
   /// PATCH request
-  static Future<dynamic> deleteRequest({
+   Future<dynamic> deleteRequest({
     required String endpoints,
 
     // Map<String, String>? headers,

@@ -1,20 +1,83 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/screen/all_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/screen/completed_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/screen/progess_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/widet/custome_widget_profile.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customeAppBarHome/custome_app_bar_home.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   final VoidCallback? onOpenDrawer;
   const ProfileScreen({super.key, this.onOpenDrawer});
 
   @override
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  String? _savedWeight;
+  String? _savedWeightUnit;
+  String? _savedHeight;
+  String? _savedHeightUnit;
+  String? _savedDateOfBirth;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(_loadProfileMeasures);
+  }
+
+  Future<void> _loadProfileMeasures() async {
+    final savedWeight = (await SharedPreferenceData.getOnboardingWeight())?.trim();
+    final savedWeightUnit =
+        (await SharedPreferenceData.getOnboardingWeightUnit())?.trim();
+    final savedHeight = (await SharedPreferenceData.getOnboardingHeight())?.trim();
+    final savedHeightUnit =
+        (await SharedPreferenceData.getOnboardingHeightUnit())?.trim();
+    final savedDateOfBirth =
+        (await SharedPreferenceData.getOnboardingDateOfBirth())?.trim();
+
+    if (!mounted) return;
+    setState(() {
+      _savedWeight = savedWeight;
+      _savedWeightUnit = savedWeightUnit;
+      _savedHeight = savedHeight;
+      _savedHeightUnit = savedHeightUnit;
+      _savedDateOfBirth = savedDateOfBirth;
+    });
+  }
+
+  String _formatAge(String? dob) {
+    if (dob == null || dob.trim().isEmpty) return '--';
+    final date = DateTime.tryParse(dob);
+    if (date == null) return '--';
+
+    final now = DateTime.now();
+    int age = now.year - date.year;
+    final hadBirthday = now.month > date.month ||
+        (now.month == date.month && now.day >= date.day);
+    if (!hadBirthday) age--;
+    if (age < 0) return '--';
+    return '$age Year';
+  }
+
+  String _formatMeasure(String? value, String unit) {
+    final text = value?.trim();
+    if (text == null || text.isEmpty) return '--';
+    return '$text $unit';
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(getMeProvider);
+    final user = state.me?.data;
+
     return Scaffold(
       backgroundColor: ColorManager.primary,
       appBar:PreferredSize(
@@ -23,7 +86,10 @@ class ProfileScreen extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: CustomeAppBarHome(
-              onProfileTap: onOpenDrawer,
+              onProfileTap: widget.onOpenDrawer,
+              name: user?.name,
+              email: user?.email,
+              avatarUrl: user?.avatarUrl ?? user?.avatar,
             ),
           ),
         ),
@@ -49,16 +115,16 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Expanded(child: CustomeWidgetProfile(
                     title: "Age",
-                    value: "29 Year",
+                    value: _formatAge(_savedDateOfBirth ?? user?.dateOfBirth),
                   )),
                   SizedBox(width: 8.w,),
                   Expanded(child: CustomeWidgetProfile(
                     title: "Height",
-                    value: "170 cm",
+                    value: _formatMeasure(_savedHeight, _savedHeightUnit ?? "cm"),
                   )),   SizedBox(width: 8.w,),
                   Expanded(child: CustomeWidgetProfile(
                     title: "Weight",
-                    value: "52 Kg",
+                    value: _formatMeasure(_savedWeight, _savedWeightUnit ?? "Kg"),
                   ))
                 ],
               ),
@@ -119,5 +185,4 @@ class ProfileScreen extends StatelessWidget {
       ),
             ));
   }
-        
 }

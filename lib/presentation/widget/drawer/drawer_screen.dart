@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
@@ -11,10 +12,24 @@ import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getM
 class DrawerScreen extends ConsumerWidget {
   const DrawerScreen({super.key});
 
+  String? _resolveAvatarUrl(String? avatar) {
+    final value = avatar?.trim();
+    if (value == null || value.isEmpty) return null;
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      return value;
+    }
+    final base = ApiEndpoints.baseUrl.endsWith('/')
+        ? ApiEndpoints.baseUrl.substring(0, ApiEndpoints.baseUrl.length - 1)
+        : ApiEndpoints.baseUrl;
+    final path = value.startsWith('/') ? value : '/$value';
+    return '$base$path';
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(getMeProvider);
     final user = state.me?.data;
+    final resolvedAvatarUrl = _resolveAvatarUrl(user?.avatarUrl ?? user?.avatar);
 
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.68,
@@ -26,12 +41,28 @@ class DrawerScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: CircleAvatar(
-                  radius: 30.r,
-                  backgroundImage:
-                      (user?.avatar != null && user!.avatar!.trim().isNotEmpty)
-                          ? NetworkImage(user.avatar!.trim())
-                          : const AssetImage(ImageManager.profilePic),
+                child: Container(
+                  width: 60.r * 2,
+                  height: 60.r * 2,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: resolvedAvatarUrl != null
+                      ? Image.network(
+                          resolvedAvatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              ImageManager.profilePic,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          ImageManager.profilePic,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               SizedBox(height: 12.h),

@@ -27,6 +27,9 @@ class Data {
   String? name;
   String? email;
   String? avatar;
+  String? avatarUrl;
+  String? weight;
+  String? height;
   String? address;
   String? phoneNumber;
   String? type;
@@ -39,6 +42,9 @@ class Data {
       this.name,
       this.email,
       this.avatar,
+      this.avatarUrl,
+      this.weight,
+      this.height,
       this.address,
       this.phoneNumber,
       this.type,
@@ -51,6 +57,9 @@ class Data {
     name = json['name'];
     email = json['email'];
     avatar = json['avatar'];
+    avatarUrl = json['avatar_url'];
+    weight = json['weight']?.toString();
+    height = json['height']?.toString();
     address = json['address'];
     phoneNumber = json['phone_number'];
     type = json['type'];
@@ -65,6 +74,9 @@ class Data {
     data['name'] = this.name;
     data['email'] = this.email;
     data['avatar'] = this.avatar;
+    data['avatar_url'] = this.avatarUrl;
+    data['weight'] = this.weight;
+    data['height'] = this.height;
     data['address'] = this.address;
     data['phone_number'] = this.phoneNumber;
     data['type'] = this.type;

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/widget/customeApp.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/new_password_screen/viewModel/resetPassword_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
@@ -222,13 +223,16 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                             text: "Reset Password",
                             onTap: () async {
                               final email = widget.email?.trim();
-                              final token = widget.token?.trim().toString();
+                              final savedToken =
+                                  await SharedPreferenceData.getResetPasswordToken();
+                              final token = widget.token?.trim().isNotEmpty == true
+                                  ? widget.token!.trim()
+                                  : savedToken?.trim() ?? '';
                               final pass = _passwordController.text.trim();
                               final confirm = _confirmPasswordController.text.trim();
 
                               if (email == null ||
                                   email.isEmpty ||
-                                  token == null ||
                                   token.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Email or token is missing')),
@@ -261,6 +265,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                               }
 
                               if (!context.mounted) return;
+                              await SharedPreferenceData.removeResetPasswordToken();
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,

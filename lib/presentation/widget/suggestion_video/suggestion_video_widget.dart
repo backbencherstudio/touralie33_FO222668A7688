@@ -12,6 +12,8 @@ class SuggestionVideoWidget extends StatelessWidget {
   final String duration;
   final String level;
   final String imageUrl;
+  final String progressText;
+  final String videoCountText;
   final Color? colorBg;
   final VoidCallback? onPlayTap;
 
@@ -22,6 +24,8 @@ class SuggestionVideoWidget extends StatelessWidget {
     required this.duration,
     required this.level,
     required this.imageUrl,
+    this.progressText = '1/4',
+    this.videoCountText = '4 Videos',
     this.onPlayTap,
     this.colorBg,
   });
@@ -32,47 +36,60 @@ class SuggestionVideoWidget extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: colorBg ?? ColorManager.playlistBox,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: ColorManager.borderColor, width: 1.5.w),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: ColorManager.borderColor, width: 1.w),
       ),
       child: Padding(
-        padding: EdgeInsets.all(8.r),
+        padding: EdgeInsets.all(7.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min, 
+          mainAxisSize: MainAxisSize.min,
           children: [
             Stack(
               alignment: Alignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12.r),
-                      topRight: Radius.circular(12.r)),
-                  child: Image.asset(
-                    imageUrl,
-                    height: 100.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                    topLeft: Radius.circular(12.r),
+                    topRight: Radius.circular(12.r),
                   ),
+                  child: imageUrl.startsWith('http')
+                      ? Image.network(
+                          imageUrl,
+                          height: 88.h,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Image.asset(
+                            imageUrl,
+                            height: 88.h,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Image.asset(
+                          imageUrl,
+                          height: 88.h,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                 ),
-                // "1/4" Text
                 Positioned(
                   left: 6.w,
                   bottom: 6.h,
                   child: Text(
-                    '1/4',
+                    progressText,
                     style: getMedium500Style12(
                       color: ColorManager.whiteColor,
                       fontSize: 14.sp,
                     ),
                   ),
                 ),
-                // "4 Videos" Badge
                 Positioned(
                   right: 0.w,
                   bottom: 0.h,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                     decoration: BoxDecoration(
                       color: ColorManager.backgroundColorgreen,
                       borderRadius: BorderRadius.only(
@@ -83,12 +100,12 @@ class SuggestionVideoWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(IconManager.videoICon, height: 10.h),
-                        SizedBox(width: 6.w),
+                        SizedBox(width: 4.w),
                         Text(
-                          '4 Videos',
+                          videoCountText,
                           style: TextStyle(
                             color: ColorManager.subtextColor,
-                            fontSize: 12.sp,
+                            fontSize: 11.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -98,8 +115,7 @@ class SuggestionVideoWidget extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 12.h),
-           
+            SizedBox(height: 10.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -114,38 +130,40 @@ class SuggestionVideoWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 5.w),
+                SizedBox(width: 4.w),
                 InkWell(
                   onTap: () {
-                     Navigator.pushNamed(context, RoutesName.favouriteScreen,  arguments: 2,);
+                    Navigator.pushNamed(
+                      context,
+                      RoutesName.favouriteScreen,
+                      arguments: 2,
+                    );
                   },
-                  child: Image.asset(IconManager.bookMark, height: 12.h)),
+                  child: Image.asset(IconManager.bookMark, height: 12.h),
+                ),
               ],
             ),
-            SizedBox(height: 8.h),
-          
+            SizedBox(height: 6.h),
             Text(
               title,
-              maxLines: 2, 
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: getMedium500Style10(
                 color: ColorManager.subtextColor,
                 fontSize: 13.sp,
               ),
             ),
-            SizedBox(height: 10.h),
-          
+            SizedBox(height: 8.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              
-                Flexible(
+                Expanded(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.asset(IconManager.clock, height: 16.h, width: 16.w),
-                      SizedBox(width: 5.w),
-                      Flexible(
+                      Image.asset(IconManager.clock, height: 14.h, width: 14.w),
+                      SizedBox(width: 4.w),
+                      Expanded(
                         child: Text(
                           duration,
                           maxLines: 1,
@@ -159,19 +177,21 @@ class SuggestionVideoWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 8.w),
-               
+                SizedBox(width: 6.w),
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(9.r),
                     color: ColorManager.beginerColor,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                   child: Text(
                     level,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: getMedium500Style10(
                       color: ColorManager.textPrimary,
-                      fontSize: 12.sp,
+                      fontSize: 11.sp,
                     ),
                   ),
                 ),

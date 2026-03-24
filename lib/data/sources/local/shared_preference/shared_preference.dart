@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceData {
   static const _keyAuthToken = 'auth_token';
+  static const _keyResetPasswordToken = 'reset_password_token';
   static const _keyRole = 'role';
   static const _keyEmail = 'email';
 
@@ -27,6 +28,21 @@ static Future<void> setToken(String? token) async {
   static Future<void> removeToken() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove(_keyAuthToken);
+  }
+
+  static Future<void> setResetPasswordToken(String? token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyResetPasswordToken, token ?? '');
+  }
+
+  static Future<String?> getResetPasswordToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyResetPasswordToken);
+  }
+
+  static Future<void> removeResetPasswordToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_keyResetPasswordToken);
   }
 
   static Future<String?> getRole() async {

@@ -20,6 +20,7 @@ class OtpScreen extends ConsumerStatefulWidget {
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
   final TextEditingController _textEditingController = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -97,12 +98,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                           children: [
                             PinFieldWidget(textController: _textEditingController),
                             SizedBox(height: 15.h),
-                            if (otpState.isLoading)
+                            if (otpState.isLoading || _isSubmitting)
                               const Center(child: CircularProgressIndicator())
                             else
                               Customebutton(
                                 text: "Submit",
                                 onTap: () async {
+                                  if (_isSubmitting || otpState.isLoading) return;
+
                                   final token = _textEditingController.text.trim();
                                   final currentEmail = widget.email?.trim();
 
@@ -112,34 +115,51 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                                     );
                                     return;
                                   }
-                                  if (token.isEmpty) return;
-
-                                  final ok = await ref
-                                      .read(otpProvider.notifier)
-                                      .verifyOtp(email: currentEmail, token: token);
-
-                                  if (!ok) {
-                                    if (!context.mounted) return;
+                                  if (token.isEmpty) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          ref.read(otpProvider).errorMessage ??
-                                              'OTP verification failed',
-                                        ),
-                                      ),
+                                      const SnackBar(content: Text('Please enter token')),
                                     );
                                     return;
                                   }
 
-                                  if (!context.mounted) return;
-                                  Navigator.pushNamed(
-                                    context,
-                                    RoutesName.newPasswordScreen,
-                                    arguments: {
-                                      'email': currentEmail,
-                                      'token': ref.read(otpProvider).resetToken ?? token,
-                                    },
-                                  );
+                                  setState(() {
+                                    _isSubmitting = true;
+                                  });
+
+                                  try {
+                                    final ok = await ref
+                                        .read(otpProvider.notifier)
+                                        .verifyOtp(email: currentEmail, token: token);
+
+                                    if (!ok) {
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            ref.read(otpProvider).errorMessage ??
+                                                'OTP verification failed',
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    if (!context.mounted) return;
+                                    Navigator.pushNamed(
+                                      context,
+                                      RoutesName.newPasswordScreen,
+                                      arguments: {
+                                        'email': currentEmail,
+                                        'token': ref.read(otpProvider).resetToken ?? token,
+                                      },
+                                    );
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() {
+                                        _isSubmitting = false;
+                                      });
+                                    }
+                                  }
                                 },
                               ),
                           ],

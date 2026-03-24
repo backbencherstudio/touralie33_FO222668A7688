@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
@@ -19,8 +20,22 @@ class CustomeAppBarHome extends StatelessWidget {
     this.avatarUrl,
   });
 
+  String? _resolveAvatarUrl(String? avatar) {
+    final value = avatar?.trim();
+    if (value == null || value.isEmpty) return null;
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      return value;
+    }
+    final base = ApiEndpoints.baseUrl.endsWith('/')
+        ? ApiEndpoints.baseUrl.substring(0, ApiEndpoints.baseUrl.length - 1)
+        : ApiEndpoints.baseUrl;
+    final path = value.startsWith('/') ? value : '/$value';
+    return '$base$path';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final resolvedAvatarUrl = _resolveAvatarUrl(avatarUrl);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,13 +53,23 @@ class CustomeAppBarHome extends StatelessWidget {
                 width: 42.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: (avatarUrl != null && avatarUrl!.trim().isNotEmpty)
-                        ? NetworkImage(avatarUrl!.trim())
-                        : const AssetImage(ImageManager.profilePic),
-                    fit: BoxFit.cover,
-                  ),
                 ),
+                clipBehavior: Clip.antiAlias,
+                child: resolvedAvatarUrl != null
+                    ? Image.network(
+                        resolvedAvatarUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            ImageManager.profilePic,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        ImageManager.profilePic,
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
             SizedBox(width: 12.w),

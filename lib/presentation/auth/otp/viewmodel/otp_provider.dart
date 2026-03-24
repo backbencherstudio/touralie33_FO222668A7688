@@ -21,42 +21,36 @@ class OtpState {
 
 class OtpProvider extends StateNotifier<OtpState> {
   final VerifyOtpRepository repository;
+
   OtpProvider({required this.repository}) : super(OtpState(isLoading: false));
 
-  Future<bool> verifyOtp({required String email, required String token}) async {
-    state = state.copyWith(isLoading: true, errorMessage: null, resetToken: null);
-    try {
-      final response = await repository.verifyOtp(email: email, token: token);
+Future<bool> verifyOtp({required String email, required String token}) async {
+  state = state.copyWith(isLoading: true, errorMessage: null, resetToken: null);
+  try {
+    final response = await repository.verifyOtp(email: email, token: token);
 
-      final success = response['success'] == true || response['status'] == 'success';
-      if (!success) {
-        final message = response['message'];
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: message is String ? message : message?.toString(),
-        );
-        return false;
-      }
-
-      final data = response['data'];
-      final authorization = response['authorization'];
-      final dynamic resetToken = response['reset_token'] ??
-          response['resetToken'] ??
-          response['token'] ??
-          (data is Map ? (data['reset_token'] ?? data['resetToken'] ?? data['token']) : null) ??
-          (authorization is Map ? (authorization['reset_token'] ?? authorization['token'] ?? authorization['access_token']) : null);
-
+    final success = response['success'] == true || response['status'] == 'success';
+    
+    if (!success) {
+      final message = response['message'];
       state = state.copyWith(
         isLoading: false,
-        resetToken: resetToken?.toString(),
+        errorMessage: message is String ? message : message?.toString(),
       );
-      return true;
-    } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
-      return false;
+      return false; 
     }
+
+    state = state.copyWith(
+      isLoading: false, 
+      resetToken: response['resetToken'], 
+    );
+    return true; 
+
+  } catch (e) {
+    state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    return false;
   }
-}
+}}
 
 final otpProvider = StateNotifierProvider<OtpProvider, OtpState>((ref) {
   return OtpProvider(

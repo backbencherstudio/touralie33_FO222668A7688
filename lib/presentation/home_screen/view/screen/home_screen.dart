@@ -5,6 +5,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customeAppBarHome/custome_app_bar_home.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/remaining_progress/remaining_progress_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/suggestion_video/suggestion_video_widget.dart';
@@ -20,8 +21,23 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  String _formatLevel(String? level) {
+    if (level == null || level.isEmpty) return 'Beginner';
+    final normalized = level.toLowerCase();
+    return normalized[0].toUpperCase() + normalized.substring(1);
+  }
+
+  @override
+  void initState() {
+   Future.microtask((){
+    ref.read(suggestedNotifierProvider.notifier).getSuggested();
+   });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    final suggested = ref.watch(suggestedNotifierProvider);
+    final suggestedList = suggested.suggestedData?.data ??[];
     final state = ref.watch(getMeProvider);
     final user = state.me?.data;
     return Scaffold(
@@ -35,7 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onProfileTap: widget.onOpenDrawer,
               name: user?.name,
               email: user?.email,
-              avatarUrl: user?.avatar,
+              avatarUrl: user?.avatarUrl ?? user?.avatar,
             ),
           ),
         ),
@@ -106,96 +122,108 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ],
                     ),
                     SizedBox(height: 15.h),
-                 
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SuggestionVideoWidget(
-                            categoryName: "Hydrotherapy",
-                            title: "Back Mobility Program",
-                            duration: "45 min",
-                            level: "Beginner",
-                            imageUrl: ImageManager.gymGuide,
-                            onPlayTap: () {
-                              print("Video Playing...");
-                            },
+                    if (suggested.isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else if (suggested.errorMessage != null)
+                      Center(
+                        child: Text(
+                          suggested.errorMessage!,
+                          textAlign: TextAlign.center,
+                          style: getMedium500Style12(
+                            color: ColorManager.subtextColor,
+                            fontSize: 14.sp,
                           ),
                         ),
-                        SizedBox(width: 6.w,),
-                        Expanded(
-                          child: SuggestionVideoWidget(
-                            categoryName: "Hydrotherapy",
-                            title: "Back Mobility Program",
-                            duration: "45 min",
-                            level: "Beginner",
-                            imageUrl: ImageManager.gymGuide,
-                            onPlayTap: () {
-                              print("Video Playing...");
-                            },
-                          ),
+                      )
+                    else if (suggestedList.isNotEmpty)
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: suggestedList.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10.w,
+                          mainAxisSpacing: 15.h,
+                          mainAxisExtent: 190.h,
                         ),
-                      ],
-                    ),
+                        itemBuilder: (context, index) {
+                          final video = suggestedList[index];
+                          return SuggestionVideoWidget(
+                            categoryName: video.category ?? "Hydrotherapy",
+                            title: video.title ?? "No Title",
+                            duration: '${video.duration ?? 0} min',
+                            level: _formatLevel(video.level),
+                            progressText: '${index + 1}/${suggestedList.length}',
+                            videoCountText:
+                                '${video.chaptersCount ?? 0} Videos',
+                            imageUrl:
+                                video.thumbnailUrl ?? ImageManager.gymGuide,
+                            onPlayTap: () {
+                              debugPrint("Playing: ${video.title}");
+                            },
+                          );
+                        },
+                      ),
                     SizedBox(height: 15.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SuggestionVideoWidget(
-                            categoryName: "Hydrotherapy",
-                            title: "Back Mobility Program",
-                            duration: "45 min",
-                            level: "Beginner",
-                            imageUrl: ImageManager.gymGuide,
-                            onPlayTap: () {
-                              print("Video Playing...");
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 6.w,),
-                        Expanded(
-                          child: SuggestionVideoWidget(
-                            categoryName: "Hydrotherapy",
-                            title: "Back Mobility Program",
-                            duration: "45 min",
-                            level: "Beginner",
-                            imageUrl: ImageManager.gymGuide,
-                            onPlayTap: () {
-                              print("Video Playing...");
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15.h,),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SuggestionVideoWidget(
-                            categoryName: "Hydrotherapy",
-                            title: "Back Mobility Program",
-                            duration: "45 min",
-                            level: "Beginner",
-                            imageUrl: ImageManager.gymGuide,
-                            onPlayTap: () {
-                              print("Video Playing...");
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 6.w,),
-                        Expanded(
-                          child: SuggestionVideoWidget(
-                            categoryName: "Hydrotherapy",
-                            title: "Back Mobility Program",
-                            duration: "45 min",
-                            level: "Beginner",
-                            imageUrl: ImageManager.gymGuide,
-                            onPlayTap: () {
-                              print("Video Playing...");
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: SuggestionVideoWidget(
+                    //         categoryName: "Hydrotherapy",
+                    //         title: "Back Mobility Program",
+                    //         duration: "45 min",
+                    //         level: "Beginner",
+                    //         imageUrl: ImageManager.gymGuide,
+                    //         onPlayTap: () {
+                    //           print("Video Playing...");
+                    //         },
+                    //       ),
+                    //     ),
+                    //     SizedBox(width: 6.w,),
+                    //     Expanded(
+                    //       child: SuggestionVideoWidget(
+                    //         categoryName: "Hydrotherapy",
+                    //         title: "Back Mobility Program",
+                    //         duration: "45 min",
+                    //         level: "Beginner",
+                    //         imageUrl: ImageManager.gymGuide,
+                    //         onPlayTap: () {
+                    //           print("Video Playing...");
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    // SizedBox(height: 15.h,),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: SuggestionVideoWidget(
+                    //         categoryName: "Hydrotherapy",
+                    //         title: "Back Mobility Program",
+                    //         duration: "45 min",
+                    //         level: "Beginner",
+                    //         imageUrl: ImageManager.gymGuide,
+                    //         onPlayTap: () {
+                    //           print("Video Playing...");
+                    //         },
+                    //       ),
+                    //     ),
+                    //     SizedBox(width: 6.w,),
+                    //     Expanded(
+                    //       child: SuggestionVideoWidget(
+                    //         categoryName: "Hydrotherapy",
+                    //         title: "Back Mobility Program",
+                    //         duration: "45 min",
+                    //         level: "Beginner",
+                    //         imageUrl: ImageManager.gymGuide,
+                    //         onPlayTap: () {
+                    //           print("Video Playing...");
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

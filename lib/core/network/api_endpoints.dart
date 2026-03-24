@@ -11,6 +11,8 @@ class ApiEndpoints {
    static const String verifyEmail = 'api/auth/verify-email';
    static const String resetPassWord = 'api/auth/reset-password';
    static const String getMe = 'api/auth/me';
+   static const String updateUser= 'api/auth/update';
+   static const String  suggestedVideo= 'api/library';
 
 
 }
