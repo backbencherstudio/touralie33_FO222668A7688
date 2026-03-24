@@ -7,6 +7,7 @@ import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 
 
 class SuggestionVideoWidget extends StatelessWidget {
+  final String? id;
   final String categoryName;
   final String title;
   final String duration;
@@ -19,6 +20,7 @@ class SuggestionVideoWidget extends StatelessWidget {
 
   const SuggestionVideoWidget({
     super.key,
+    this.id,
     required this.categoryName,
     required this.title,
     required this.duration,

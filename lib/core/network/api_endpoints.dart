@@ -13,6 +13,7 @@ class ApiEndpoints {
    static const String getMe = 'api/auth/me';
    static const String updateUser= 'api/auth/update';
    static const String  suggestedVideo= 'api/library';
+   static const String  prescriptionResume= 'api/prescription/resume';
 
 
 }

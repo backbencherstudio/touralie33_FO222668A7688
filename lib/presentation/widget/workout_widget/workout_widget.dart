@@ -1,29 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
-import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/instruction_widget/instruction_widget.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/workout_video_player_screen/workout_video_player_screen.dart';
-import 'package:video_player/video_player.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
-import 'package:chewie/chewie.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/widget/instruction_widget/instruction_widget.dart';
 
-class WorkoutWidget extends StatelessWidget {
-  const WorkoutWidget({
-    super.key,
-    this.videoUrl =
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-  });
+class WorkoutWidget extends ConsumerWidget {
+  const WorkoutWidget({super.key, this.id});
 
-  final String videoUrl;
+  final String? id;
+
+  void _openInstructionDialog({
+    required BuildContext context,
+    String? id,
+    required String description,
+    required List<String> points,
+    required String videoUrl,
+  }) {
+    showDialog(
+      context: context,
+      builder: (_) => InstructionWidget(
+        id: id,
+        description: description,
+        points: points,
+        onBegin: () {
+          Navigator.pushNamed(
+            context,
+            RoutesName.prescibedDetailsScreen,
+            arguments: {
+              'id': id,
+              'videoUrl': videoUrl,
+            },
+          );
+        },
+      ),
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prescriptionState = ref.watch(getPrescriptionResumeProvider);
+    final workout = prescriptionState.prescriptionData?.data;
+    final workoutId = workout?.id ?? id;
+    final instruction = workout?.instruction;
+    final imageUrl = workout?.thumbnail;
+    final videoUrl = workout?.url;
+    final points = instruction?.points ?? const <String>[];
+    final description =
+        instruction?.description ?? 'No instruction available right now.';
+
     return Container(
-  
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
         color: ColorManager.primary,
@@ -34,127 +65,143 @@ class WorkoutWidget extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.all(12.r),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Today's Workout",
-                  style: getMedium500Style12(
-                    color: Colors.grey,
-                    fontSize: 12.sp,
+        child: prescriptionState.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : prescriptionState.errorMessage != null
+                ? Text(
+                    prescriptionState.errorMessage!,
+                    style: getMedium500Style12(
+                      color: ColorManager.subtextColor,
+                      fontSize: 14.sp,
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Today's Workout",
+                            style: getMedium500Style12(
+                              color: Colors.grey,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Image.asset(
+                                IconManager.clock,
+                                height: 16.h,
+                                color: ColorManager.blackColor,
+                              ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                '${workout?.duration ?? 0} min',
+                                style: getMedium500Style14(
+                                  color: ColorManager.blackColor,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        workout?.title ?? "Today's Workout",
+                        style: getMedium500Style14(
+                          color: ColorManager.subtextColor,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      SizedBox(height: 15.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                IconManager.videoICon,
+                                fit: BoxFit.cover,
+                                height: 14.h,
+                                width: 14.w,
+                              ),
+                              SizedBox(width: 8.w),
+                              Text(
+                                '${workout?.chapterCount ?? 0} Videos',
+                                style: getMedium500Style14(
+                                  color: ColorManager.subtextColor,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15.h),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20.r),
+                        child: GestureDetector(
+                          onTap: videoUrl == null || videoUrl.isEmpty
+                              ? null
+                              : () => _openInstructionDialog(
+                                    context: context,
+                                    id: workoutId,
+                                    description: description,
+                                    points: points,
+                                    videoUrl: videoUrl,
+                                  ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              imageUrl != null && imageUrl.startsWith('http')
+                                  ? Image.network(
+                                      imageUrl,
+                                      width: double.infinity,
+                                      height: 220.h,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) =>
+                                          Image.asset(
+                                        ImageManager.gymGuide,
+                                        width: double.infinity,
+                                        height: 220.h,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : Image.asset(
+                                      ImageManager.gymGuide,
+                                      width: double.infinity,
+                                      height: 220.h,
+                                      fit: BoxFit.cover,
+                                    ),
+                              SizedBox(
+                                width: 80.w,
+                                height: 80.h,
+                                child: Image.asset(IconManager.playCircle),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15.h),
+                      Customebutton(
+                        onTap: videoUrl == null || videoUrl.isEmpty
+                            ? () {}
+                            : () => _openInstructionDialog(
+                                  context: context,
+                                  id: workoutId,
+                                  description: description,
+                                  points: points,
+                                  videoUrl: videoUrl,
+                                ),
+                        text: "Watch Now",
+                        sufImage: IconManager.playButton,
+                        sufImageColor: ColorManager.blackColor,
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Image.asset(
-                      IconManager.clock,
-                      height: 16.h,
-                 
-                      color: ColorManager.blackColor,
-                    ),
-                    SizedBox(width: 5.w,),
-                    Text(
-                      "45 min",
-                      style: getMedium500Style14(
-                        color: ColorManager.blackColor,
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 5.h),
-            Text(
-              "Back Mobility Program",
-              style: getMedium500Style14(
-                color: ColorManager.subtextColor,
-                fontSize: 16.sp,
-              ),
-            ),
-            SizedBox(height: 15.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Image.asset(
-                      IconManager.videoICon,
-                      fit: BoxFit.cover,
-                      height: 14.h,
-                      width: 14.w,
-                    ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      "4 Videos",
-                      style: getMedium500Style14(
-                        color: ColorManager.subtextColor,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-                InkWell(
-                  onTap: () {
-                     Navigator.pushNamed(context, RoutesName.favouriteScreen,  arguments: 2,);
-                  },
-                  child: Image.asset(
-                    IconManager.bookMark,
-                    fit: BoxFit.cover,
-                                 
-                    height: 13.h,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.h,),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => WorkoutVideoPlayerScreen(
-                        videoUrl: videoUrl,
-                      ),
-                    ),
-                  );
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Image.asset(
-                      ImageManager.gymGuide,
-                      width: double.infinity,
-                      height: 250,
-                      fit: BoxFit.cover,
-                    ),
-                    SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset(IconManager.playCircle),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 15.h,),
-            Customebutton(
-              onTap: () {
-                showDialog(context: context,builder: (context) {
-                  return InstructionWidget();
-                },);
-              },
-              text: "Watch Now",
-              sufImage: IconManager.playButton,
-              sufImageColor: ColorManager.blackColor,
-            )
-          ],
-        ),
       ),
     );
   }

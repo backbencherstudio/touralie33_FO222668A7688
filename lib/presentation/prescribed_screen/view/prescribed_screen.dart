@@ -9,7 +9,8 @@ import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customeb
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_set/workOut_set.dart';
 
 class PrescribedScreen extends StatefulWidget {
-  const PrescribedScreen({super.key});
+ 
+  const PrescribedScreen({super.key,});
 
   @override
   State<PrescribedScreen> createState() => _PrescribedScreenState();

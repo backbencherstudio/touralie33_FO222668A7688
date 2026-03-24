@@ -6,9 +6,11 @@ import 'package:video_player/video_player.dart';
 class WorkoutVideoPlayerScreen extends StatefulWidget {
   const WorkoutVideoPlayerScreen({
     super.key,
+    this.id,
     required this.videoUrl,
   });
 
+  final String? id;
   final String videoUrl;
 
   @override

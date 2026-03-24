@@ -12,6 +12,7 @@ class SuggestedApiService {
 
   Future<SuggestedModel> suggested() async {
     try {
+      await ApiClient.headerSet(null);
       final response = await apiClient.getRequest(endpoints: ApiEndpoints.suggestedVideo);
 
       if (response != null && response['success'] == true) {

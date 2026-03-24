@@ -5,6 +5,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customeAppBarHome/custome_app_bar_home.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/remaining_progress/remaining_progress_widget.dart';
@@ -31,6 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
    Future.microtask((){
     ref.read(suggestedNotifierProvider.notifier).getSuggested();
+    ref.read(getPrescriptionResumeProvider.notifier).getPrescription();
    });
     super.initState();
   }
@@ -112,13 +114,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             fontSize: 18.sp,
                           ),
                         ),
-                        Text(
-                          "View All",
-                          style: getMedium500Style12(
-                            color: ColorManager.subtextColor,
-                            fontSize: 14.sp,
-                          ),
-                        ),
+                        // Text(
+                        //   "View All",
+                        //   style: getMedium500Style12(
+                        //     color: ColorManager.subtextColor,
+                        //     fontSize: 14.sp,
+                        //   ),
+                        // ),
                       ],
                     ),
                     SizedBox(height: 15.h),
@@ -149,6 +151,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         itemBuilder: (context, index) {
                           final video = suggestedList[index];
                           return SuggestionVideoWidget(
+                            id: video.id,
                             categoryName: video.category ?? "Hydrotherapy",
                             title: video.title ?? "No Title",
                             duration: '${video.duration ?? 0} min',

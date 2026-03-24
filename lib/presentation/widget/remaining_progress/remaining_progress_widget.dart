@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
 
-class RemainingProgressWidget extends StatelessWidget {
+class RemainingProgressWidget extends ConsumerWidget {
   const RemainingProgressWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
+    final data = ref.watch(getPrescriptionResumeProvider).prescriptionData;
+    final int rawProgress = data?.data?.watchProgress ?? 0;
+    final double progressValue = (rawProgress.clamp(0, 100)) / 100;
     return Padding(
       padding: EdgeInsets.all(13.r),
       child: Stack(
@@ -101,11 +106,11 @@ class RemainingProgressWidget extends StatelessWidget {
                 color: ColorManager.primary,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(12.0),
                 child: CircularPercentIndicator(
                   radius: 33.r,
                   lineWidth: 6.w,
-                  percent: .8,
+                  percent: progressValue,
                   backgroundColor: Colors.transparent,
             
                   progressColor: ColorManager.backgroundColorgreen1,
@@ -121,7 +126,7 @@ class RemainingProgressWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "80%",
+                          '$rawProgress%',
                           style: getMedium500Style16(
                             color: ColorManager.subtextColor,
                             fontSize: 15.sp,
