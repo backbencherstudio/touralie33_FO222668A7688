@@ -10,9 +10,8 @@ import 'package:touralie33_fo222668a7688/presentation/auth/otp/viewmodel/otp_pro
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
-  final String ? email;
-
-  const OtpScreen({super.key, this.email,});
+  final String? email;
+  const OtpScreen({super.key, this.email});
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
@@ -31,144 +30,78 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final otpState = ref.watch(otpProvider);
-    final email = widget.email?.trim();
+    final email = widget.email?.trim() ?? "";
 
     return Scaffold(
       backgroundColor: ColorManager.primary,
       appBar: CustomeApp(
-        text: "Change PassWord",
+        text: "Verify OTP",
         onBackTap: () => Navigator.pop(context),
       ),
       body: Column(
         children: [
-          const Divider(
-            color: Color.fromARGB(255, 231, 232, 231),
-            thickness: 1,
-          ),
+          const Divider(color: Color.fromARGB(255, 231, 232, 231), thickness: 1),
           Expanded(
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 90.h),
-                    Text(
-                      "Enter Verification Code ",
-                      style: getMedium500Style20(
-                          color: ColorManager.subtextColor,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w600),
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: Column(
+                children: [
+                  SizedBox(height: 90.h),
+                  Text("Enter Verification Code", style: getMedium500Style20(fontSize: 24.sp, color: Colors.black,)),
+                  SizedBox(height: 8.h),
+                  Text("We have sent a code verification to", style: getMedium500Style14()),
+                  Text(email.isNotEmpty ? email : "your email", style: getMedium500Style14()),
+                  SizedBox(height: 30.h),
+                  Container(
+                    padding: EdgeInsets.all(16.r),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
                     ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      "We have sent a code verificaiton to ",
-                      style: getMedium500Style14(
-                          color: ColorManager.subtextColor1,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400),
-                    ),
-                    Text(
-                      email != null && email.isNotEmpty ? email : "your email address",
-                      style: getMedium500Style14(
-                          color: ColorManager.subtextColor1,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400),
-                    ),
-                    SizedBox(height: 30.h),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: .05),
-                            blurRadius: 10.r,
-                            spreadRadius: 2.r,
-                            offset: const Offset(0, 4),
+                    child: Column(
+                      children: [
+                        PinFieldWidget(textController: _textEditingController),
+                        SizedBox(height: 15.h),
+                        if (otpState.isLoading || _isSubmitting)
+                          const CircularProgressIndicator()
+                        else
+                          Customebutton(
+                            text: "Submit",
+                            onTap: () async {
+                              final token = _textEditingController.text.trim();
+                              if (email.isEmpty || token.isEmpty) return;
+
+                              setState(() => _isSubmitting = true);
+                              
+                              final ok = await ref.read(otpProvider.notifier).verifyOtp(
+                                email: email,
+                                token: token,
+                              );
+
+                              setState(() => _isSubmitting = false);
+
+                              if (ok) {
+                                if (!context.mounted) return;
+                       
+                                final resolvedToken = ref.read(otpProvider).resetToken ?? token;
+                                Navigator.pushNamed(
+                                  context,
+                                  RoutesName.newPasswordScreen,
+                                  arguments: {'email': email, 'token': resolvedToken},
+                                );
+                              } else {
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(ref.read(otpProvider).errorMessage ?? 'Invalid OTP')),
+                                );
+                              }
+                            },
                           ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(16.r),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            PinFieldWidget(textController: _textEditingController),
-                            SizedBox(height: 15.h),
-                            if (otpState.isLoading || _isSubmitting)
-                              const Center(child: CircularProgressIndicator())
-                            else
-                              Customebutton(
-                                text: "Submit",
-                                onTap: () async {
-                                  if (_isSubmitting || otpState.isLoading) return;
-
-                                  final token = _textEditingController.text.trim();
-                                  final currentEmail = widget.email?.trim();
-
-                                  if (currentEmail == null || currentEmail.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Email is missing')),
-                                    );
-                                    return;
-                                  }
-                                  if (token.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Please enter token')),
-                                    );
-                                    return;
-                                  }
-
-                                  setState(() {
-                                    _isSubmitting = true;
-                                  });
-
-                                  try {
-                                    final ok = await ref
-                                        .read(otpProvider.notifier)
-                                        .verifyOtp(email: currentEmail, token: token);
-
-                                    if (!ok) {
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            ref.read(otpProvider).errorMessage ??
-                                                'OTP verification failed',
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-
-                                    if (!context.mounted) return;
-                                    Navigator.pushNamed(
-                                      context,
-                                      RoutesName.newPasswordScreen,
-                                      arguments: {
-                                        'email': currentEmail,
-                                        'token': ref.read(otpProvider).resetToken ?? token,
-                                      },
-                                    );
-                                  } finally {
-                                    if (mounted) {
-                                      setState(() {
-                                        _isSubmitting = false;
-                                      });
-                                    }
-                                  }
-                                },
-                              ),
-                          ],
-                        ),
-                      ),
+                      ],
                     ),
-                    SizedBox(height: 50.h),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -6,9 +6,10 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/data/models/prescription_resume_model.dart';
+import 'package:touralie33_fo222668a7688/data/models/prescribed_detail_model.dart'
+    as detail_model;
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
-import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/prescribed_details_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_set/workOut_set.dart';
@@ -17,45 +18,40 @@ class PrescibedDetailsScreen extends ConsumerStatefulWidget {
   const PrescibedDetailsScreen({
     super.key,
     this.id,
-    this.appBarTitle,
+ 
     this.videoUrl,
-    this.thumbnailAsset,
-    this.categoryName,
-    this.title,
-    this.description,
-    this.duration,
-    this.level,
-    this.workoutSetTitle,
-    this.workoutProgressText,
-    this.workoutSets,
-    this.onWatchNow,
-    this.watchNowText,
+  
   });
 
   final String? id;
-  final String? appBarTitle;
+
   final String? videoUrl;
-  final String? thumbnailAsset;
-  final String? categoryName;
-  final String? title;
-  final String? description;
-  final String? duration;
-  final String? level;
-  final String? workoutSetTitle;
-  final String? workoutProgressText;
-  final List<Widget>? workoutSets;
-  final VoidCallback? onWatchNow;
-  final String? watchNowText;
+ 
 
   @override
-  ConsumerState<PrescibedDetailsScreen> createState() => _PrescibedDetailsScreenState();
+  ConsumerState<PrescibedDetailsScreen> createState() =>
+      _PrescibedDetailsScreenState();
 }
 
-class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen> {
+class _PrescibedDetailsScreenState
+    extends ConsumerState<PrescibedDetailsScreen> {
   bool _isExpanded = false;
   String? _selectedVideoUrl;
   String? _selectedThumbnail;
   int _selectedChapterIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final id = widget.id;
+      if (id != null && id.isNotEmpty) {
+        ref
+            .read(prescribedDetailsNotifierProvider.notifier)
+            .getPresCribedDetails(id: id);
+      }
+    });
+  }
 
   int? _parseTimeToSeconds(String? value) {
     if (value == null || value.isEmpty) return null;
@@ -76,7 +72,9 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
   String _formatChapterDuration(String? startTime, String? endTime) {
     final startSeconds = _parseTimeToSeconds(startTime);
     final endSeconds = _parseTimeToSeconds(endTime);
-    if (startSeconds != null && endSeconds != null && endSeconds >= startSeconds) {
+    if (startSeconds != null &&
+        endSeconds != null &&
+        endSeconds >= startSeconds) {
       final durationInMinutes = ((endSeconds - startSeconds) / 60).ceil();
       return '$durationInMinutes min';
     }
@@ -87,8 +85,8 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
   }
 
   List<Widget> _buildChapterWorkoutSets({
-    required List<VideoChapters> chapters,
-    required PrescriptionResumeData? workout,
+    required List<detail_model.VideoChapters> chapters,
+    required detail_model.Data? workout,
   }) {
     return chapters.asMap().entries.map((entry) {
       final chapter = entry.value;
@@ -113,7 +111,7 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
             setState(() {
               _selectedChapterIndex = entry.key;
               _selectedVideoUrl = chapter.videoUrl ?? workout?.url;
-              _selectedThumbnail = chapter.thumbnailUrl ?? workout?.thumbnail;
+              _selectedThumbnail = chapter.thumbnailUrl ?? workout?.thumbnailUrl;
             });
           },
         ),
@@ -123,48 +121,106 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final prescriptionState = ref.watch(getPrescriptionResumeProvider);
-    final providerWorkout = prescriptionState.prescriptionData?.data;
-    final matchedWorkout =
-        widget.id == null || providerWorkout?.id == widget.id ? providerWorkout : null;
+    final detailsState = ref.watch(prescribedDetailsNotifierProvider);
+    final workout = detailsState.prescribedDetailsData?.data;
 
-    final description = widget.description ??
-        matchedWorkout?.instruction?.description ??
-        'This Video is focused on back mobility that will help you to reduce pain, improve flexibility, and build better posture through guided movements.';
+    if (detailsState.isLoading) {
+      return Scaffold(
+        backgroundColor: ColorManager.primary,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.h),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              child: Customebar(
+                text: "Your Prescribed Video",
+              ),
+            ),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (detailsState.errorMessage != null) {
+      return Scaffold(
+        backgroundColor: ColorManager.primary,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.h),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              child: Customebar(
+                text:  "Your Prescribed Video",
+              ),
+            ),
+          ),
+        ),
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(16.r),
+            child: Text(
+              detailsState.errorMessage!,
+              textAlign: TextAlign.center,
+              style: getMedium500Style12(
+                color: Colors.red,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (workout == null) {
+      return Scaffold(
+        backgroundColor: ColorManager.primary,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.h),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              child: Customebar(
+                text:"Your Prescribed Video",
+              ),
+            ),
+          ),
+        ),
+        body: Center(
+          child: Text(
+            "No details found",
+            style: getMedium500Style12(
+              color: ColorManager.blackColor,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      );
+    }
+
+    final description = 
+        workout.description ??
+        '';
     final shortDescription = description.length > 126
         ? '${description.substring(0, 126)}... '
         : description;
-    final categoryText = widget.categoryName ?? "Categories Name";
-    final levelText = widget.level ?? "Beginner";
-    final chapterCount = matchedWorkout?.videoChapters?.length ??
-        matchedWorkout?.chapterCount ??
-        1;
-    final chapters = matchedWorkout?.videoChapters ?? const <VideoChapters>[];
+    final categoryText = workout.category ?? "All";
+    final levelText =  workout.level ?? "";
+    final chapters = workout.videoChapters ?? const <detail_model.VideoChapters>[];
+    final chapterCount = chapters.isEmpty ? 1 : chapters.length;
     final currentVideoUrl = _selectedVideoUrl ??
-        widget.videoUrl ??
-        matchedWorkout?.url ??
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
+      
+        workout.url ??
+        '';
     final currentThumbnail = _selectedThumbnail ??
-        widget.thumbnailAsset ??
-        matchedWorkout?.thumbnail ??
+     
+        workout.thumbnailUrl ??
         ImageManager.gymGuide;
     final chapterWidgets = _buildChapterWorkoutSets(
       chapters: chapters,
-      workout: matchedWorkout,
-    );
-    final workoutSets = widget.workoutSets ?? (chapterWidgets.isNotEmpty 
-      ? chapterWidgets 
-      : (prescriptionState.prescriptionData?.data?.videoChapters != null 
-          ? prescriptionState.prescriptionData!.data!.videoChapters!.map((item) => Padding(
-              padding: EdgeInsets.only(bottom: 15.h),
-              child: WorkoutSet(
-                mainImage: item.thumbnailUrl?? ImageManager.gymGuide,
-                duration: "${item.startTime} min",
-                title: item.title ?? "Untitled",
-              ),
-            )).toList()
-          : [ /* Your hardcoded fallback here */ ]
-        )
+      workout: workout,
     );
 
     return Scaffold(
@@ -175,7 +231,7 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: Customebar(
-              text: widget.appBarTitle ?? "Your Prescribed Video",
+              text:  "Your Prescribed Video",
             ),
           ),
         ),
@@ -197,7 +253,9 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.r),
                     color: ColorManager.whiteColor,
-                    border: Border.all(color: ColorManager.backgroundColorgreen1),
+                    border: Border.all(
+                      color: ColorManager.backgroundColorgreen1,
+                    ),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(12.r),
@@ -213,21 +271,24 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              categoryText,
-                              style: getMedium500Style14(
-                                color: ColorManager.subtextColorGrey,
-                                fontSize: 12.sp,
+                            Expanded(
+                              child: Text(
+                                categoryText,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: getMedium500Style14(
+                                  color: ColorManager.subtextColorGrey,
+                                  fontSize: 12.sp,
+                                ),
                               ),
                             ),
+                            SizedBox(width: 12.w),
                             Image.asset(IconManager.bookMark, height: 16.h),
                           ],
                         ),
                         SizedBox(height: 5.h),
                         Text(
-                          widget.title ??
-                              matchedWorkout?.title ??
-                              "Back Mobility Program",
+                         workout.title ?? "Back Mobility Program",
                           style: getMedium500Style12(
                             color: ColorManager.textPrimary,
                             fontSize: 20.sp,
@@ -277,8 +338,8 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
                                 ),
                                 SizedBox(width: 8.w),
                                 Text(
-                                  widget.duration ??
-                                      '${matchedWorkout?.duration ?? 45} min',
+                      
+                                      '${workout.duration ?? 0} min',
                                   style: getMedium500Style10(
                                     color: ColorManager.textPrimary,
                                     fontSize: 14.sp,
@@ -290,7 +351,9 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8.r),
-                                color: ColorManager.drawrColor.withValues(alpha: .4),
+                                color: ColorManager.drawrColor.withValues(
+                                  alpha: .4,
+                                ),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -325,7 +388,7 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      widget.workoutSetTitle ?? "Workout Set",
+                                   "Workout Set",
                                       style: getMedium500Style12(
                                         color: ColorManager.textPrimary,
                                         fontSize: 16.sp,
@@ -341,7 +404,7 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
                                         ),
                                         SizedBox(width: 4.w),
                                         Text(
-                                          widget.workoutProgressText ??
+                             
                                               '${chapters.isEmpty ? 1 : _selectedChapterIndex + 1}/$chapterCount videos',
                                           style: getMedium500Style16(
                                             color: ColorManager.textPrimary,
@@ -354,15 +417,24 @@ class _PrescibedDetailsScreenState extends ConsumerState<PrescibedDetailsScreen>
                                   ],
                                 ),
                                 SizedBox(height: 10.h),
-                                ...(chapters.isNotEmpty ? chapterWidgets : workoutSets),
+                                if (chapterWidgets.isNotEmpty) ...chapterWidgets,
                               ],
                             ),
                           ),
                         ),
                         SizedBox(height: 15.h),
                         Customebutton(
-                          onTap: widget.onWatchNow,
-                          text: widget.watchNowText ?? "Watch Now",
+                          onTap: 
+                              () {
+                                if (currentVideoUrl != _selectedVideoUrl ||
+                                    currentThumbnail != _selectedThumbnail) {
+                                  setState(() {
+                                    _selectedVideoUrl = currentVideoUrl;
+                                    _selectedThumbnail = currentThumbnail;
+                                  });
+                                }
+                              },
+                          text:  "Watch Now",
                           textColor: ColorManager.whiteColor,
                           color: ColorManager.blackColor,
                           sufImage: IconManager.playButton,

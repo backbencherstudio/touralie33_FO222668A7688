@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/verify_otp_repository.dart';
+import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/verify_email_servicce.dart';
 
 class OtpState {
@@ -40,9 +41,20 @@ Future<bool> verifyOtp({required String email, required String token}) async {
       return false; 
     }
 
+    final extractedResetToken =
+        response['resetToken']?.toString() ??
+        response['reset_token']?.toString() ??
+        response['token']?.toString() ??
+        response['data']?['resetToken']?.toString() ??
+        response['data']?['reset_token']?.toString() ??
+        response['data']?['token']?.toString() ??
+        token;
+
+    await SharedPreferenceData.setResetPasswordToken(extractedResetToken);
+
     state = state.copyWith(
       isLoading: false, 
-      resetToken: response['resetToken'], 
+      resetToken: extractedResetToken, 
     );
     return true; 
 

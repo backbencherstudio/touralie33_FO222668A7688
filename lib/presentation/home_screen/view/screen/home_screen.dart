@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
@@ -152,10 +153,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           final video = suggestedList[index];
                           return SuggestionVideoWidget(
                             id: video.id,
-                            categoryName: video.category ?? "Hydrotherapy",
+                            categoryName: video.category ?? "",
                             title: video.title ?? "No Title",
                             duration: '${video.duration ?? 0} min',
                             level: _formatLevel(video.level),
+                            isBookmarked: video.isFavorite ?? false,
                             progressText: '${index + 1}/${suggestedList.length}',
                             videoCountText:
                                 '${video.chaptersCount ?? 0} Videos',
@@ -163,6 +165,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 video.thumbnailUrl ?? ImageManager.gymGuide,
                             onPlayTap: () {
                               debugPrint("Playing: ${video.title}");
+                              Navigator.pushNamed(context, RoutesName.prescibedDetailsScreen,arguments: {
+            'id': video.id,
+          },);
                             },
                           );
                         },

@@ -11,7 +11,7 @@ class VerifyEmailServicce {
   }) async {
     final body = {'email': email, 'token': token};
     final dynamic response =
-        await apiClient.postRequest(endpoints: ApiEndpoints.verifyEmail, body: body);
+        await apiClient.postRequest(endpoints: ApiEndpoints.verifyOtp, body: body);
 
     if (response is Map) {
       return Map<String, dynamic>.from(response);

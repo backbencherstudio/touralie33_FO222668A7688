@@ -46,10 +46,11 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
 
     try {
       final response = await repository.suggested();
+      final filteredResponse = _removeFavouriteItems(response);
 
       state = state.copyWith(
         isLoading: false,
-        suggestedData: response,
+        suggestedData: filteredResponse,
         errorMessage: null,
       );
     } catch (e) {
@@ -58,6 +59,37 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
         errorMessage: e.toString(),
       );
     }
+  }
+
+  SuggestedModel _removeFavouriteItems(SuggestedModel response) {
+    final filteredList =
+        (response.data ?? []).where((item) => item.isFavorite != true).toList();
+
+    return SuggestedModel(
+      success: response.success,
+      message: response.message,
+      data: filteredList,
+      metaData: response.metaData,
+    );
+  }
+
+  void removeSuggestedById(String id) {
+    final currentModel = state.suggestedData;
+    final currentList = currentModel?.data;
+
+    if (currentModel == null || currentList == null) {
+      return;
+    }
+
+    final updatedList = currentList.where((item) => item.id != id).toList();
+    final updatedModel = SuggestedModel(
+      success: currentModel.success,
+      message: currentModel.message,
+      data: updatedList,
+      metaData: currentModel.metaData,
+    );
+
+    state = state.copyWith(suggestedData: updatedModel);
   }
 }
 final suggestedNotifierProvider = StateNotifierProvider<SuggestedProvider, SuggestedState>((ref) {

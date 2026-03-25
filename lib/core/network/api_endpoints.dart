@@ -6,7 +6,7 @@ class ApiEndpoints {
 
    static const String registration = 'api/auth/register';
    static const String library = 'api/library/categories';
-   static const String verifyOtp = 'api/auth/verify-email';
+   static const String verifyOtp = 'api/auth/check-otp';
    static const String forgotPass = 'api/auth/forgot-password';
    static const String verifyEmail = 'api/auth/verify-email';
    static const String resetPassWord = 'api/auth/reset-password';
@@ -14,6 +14,11 @@ class ApiEndpoints {
    static const String updateUser= 'api/auth/update';
    static const String  suggestedVideo= 'api/library';
    static const String  prescriptionResume= 'api/prescription/resume';
+   static const String  prescribe= 'api/prescription';
+  static String prescribedDetails(String id) => 'api/library/$id';
+  static const String favourite = 'api/library/favorites';
+  static  String favouriteId(String id) => 'api/library/$id/favorite';
+
 
 
 }

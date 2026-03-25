@@ -33,13 +33,14 @@ class ApiClient {
 
  Future<dynamic> getRequest({
     required String endpoints,
-  
+    Map<String, dynamic>? queryParameters,
   }) async {
    
     try {
       log("\n\n\n\nurl :${ApiEndpoints.baseUrl}/$endpoints \n\n\n\n");
       final response = await _dio.get(
         '/$endpoints',
+        queryParameters: queryParameters,
         options: Options(
           headers: headers ?? {"Content-Type": "application/json"},
         ),

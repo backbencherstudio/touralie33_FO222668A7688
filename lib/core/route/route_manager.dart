@@ -94,19 +94,21 @@ class RouteGenerator {
       case RoutesName.prescibedDetailsScreen:
         final args = routeSettings.arguments;
         String? id;
-        String? videoUrl;
+   
         if (args is String) {
           id = args;
         } else if (args is Map) {
           final idValue = args['id'];
-          final videoValue = args['videoUrl'];
+       
           if (idValue != null) id = idValue.toString();
-          if (videoValue != null) videoUrl = videoValue.toString();
+         
         }
         return MaterialPageRoute(
           builder: (_) => PrescibedDetailsScreen(
             id: id,
-            videoUrl: videoUrl,
+           
+ 
+         
           ),
         );
       case RoutesName.settingScreen:
