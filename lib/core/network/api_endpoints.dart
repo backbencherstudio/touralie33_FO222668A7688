@@ -18,6 +18,8 @@ class ApiEndpoints {
   static String prescribedDetails(String id) => 'api/library/$id';
   static const String favourite = 'api/library/favorites';
   static  String favouriteId(String id) => 'api/library/$id/favorite';
+  static String libraryProgress(String id) => 'api/library/$id/progress';
+  static  const String watchHistory = 'api/library/watch-history';
 
 
 

@@ -10,6 +10,7 @@ import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/screen
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/screen/completed_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/screen/progess_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/view/widet/custome_widget_profile.dart';
+import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customeAppBarHome/custome_app_bar_home.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -31,6 +32,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     super.initState();
     Future.microtask(_loadProfileMeasures);
+    Future.microtask((){
+      ref.read(profileProvider.notifier).profileData();
+    });
   }
 
   Future<void> _loadProfileMeasures() async {

@@ -8,11 +8,21 @@ import 'package:video_player/video_player.dart';
 class CustomVideoPlayer extends StatefulWidget {
   final String videoUrl;
   final String thumbnailAsset;
+  final int initialPositionMilliseconds;
+  final int playRequestId;
+  final ValueChanged<int>? onPositionChanged;
+  final ValueChanged<int>? onCompleted;
+  final ValueChanged<int>? onPlaybackStopped;
 
   const CustomVideoPlayer({
     super.key,
     required this.videoUrl,
     required this.thumbnailAsset,
+    this.initialPositionMilliseconds = 0,
+    this.playRequestId = 0,
+    this.onPositionChanged,
+    this.onCompleted,
+    this.onPlaybackStopped,
   });
 
   @override
@@ -28,6 +38,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   bool _isDraggingSlider = false;
   double? _dragValueMs;
   bool _wasPlayingBeforeDrag = false;
+  int _lastReportedSecond = -1;
+  bool _completionReported = false;
 
   String _normalizeUrl(String url) {
     final trimmed = url.trim();
@@ -55,7 +67,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   @override
   void didUpdateWidget(covariant CustomVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.videoUrl != widget.videoUrl) {
+    if (oldWidget.videoUrl != widget.videoUrl ||
+        oldWidget.initialPositionMilliseconds !=
+            widget.initialPositionMilliseconds) {
       _controller?.removeListener(_refresh);
       _controller?.dispose();
       _controller = null;
@@ -65,11 +79,28 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       _isDraggingSlider = false;
       _dragValueMs = null;
       _wasPlayingBeforeDrag = false;
+      _lastReportedSecond = -1;
+      _completionReported = false;
+    }
+    if (oldWidget.playRequestId != widget.playRequestId) {
+      if (!_showVideo) {
+        _startVideo();
+      } else if (_controller != null &&
+          _controller!.value.isInitialized &&
+          !_controller!.value.isPlaying) {
+        _controller!.play();
+      }
     }
   }
 
   @override
   void dispose() {
+    final value = _controller?.value;
+    if (value != null && value.isInitialized) {
+      Future.microtask(() {
+        widget.onPlaybackStopped?.call(value.position.inMilliseconds);
+      });
+    }
     _controller?.removeListener(_refresh);
     _controller?.dispose();
     super.dispose();
@@ -93,6 +124,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       }
       _controller = controller;
       _controller!.addListener(_refresh);
+      if (widget.initialPositionMilliseconds > 0) {
+        await _controller!.seekTo(
+          Duration(milliseconds: widget.initialPositionMilliseconds),
+        );
+      }
       await _controller!.setVolume(_isMuted ? 0 : 1);
       await _controller!.play();
       setState(() {
@@ -116,6 +152,23 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   }
 
   void _refresh() {
+    final value = _controller?.value;
+    if (value != null && value.isInitialized) {
+      final currentSecond = value.position.inSeconds;
+      if (currentSecond != _lastReportedSecond) {
+        _lastReportedSecond = currentSecond;
+        widget.onPositionChanged?.call(value.position.inMilliseconds);
+      }
+
+      final totalMs = value.duration.inMilliseconds;
+      final currentMs = value.position.inMilliseconds;
+      if (!_completionReported &&
+          totalMs > 0 &&
+          currentMs >= totalMs - 1000) {
+        _completionReported = true;
+        widget.onCompleted?.call(currentMs);
+      }
+    }
     if (mounted) setState(() {});
   }
 

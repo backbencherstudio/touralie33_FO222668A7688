@@ -94,21 +94,28 @@ class RouteGenerator {
       case RoutesName.prescibedDetailsScreen:
         final args = routeSettings.arguments;
         String? id;
-   
+        String? videoUrl;
+        int initialPositionMilliseconds = 0;
         if (args is String) {
           id = args;
         } else if (args is Map) {
           final idValue = args['id'];
-       
+          final videoValue = args['videoUrl'];
+          final initialPositionValue = args['initialPositionMilliseconds'];
           if (idValue != null) id = idValue.toString();
-         
+          if (videoValue != null) videoUrl = videoValue.toString();
+          if (initialPositionValue is int) {
+            initialPositionMilliseconds = initialPositionValue;
+          } else if (initialPositionValue != null) {
+            initialPositionMilliseconds =
+                int.tryParse(initialPositionValue.toString()) ?? 0;
+          }
         }
         return MaterialPageRoute(
           builder: (_) => PrescibedDetailsScreen(
             id: id,
-           
- 
-         
+            videoUrl: videoUrl,
+            initialPositionMilliseconds: initialPositionMilliseconds,
           ),
         );
       case RoutesName.settingScreen:

@@ -10,6 +10,8 @@ import 'package:touralie33_fo222668a7688/data/models/prescribed_detail_model.dar
     as detail_model;
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/prescribed_details_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/library_progress_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_set/workOut_set.dart';
@@ -18,15 +20,13 @@ class PrescibedDetailsScreen extends ConsumerStatefulWidget {
   const PrescibedDetailsScreen({
     super.key,
     this.id,
- 
     this.videoUrl,
-  
+    this.initialPositionMilliseconds = 0,
   });
 
   final String? id;
-
   final String? videoUrl;
- 
+  final int initialPositionMilliseconds;
 
   @override
   ConsumerState<PrescibedDetailsScreen> createState() =>
@@ -35,22 +35,42 @@ class PrescibedDetailsScreen extends ConsumerStatefulWidget {
 
 class _PrescibedDetailsScreenState
     extends ConsumerState<PrescibedDetailsScreen> {
+  final ScrollController _scrollController = ScrollController();
   bool _isExpanded = false;
   String? _selectedVideoUrl;
   String? _selectedThumbnail;
-  int _selectedChapterIndex = 0;
+  int? _selectedChapterIndex;
+  int? _selectedPositionMilliseconds;
+  int _playRequestId = 0;
+  late final LibraryProgressProvider _libraryProgressNotifier;
+  late final ProfileProvider _profileNotifier;
+  late final PrescribedDetailsProvider _prescribedDetailsNotifier;
 
   @override
   void initState() {
     super.initState();
+    _libraryProgressNotifier = ref.read(libraryProgressProvider.notifier);
+    _profileNotifier = ref.read(profileProvider.notifier);
+    _prescribedDetailsNotifier =
+        ref.read(prescribedDetailsNotifierProvider.notifier);
+    if (widget.initialPositionMilliseconds > 0) {
+      _selectedPositionMilliseconds = widget.initialPositionMilliseconds;
+    }
     Future.microtask(() {
       final id = widget.id;
       if (id != null && id.isNotEmpty) {
-        ref
-            .read(prescribedDetailsNotifierProvider.notifier)
-            .getPresCribedDetails(id: id);
+        _prescribedDetailsNotifier.getPresCribedDetails(id: id);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    Future.microtask(() {
+      _profileNotifier.profileData();
+    });
+    _scrollController.dispose();
+    super.dispose();
   }
 
   int? _parseTimeToSeconds(String? value) {
@@ -67,6 +87,49 @@ class _PrescibedDetailsScreenState
       return (parts[0] ?? 0) * 60 + (parts[1] ?? 0);
     }
     return null;
+  }
+
+  int _chapterStartMilliseconds(detail_model.VideoChapters chapter) {
+    return (_parseTimeToSeconds(chapter.startTime) ?? 0) * 1000;
+  }
+
+  int _normalizeStoredPositionMilliseconds(
+    int rawPosition,
+    int? durationHintSeconds,
+  ) {
+    if (rawPosition <= 0) {
+      return 0;
+    }
+    if (durationHintSeconds != null && rawPosition <= durationHintSeconds + 5) {
+      return rawPosition * 1000;
+    }
+    return rawPosition;
+  }
+
+  int? _chapterEndMilliseconds(detail_model.VideoChapters chapter) {
+    final seconds = _parseTimeToSeconds(chapter.endTime);
+    return seconds == null ? null : seconds * 1000;
+  }
+
+  int _resolveChapterIndex({
+    required List<detail_model.VideoChapters> chapters,
+    required int positionMilliseconds,
+  }) {
+    if (chapters.isEmpty || positionMilliseconds <= 0) {
+      return 0;
+    }
+
+    for (int index = 0; index < chapters.length; index++) {
+      final chapter = chapters[index];
+      final start = _chapterStartMilliseconds(chapter);
+      final end = _chapterEndMilliseconds(chapter);
+      if (positionMilliseconds >= start &&
+          (end == null || positionMilliseconds <= end)) {
+        return index;
+      }
+    }
+
+    return 0;
   }
 
   String _formatChapterDuration(String? startTime, String? endTime) {
@@ -87,6 +150,7 @@ class _PrescibedDetailsScreenState
   List<Widget> _buildChapterWorkoutSets({
     required List<detail_model.VideoChapters> chapters,
     required detail_model.Data? workout,
+    required int selectedChapterIndex,
   }) {
     return chapters.asMap().entries.map((entry) {
       final chapter = entry.value;
@@ -101,17 +165,20 @@ class _PrescibedDetailsScreenState
             chapter.endTime,
           ),
           title: chapter.title ?? 'Workout Chapter',
-          iconBgColor: entry.key == _selectedChapterIndex
+          iconBgColor: entry.key == selectedChapterIndex
               ? ColorManager.backgroundColorgreen
               : null,
-          borderColor: entry.key == _selectedChapterIndex
+          borderColor: entry.key == selectedChapterIndex
               ? ColorManager.backgroundColorgreen1
               : null,
           ontap: () {
             setState(() {
               _selectedChapterIndex = entry.key;
-              _selectedVideoUrl = chapter.videoUrl ?? workout?.url;
+              _selectedVideoUrl =
+                  chapter.videoUrl ?? workout?.url ?? widget.videoUrl;
               _selectedThumbnail = chapter.thumbnailUrl ?? workout?.thumbnailUrl;
+              _selectedPositionMilliseconds =
+                  _chapterStartMilliseconds(chapter);
             });
           },
         ),
@@ -210,17 +277,32 @@ class _PrescibedDetailsScreenState
     final levelText =  workout.level ?? "";
     final chapters = workout.videoChapters ?? const <detail_model.VideoChapters>[];
     final chapterCount = chapters.isEmpty ? 1 : chapters.length;
+    final normalizedBackendPositionMilliseconds =
+        _normalizeStoredPositionMilliseconds(
+          workout.lastWatchPosition ?? 0,
+          workout.duration,
+        );
+    final effectiveInitialPositionMilliseconds =
+        _selectedPositionMilliseconds ??
+        (widget.initialPositionMilliseconds > 0
+            ? widget.initialPositionMilliseconds
+            : normalizedBackendPositionMilliseconds);
+    final effectiveSelectedChapterIndex = _selectedChapterIndex ??
+        _resolveChapterIndex(
+          chapters: chapters,
+          positionMilliseconds: effectiveInitialPositionMilliseconds,
+        );
     final currentVideoUrl = _selectedVideoUrl ??
-      
+        widget.videoUrl ??
         workout.url ??
         '';
     final currentThumbnail = _selectedThumbnail ??
-     
         workout.thumbnailUrl ??
         ImageManager.gymGuide;
     final chapterWidgets = _buildChapterWorkoutSets(
       chapters: chapters,
       workout: workout,
+      selectedChapterIndex: effectiveSelectedChapterIndex,
     );
 
     return Scaffold(
@@ -247,6 +329,7 @@ class _PrescibedDetailsScreenState
         child: Padding(
           padding: EdgeInsets.all(12.r),
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               children: [
                 Container(
@@ -266,6 +349,47 @@ class _PrescibedDetailsScreenState
                         CustomVideoPlayer(
                           videoUrl: currentVideoUrl,
                           thumbnailAsset: currentThumbnail,
+                          initialPositionMilliseconds:
+                              effectiveInitialPositionMilliseconds,
+                          playRequestId: _playRequestId,
+                          onPositionChanged: (position) {
+                            final id = widget.id;
+                            if (id == null || id.isEmpty) return;
+                            if (chapters.isNotEmpty) {
+                              final liveChapterIndex = _resolveChapterIndex(
+                                chapters: chapters,
+                                positionMilliseconds: position,
+                              );
+                              if (_selectedChapterIndex != liveChapterIndex) {
+                                setState(() {
+                                  _selectedChapterIndex = liveChapterIndex;
+                                });
+                              }
+                            }
+                            _libraryProgressNotifier.syncProgress(
+                                  id: id,
+                                  positionMilliseconds: position,
+                                );
+                          },
+                          onPlaybackStopped: (position) {
+                            final id = widget.id;
+                            if (id == null || id.isEmpty) return;
+                            _libraryProgressNotifier.syncProgress(
+                                  id: id,
+                                  positionMilliseconds: position,
+                                  force: true,
+                                );
+                          },
+                          onCompleted: (position) {
+                            final id = widget.id;
+                            if (id == null || id.isEmpty) return;
+                            _libraryProgressNotifier.syncProgress(
+                                  id: id,
+                                  positionMilliseconds: position,
+                                  isCompleted: true,
+                                  force: true,
+                                );
+                          },
                         ),
                         SizedBox(height: 10.h),
                         Row(
@@ -404,8 +528,7 @@ class _PrescibedDetailsScreenState
                                         ),
                                         SizedBox(width: 4.w),
                                         Text(
-                             
-                                              '${chapters.isEmpty ? 1 : _selectedChapterIndex + 1}/$chapterCount videos',
+                                          '${chapters.isEmpty ? 1 : effectiveSelectedChapterIndex + 1}/$chapterCount videos',
                                           style: getMedium500Style16(
                                             color: ColorManager.textPrimary,
                                             fontSize: 13.sp,
@@ -424,16 +547,20 @@ class _PrescibedDetailsScreenState
                         ),
                         SizedBox(height: 15.h),
                         Customebutton(
-                          onTap: 
-                              () {
-                                if (currentVideoUrl != _selectedVideoUrl ||
-                                    currentThumbnail != _selectedThumbnail) {
-                                  setState(() {
-                                    _selectedVideoUrl = currentVideoUrl;
-                                    _selectedThumbnail = currentThumbnail;
-                                  });
-                                }
-                              },
+                          onTap: () {
+                            if (_scrollController.hasClients) {
+                              _scrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 350),
+                                curve: Curves.easeOut,
+                              );
+                            }
+                            setState(() {
+                              _selectedVideoUrl = currentVideoUrl;
+                              _selectedThumbnail = currentThumbnail;
+                              _playRequestId++;
+                            });
+                          },
                           text:  "Watch Now",
                           textColor: ColorManager.whiteColor,
                           color: ColorManager.blackColor,
