@@ -20,7 +20,7 @@ class ApiEndpoints {
   static  String favouriteId(String id) => 'api/library/$id/favorite';
   static String libraryProgress(String id) => 'api/library/$id/progress';
   static  const String watchHistory = 'api/library/watch-history';
-
-
-
+  static  const String membership = 'api/membership/plans';
+  static  String memberShipId(String id) => 'api/membership/$id';
+  static const String notification = 'api/notification';
 }

@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/data/models/membership_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/subscription/view/widget/plan_widget.dart';
+import 'package:touralie33_fo222668a7688/presentation/subscription/viewModel/subscription_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 
-class SubscriptionScreen extends StatelessWidget {
+class SubscriptionScreen extends ConsumerStatefulWidget {
   const SubscriptionScreen({super.key});
 
   @override
+  ConsumerState<SubscriptionScreen> createState() => _SubscriptionScreenState();
+}
+
+class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
+  @override
+  void initState() {
+    Future.microtask((){
+      ref.read(subscriptionProvider.notifier).subscription();
+    });
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+    final subscriptionState = ref.watch(subscriptionProvider);
+    final membershipPlans = subscriptionState.membershipModel?.data ?? <Data>[];
+
     return Scaffold(
       backgroundColor: ColorManager.primary,
       appBar: PreferredSize(
@@ -40,7 +59,7 @@ class SubscriptionScreen extends StatelessWidget {
         )),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Fixed typo here
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 10.h),
               Center(
@@ -74,72 +93,75 @@ class SubscriptionScreen extends StatelessWidget {
         
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Column(
-                  children: [
-                   
-                    PlanWidget(
-                      title: "Platinum",
-                      price: "\$199.00/week",
-                      description: "The complete program for post-operative patients 8 those needing a fast return to work or sport - focused on reducing inflammation, increasing active range of motion 8 restoring function.",
-                      featureHeader: "Gym, Hydrotherapy, Sauna & Ice Bath",
-                      features: [
-                        "Initial 1-Hour Exercise Physiology Session",
-                        "Monthly 30-Minute Exercise Physiology Sessions",
-                        "By Appointment Only - to ensure your spot",
-                        "Access to Staff for Ongoing Support",
-                        "No Contract Period",
-                        "Each Session Includes: Cym and/or Hydrotherapy, Sauna / Ice Bath",
+                child: Builder(
+                  builder: (context) {
+                    if (subscriptionState.isloading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (subscriptionState.errorMessage != null) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24.h),
+                          child: Text(
+                            subscriptionState.errorMessage!,
+                            textAlign: TextAlign.center,
+                            style: getMedium500Style12(
+                              color: Colors.red,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (membershipPlans.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24.h),
+                          child: Text(
+                            "No membership plans found",
+                            textAlign: TextAlign.center,
+                            style: getMedium500Style12(
+                              color: ColorManager.textPrimary,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: [
+                        ...membershipPlans.map<Widget>((plan) {
+                          final formattedPrice = plan.price == null
+                              ? ''
+                              : '\$${plan.price!.toStringAsFixed(2)}${(plan.period ?? '').isEmpty ? '' : '/${plan.period}'}';
+                          return PlanWidget(
+                            title: plan.title,
+                            price: formattedPrice,
+                            description: plan.description,
+                            featureHeader: plan.badge,
+                            features: plan.features,
+                            onSelect: () {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                RoutesName.getInTouchScreen,
+                                arguments: {
+                                  'id': plan.id,
+                                  'title': plan.title,
+                                  
+                                },
+                              );
+                            },
+                          );
+                        }),
+                        SizedBox(height: 20.h),
                       ],
-                      onSelect: () {
-                             Navigator.pushReplacementNamed(context,RoutesName.getInTouchScreen);
-                      },
-                    ),
-                    
-                    // GOLD PLAN
-                    PlanWidget(
-                      title: "Gold",
-                      price: "\$165.00/week",
-                      description: "When you need structured care & guidance, with focus on strength & function for your rehabilitation journey.",
-                      featureHeader: "Gym + Hydrotherapy",
-                      features: [
-                        "Gym & Hydrotherapy Programming",
-                        "Initial 1-Hour Exercise Physiology Session",
-                        "Monthly 30-Minute Exercise Physiology Sessions",
-                        "By Appointment Only - to ensure your spot",
-                        "No Contract Period",
-                      ],
-                      onSelect: () {
-                             Navigator.pushReplacementNamed(context,RoutesName.getInTouchScreen);
-                      },
-                    ),
-                     PlanWidget(
-                      title: "Weekly Membership",
-                      price: "\$79.00/week",
-                      description: "If you already have a program from us or your external physio, and you're looking for the best hydrotherapy and gym combination in the Illawarra to stay fit, strong, functional, and pain-free.",
-                      featureHeader: "Gym + Hydrotherapy",
-                      features: [
-                        "Hydrotherapy & gym",
-                        "By appointment only to ensure your spot",
-                        "No Contracted period",
-                        "Ask for assistance at any time!",
-                      
-                      ],
-                      onSelect: () {
-                        Navigator.pushReplacementNamed(context,RoutesName.getInTouchScreen);
-                      },
-                    ),
-                     PlanWidget(
-                      title: "One-off Exercise Prescription",
-                      price: "\$199.00/hour",
-                    
-                      onSelect: () {
-                             Navigator.pushReplacementNamed(context,RoutesName.getInTouchScreen);
-                      },
-                    ),
-                    
-                
-                    SizedBox(height: 20.h), 
-                  ],
+                    );
+                  },
                 ),
               ),
             ],

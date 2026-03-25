@@ -49,7 +49,6 @@ class WatchHistoryList extends ConsumerWidget {
           progressState.syncedPositionById[item.id] ??
           item.lastPlayedPosition ??
           0;
-
       if (showAll) return true;
       if (showCompleted) {
         return isCompleted;

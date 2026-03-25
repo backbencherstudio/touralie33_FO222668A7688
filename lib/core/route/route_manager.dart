@@ -125,7 +125,29 @@ class RouteGenerator {
       case RoutesName.subscriptionScreen :
         return MaterialPageRoute(builder: (_) => SubscriptionScreen ());
       case RoutesName.getInTouchScreen  :
-        return MaterialPageRoute(builder: (_) => GetInTouchScreen ());
+        final args = routeSettings.arguments;
+        String? planId;
+        String? planTitle;
+        String? planPrice;
+        String? planPeriod;
+        if (args is Map) {
+          final idValue = args['id'];
+          final titleValue = args['title'];
+          final priceValue = args['price'];
+          final periodValue = args['period'];
+          if (idValue != null) planId = idValue.toString();
+          if (titleValue != null) planTitle = titleValue.toString();
+          if (priceValue != null) planPrice = priceValue.toString();
+          if (periodValue != null) planPeriod = periodValue.toString();
+        }
+        return MaterialPageRoute(
+          builder: (_) => GetInTouchScreen(
+            planId: planId,
+            planTitle: planTitle,
+            planPrice: planPrice,
+            planPeriod: planPeriod,
+          ),
+        );
       case RoutesName.playlistScreen  :
         return MaterialPageRoute(builder: (_) => PlaylistScreen ());
       case RoutesName.emailOtpVerify  :

@@ -46,6 +46,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
         scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Divider(),
             SizedBox(height: 10.h),
@@ -83,12 +84,14 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             else if (prescribed.isEmpty)
               Padding(
                 padding: EdgeInsets.all(16.r),
-                child: Text(
-                  "No prescribed videos found",
-                  style: getMedium500Style12(
-                    color: ColorManager.blackColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                child: Center(
+                  child: Text(
+                    "No prescribed videos found",
+                    style: getMedium500Style12(
+                      color: ColorManager.blackColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               )
