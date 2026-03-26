@@ -1,6 +1,6 @@
 class ApiEndpoints {
   static const String baseUrl =
-      "http://192.168.7.12:4001/";
+      "https://offer-goat-ever-shuttle.trycloudflare.com/";
   static const String register = 'api/auth/register';
    static const String login = 'api/auth/login';
 

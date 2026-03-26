@@ -10,15 +10,28 @@ import 'response_handle.dart';
 
 
 class ApiClient {
+  static const Duration _defaultTimeout = Duration(seconds: 30);
+  static const Duration _uploadTimeout = Duration(seconds: 60);
+
   static final Dio _dio = Dio(
     BaseOptions(
       baseUrl: ApiEndpoints.baseUrl,
-      connectTimeout: Duration(seconds: 10),
-      sendTimeout: Duration(seconds: 10),
-      receiveTimeout: Duration(seconds: 10),
+      connectTimeout: _defaultTimeout,
+      sendTimeout: _defaultTimeout,
+      receiveTimeout: _defaultTimeout,
     ),
   );
   static Map<String, String>? headers;
+
+  String _normalizePath(String endpoints) => endpoints.replaceFirst(RegExp(r'^/+'), '');
+
+  Map<String, String> _buildHeaders({bool isMultipart = false}) {
+    final mergedHeaders = <String, String>{
+      ...?headers,
+      'Content-Type': isMultipart ? 'multipart/form-data' : 'application/json',
+    };
+    return mergedHeaders;
+  }
 
   static Future <void> headerSet(String? token) async {
     final tokn = await SharedPreferenceData.getToken();
@@ -39,10 +52,10 @@ class ApiClient {
     try {
       log("\n\n\n\nurl :${ApiEndpoints.baseUrl}/$endpoints \n\n\n\n");
       final response = await _dio.get(
-        '/$endpoints',
+        _normalizePath(endpoints),
         queryParameters: queryParameters,
         options: Options(
-          headers: headers ?? {"Content-Type": "application/json"},
+          headers: _buildHeaders(),
         ),
       );
  
@@ -71,10 +84,10 @@ class ApiClient {
     try {
       log("\n\nurl :${ApiEndpoints.baseUrl}/$endpoints\n\n");
       final response = await _dio.post(
-        '/$endpoints',
+        _normalizePath(endpoints),
         data: body ?? formData,
         options: Options(
-          headers: headers ?? {"Content-Type": "application/json"},
+          headers: _buildHeaders(isMultipart: formData != null),
         ),
       );
   
@@ -101,10 +114,10 @@ class ApiClient {
     try {
       log("\n\nurl :${ApiEndpoints.baseUrl}/$endpoints\n\n");
       final response = await _dio.put(
-        '/$endpoints',
+        _normalizePath(endpoints),
         data: body,
         options: Options(
-          headers: headers ?? {"Content-Type": "application/json"},
+          headers: _buildHeaders(),
         ),
       );
       // debugPrint("\nPUT Request Successful: ${response.data}\n");
@@ -132,15 +145,12 @@ class ApiClient {
     try {
       log("\n\nurl :${ApiEndpoints.baseUrl}/$endpoints\n\n");
       final response = await _dio.patch(
-        '/$endpoints',
+        _normalizePath(endpoints),
         data: body ?? formData,
         options: Options(
-          headers: headers ??
-              {
-                "Content-Type": formData != null
-                    ? "multipart/form-data"
-                    : "application/json",
-              },
+          headers: _buildHeaders(isMultipart: formData != null),
+          sendTimeout: formData != null ? _uploadTimeout : _defaultTimeout,
+          receiveTimeout: formData != null ? _uploadTimeout : _defaultTimeout,
         ),
       );
 
@@ -172,9 +182,9 @@ class ApiClient {
     try {
       log("\n\nurl :${ApiEndpoints.baseUrl}/$endpoints\n\n");
       final response = await _dio.delete(
-        '/$endpoints',
+        _normalizePath(endpoints),
         options: Options(
-          headers: headers ?? {"Content-Type": "multipart/form-data"},
+          headers: _buildHeaders(),
         ),
       );
 

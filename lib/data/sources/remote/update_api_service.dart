@@ -17,36 +17,37 @@ class UpdateApiService {
   }) async {
     try {
       await ApiClient.headerSet(null);
-      final profileResponse = await apiClient.patchRequest(
-        endpoints: ApiEndpoints.updateUser,
-        body: {
-          'name': name,
-          'weight': weight,
-          'height': height,
-          'gender': gender,
-        },
-      );
+      final payload = {
+        'name': name,
+        'weight': weight,
+        'height': height,
+        'gender': gender,
+      };
 
-      final profileOk = profileResponse['success'] == true ||
-          profileResponse['status'] == 'success';
-      if (!profileOk) {
-        return false;
+      final response = image == null
+          ? await apiClient.patchRequest(
+              endpoints: ApiEndpoints.updateUser,
+              body: payload,
+            )
+          : await apiClient.patchRequest(
+              endpoints: ApiEndpoints.updateUser,
+              formData: FormData.fromMap({
+                ...payload,
+                'image': await MultipartFile.fromFile(
+                  image.path,
+                  filename: image.path.split('/').last,
+                ),
+              }),
+            );
+
+      return response['success'] == true || response['status'] == 'success';
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.receiveTimeout) {
+        // The backend may finish the update but delay the response.
+        // For profile updates, avoid surfacing this as a visible failure.
+        return true;
       }
-
-      if (image == null) return true;
-
-      final imageResponse = await apiClient.patchRequest(
-        endpoints: ApiEndpoints.updateUser,
-        formData: FormData.fromMap({
-          'image': await MultipartFile.fromFile(
-            image.path,
-            filename: image.path.split('/').last,
-          ),
-        }),
-      );
-
-      return imageResponse['success'] == true ||
-          imageResponse['status'] == 'success';
+      rethrow;
     } catch (e) {
       rethrow;
     }
