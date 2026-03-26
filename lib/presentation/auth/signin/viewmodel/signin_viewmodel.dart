@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/auth_repository.dart';
@@ -32,9 +31,21 @@ class SignInViewModel extends StateNotifier<SignInState> {
       state = state.copyWith(isLoading: false); 
       return success;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString()); 
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: _normalizeErrorMessage(e),
+      );
       return false;
     }
+  }
+
+  String _normalizeErrorMessage(Object error) {
+    final message = error.toString();
+    const exceptionPrefix = 'Exception: ';
+    if (message.startsWith(exceptionPrefix)) {
+      return message.substring(exceptionPrefix.length).trim();
+    }
+    return message.trim();
   }
 }
 

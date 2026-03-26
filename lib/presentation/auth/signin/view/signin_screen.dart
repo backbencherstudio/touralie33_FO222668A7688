@@ -121,7 +121,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                       signInState.isLoading 
                       ? const Center(child: CircularProgressIndicator()) 
                       : Customebutton(
-                          text: "Login",
+                          text: "Sign In",
                           onTap: () async {
                           
                             if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -130,8 +130,6 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                               );
                               return;
                             }
-
-                   
                             final success = await ref.read(signInViewModelProvider.notifier).signIn(
                               email: _emailController.text.trim(),
                               password: _passwordController.text.trim(),
@@ -141,9 +139,13 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                             
                               Navigator.pushReplacementNamed(context, RoutesName.parentScreen);
                             } else {
-                             
+                              final latestState = ref.read(signInViewModelProvider);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(signInState.errorMessage ?? "Login Failed!")),
+                                SnackBar(
+                                  content: Text(
+                                    latestState.errorMessage ?? "Login Failed!",
+                                  ),
+                                ),
                               );
                             }
                           },

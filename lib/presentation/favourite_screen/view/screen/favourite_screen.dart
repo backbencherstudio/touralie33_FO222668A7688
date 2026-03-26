@@ -20,6 +20,12 @@ class FavouriteScreen extends ConsumerStatefulWidget {
 }
 
 class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
+  String _formatLevel(String? level) {
+    if (level == null || level.isEmpty) return 'Beginner';
+    final normalized = level.toLowerCase();
+    return normalized[0].toUpperCase() + normalized.substring(1);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -142,7 +148,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                           duration: "${item.duration ?? 0} min",
                           categoryName: item.category ?? "Categories Name",
                           title: item.title ?? "Back Mobility Program",
-                          level: item.level ?? "Beginner",
+                          level: _formatLevel(item.level),
                           imageUrl: item.thumbnailUrl ?? ImageManager.gymGuide,
                           isBookmarked: true,
                           bookmarkIconColor: ColorManager.blackColor,

@@ -85,8 +85,14 @@ class AuthApiService {
         log("$token");
         return true;
       } else {
+        final message = response is Map ? response['message'] : null;
+        if (message is String && message.isNotEmpty) {
+          throw Exception(message);
+        }
         return false;
       }
+    } on DioException catch (e) {
+      throw Exception(ErrorHandle.handleDioError(e));
     } catch (error) {
       rethrow;
     }

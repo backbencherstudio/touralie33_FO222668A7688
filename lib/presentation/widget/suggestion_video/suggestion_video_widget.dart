@@ -43,6 +43,8 @@ class SuggestionVideoWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final thumbnailHeight = 78.h;
+
     return InkWell(
       onTap: onPlayTap,
       child: Container(
@@ -69,19 +71,19 @@ class SuggestionVideoWidget extends ConsumerWidget {
                     child: imageUrl.startsWith('http')
                         ? Image.network(
                             imageUrl,
-                            height: 80.h,
+                            height: thumbnailHeight,
                             width: double.infinity,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Image.asset(
                               imageUrl,
-                              height: 80.h,
+                              height: thumbnailHeight,
                               width: double.infinity,
                               fit: BoxFit.cover,
                             ),
                           )
                         : Image.asset(
                             imageUrl,
-                            height: 80.h,
+                            height: thumbnailHeight,
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
@@ -128,7 +130,7 @@ class SuggestionVideoWidget extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 6.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -190,7 +192,7 @@ class SuggestionVideoWidget extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 3.h),
               Text(
                 title,
                 maxLines: 2,
@@ -200,9 +202,10 @@ class SuggestionVideoWidget extends ConsumerWidget {
                   fontSize: 13.sp,
                 ),
               ),
-              SizedBox(height: 6.h),
+              SizedBox(height: 4.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Row(
@@ -210,14 +213,17 @@ class SuggestionVideoWidget extends ConsumerWidget {
                       children: [
                         Image.asset(IconManager.clock, height: 14.h, width: 14.w),
                         SizedBox(width: 4.w),
-                        Expanded(
-                          child: Text(
-                            duration,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: getMedium500Style10(
-                              color: ColorManager.subtextColorGrey,
-                              fontSize: 12.sp,
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              duration,
+                              maxLines: 1,
+                              style: getMedium500Style10(
+                                color: ColorManager.subtextColorGrey,
+                                fontSize: 12.sp,
+                              ),
                             ),
                           ),
                         ),
@@ -225,20 +231,25 @@ class SuggestionVideoWidget extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(width: 6.w),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9.r),
-                      color: ColorManager.beginerColor,
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                    child: Text(
-                      level,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: getMedium500Style10(
-                        color: ColorManager.textPrimary,
-                        fontSize: 11.sp,
+                  Flexible(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(9.r),
+                        color: ColorManager.beginerColor,
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          level,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: getMedium500Style10(
+                            color: ColorManager.textPrimary,
+                            fontSize: 11.sp,
+                          ),
+                        ),
                       ),
                     ),
                   ),
