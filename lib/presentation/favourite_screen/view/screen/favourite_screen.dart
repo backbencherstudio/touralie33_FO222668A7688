@@ -8,6 +8,8 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.d
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/bottomSheet/bottomSheet_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/suggestion_video/suggestion_video_widget.dart';
@@ -155,6 +157,34 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                           videoCountText:
                               "${item.chaptersCount ?? 0} Videos",
                           progressText: "${index + 1}/${data.length}",
+                          onBookmarkTap: () async {
+                            try {
+                              await ref
+                                  .read(favouriteIdProvider.notifier)
+                                  .favouriteId(id: item.id!);
+                              ref
+                                  .read(suggestedNotifierProvider.notifier)
+                                  .addSuggestedFromFavourite(item);
+                              await ref
+                                  .read(favouriteProvider.notifier)
+                                  .getFavourite();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Bookmark updated'),
+                                  ),
+                                );
+                              }
+                            } catch (_) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Failed to update bookmark'),
+                                  ),
+                                );
+                              }
+                            }
+                          },
                           onPlayTap: () {
                             Navigator.pushNamed(
                               context,

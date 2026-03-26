@@ -23,6 +23,7 @@ class SuggestionVideoWidget extends ConsumerWidget {
   final bool isBookmarked;
   final bool enableBookmarkTap;
   final VoidCallback? onPlayTap;
+  final Future<void> Function()? onBookmarkTap;
 
   const SuggestionVideoWidget({
     super.key,
@@ -39,6 +40,7 @@ class SuggestionVideoWidget extends ConsumerWidget {
     this.bookmarkIconColor,
     this.isBookmarked = false,
     this.enableBookmarkTap = true,
+    this.onBookmarkTap,
   });
 
   @override
@@ -150,13 +152,18 @@ class SuggestionVideoWidget extends ConsumerWidget {
                     onTap: !enableBookmarkTap || id == null || id!.isEmpty
                         ? null
                         : () async {
+                            if (onBookmarkTap != null) {
+                              await onBookmarkTap!();
+                              return;
+                            }
+
                             try {
                               await ref
                                   .read(favouriteIdProvider.notifier)
                                   .favouriteId(id: id!);
                               ref
                                   .read(suggestedNotifierProvider.notifier)
-                                  .removeSuggestedById(id!);
+                                  .markSuggestedAsFavourite(id!);
                               await ref
                                   .read(favouriteProvider.notifier)
                                   .getFavourite();

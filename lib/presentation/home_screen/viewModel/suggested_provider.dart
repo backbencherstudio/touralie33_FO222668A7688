@@ -1,5 +1,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart' as favourite_model;
 import 'package:touralie33_fo222668a7688/data/models/suggested_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/suggest_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/suggested_api_service.dart';
@@ -46,11 +47,10 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
 
     try {
       final response = await repository.suggested();
-      final filteredResponse = _removeFavouriteItems(response);
 
       state = state.copyWith(
         isLoading: false,
-        suggestedData: filteredResponse,
+        suggestedData: response,
         errorMessage: null,
       );
     } catch (e) {
@@ -59,18 +59,6 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
         errorMessage: e.toString(),
       );
     }
-  }
-
-  SuggestedModel _removeFavouriteItems(SuggestedModel response) {
-    final filteredList =
-        (response.data ?? []).where((item) => item.isFavorite != true).toList();
-
-    return SuggestedModel(
-      success: response.success,
-      message: response.message,
-      data: filteredList,
-      metaData: response.metaData,
-    );
   }
 
   void removeSuggestedById(String id) {
@@ -87,6 +75,80 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
       message: currentModel.message,
       data: updatedList,
       metaData: currentModel.metaData,
+    );
+
+    state = state.copyWith(suggestedData: updatedModel);
+  }
+
+  void markSuggestedAsFavourite(String id) {
+    final currentModel = state.suggestedData;
+    final currentList = currentModel?.data;
+
+    if (currentModel == null || currentList == null) {
+      return;
+    }
+
+    final updatedList = currentList.map((item) {
+      if (item.id != id) {
+        return item;
+      }
+
+      return Data(
+        id: item.id,
+        title: item.title,
+        thumbnailUrl: item.thumbnailUrl,
+        category: item.category,
+        chaptersCount: item.chaptersCount,
+        createdAt: item.createdAt,
+        duration: item.duration,
+        level: item.level,
+        isFavorite: true,
+      );
+    }).toList();
+
+    final updatedModel = SuggestedModel(
+      success: currentModel.success,
+      message: currentModel.message,
+      data: updatedList,
+      metaData: currentModel.metaData,
+    );
+
+    state = state.copyWith(suggestedData: updatedModel);
+  }
+
+  void addSuggestedFromFavourite(favourite_model.Data item) {
+    final currentModel = state.suggestedData;
+    final currentList = currentModel?.data ?? <Data>[];
+
+    if (item.id == null || item.id!.isEmpty) {
+      return;
+    }
+
+    final alreadyExists = currentList.any((video) => video.id == item.id);
+    if (alreadyExists) {
+      return;
+    }
+
+    final updatedList = [
+      Data(
+        id: item.id,
+        title: item.title,
+        thumbnailUrl: item.thumbnailUrl,
+        category: item.category,
+        chaptersCount: item.chaptersCount,
+        createdAt: item.createdAt,
+        duration: item.duration,
+        level: item.level,
+        isFavorite: false,
+      ),
+      ...currentList,
+    ];
+
+    final updatedModel = SuggestedModel(
+      success: currentModel?.success ?? true,
+      message: currentModel?.message,
+      data: updatedList,
+      metaData: currentModel?.metaData,
     );
 
     state = state.copyWith(suggestedData: updatedModel);
