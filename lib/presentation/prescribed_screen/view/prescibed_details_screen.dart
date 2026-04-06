@@ -313,6 +313,7 @@ class _PrescibedDetailsScreenState
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: Customebar(
+              ontap: () => Navigator.pop(context),
               text:  "Watch Video",
             ),
           ),

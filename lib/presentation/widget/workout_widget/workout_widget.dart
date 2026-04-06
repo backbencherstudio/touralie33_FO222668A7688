@@ -20,7 +20,7 @@ class WorkoutWidget extends ConsumerWidget {
     String? id,
     required String description,
     required List<String> points,
-    required String videoUrl,
+    String? videoUrl,
   }) {
     showDialog(
       context: context,
@@ -50,9 +50,12 @@ class WorkoutWidget extends ConsumerWidget {
     final instruction = workout?.instruction;
     final imageUrl = workout?.thumbnail;
     final videoUrl = workout?.url;
+    final canOpenDetails = (workoutId ?? '').trim().isNotEmpty;
     final points = instruction?.points ?? const <String>[];
     final description =
-        instruction?.description ?? 'No instruction available right now.';
+        instruction?.description ??
+        workout?.progressMessage ??
+        'No instruction available right now.';
 
     return Container(
       decoration: BoxDecoration(
@@ -110,6 +113,8 @@ class WorkoutWidget extends ConsumerWidget {
                       SizedBox(height: 5.h),
                       Text(
                         workout?.title ?? "Today's Workout",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: getMedium500Style14(
                           color: ColorManager.subtextColor,
                           fontSize: 16.sp,
@@ -140,11 +145,22 @@ class WorkoutWidget extends ConsumerWidget {
                           ),
                         ],
                       ),
+                      if ((workout?.progressMessage ?? '').trim().isNotEmpty) ...[
+                        SizedBox(height: 8.h),
+                        Text(
+                          workout!.progressMessage!,
+                          style: getMedium500Style14(
+                            color: ColorManager.subtextColorGrey,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
                       SizedBox(height: 15.h),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20.r),
                         child: GestureDetector(
-                          onTap: videoUrl == null || videoUrl.isEmpty
+                          onTap: !canOpenDetails
                               ? null
                               : () => _openInstructionDialog(
                                     context: context,
@@ -187,7 +203,7 @@ class WorkoutWidget extends ConsumerWidget {
                       ),
                       SizedBox(height: 15.h),
                       Customebutton(
-                        onTap: videoUrl == null || videoUrl.isEmpty
+                        onTap: !canOpenDetails
                             ? () {}
                             : () => _openInstructionDialog(
                                   context: context,

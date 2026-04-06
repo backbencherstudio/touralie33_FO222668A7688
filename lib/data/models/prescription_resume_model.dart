@@ -38,6 +38,7 @@ class PrescriptionResumeData {
   String? url;
   int? lastWatchPosition;
   int? watchProgress;
+  String? progressMessage;
   List<VideoChapters>? videoChapters;
 
   PrescriptionResumeData({
@@ -54,25 +55,28 @@ class PrescriptionResumeData {
     this.url,
     this.lastWatchPosition,
     this.watchProgress,
+    this.progressMessage,
     this.videoChapters,
   });
 
   PrescriptionResumeData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    duration = json['duration'];
-    chapterCount = json['chapter_count'];
-    thumbnail = json['thumbnail'];
+    id = json['id']?.toString() ?? json['video_id']?.toString();
+    title = json['title']?.toString() ?? json['video_title']?.toString();
+    duration = json['duration'] ?? json['video_duration'];
+    chapterCount = json['chapter_count'] ?? json['total_videos'];
+    thumbnail = json['thumbnail']?.toString() ?? json['video_thumbnail']?.toString();
     instruction = json['instruction'] != null
         ? Instruction.fromJson(json['instruction'])
         : null;
-    watchStatus = json['watch_status'];
+    watchStatus = json['watch_status']?.toString();
     isCompleted = json['is_completed'];
     level = json['level']?.toString();
-    category = json['category']?.toString();
-    url = json['url'];
+    category =
+        json['category']?.toString() ?? json['prescription_title']?.toString();
+    url = json['url']?.toString();
     lastWatchPosition = json['last_watch_position'];
-    watchProgress = json['watch_progress'];
+    watchProgress = json['watch_progress'] ?? json['progress'];
+    progressMessage = json['progress_message']?.toString();
     if (json['video_chapters'] != null) {
       videoChapters = <VideoChapters>[];
       for (final v in json['video_chapters']) {
@@ -98,6 +102,7 @@ class PrescriptionResumeData {
     data['url'] = url;
     data['last_watch_position'] = lastWatchPosition;
     data['watch_progress'] = watchProgress;
+    data['progress_message'] = progressMessage;
     if (videoChapters != null) {
       data['video_chapters'] = videoChapters!.map((v) => v.toJson()).toList();
     }
