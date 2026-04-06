@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescribed_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/playlist/viewModel/prescribed_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/only_playlist_details_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/play_list/playlist_screen_widget.dart';
 
@@ -18,6 +19,19 @@ class PlaylistScreen extends ConsumerStatefulWidget {
 }
 
 class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
+  String _formatDate(String? rawDate) {
+    if (rawDate == null || rawDate.trim().isEmpty) {
+      return '';
+    }
+
+    final parsedDate = DateTime.tryParse(rawDate);
+    if (parsedDate == null) {
+      return rawDate;
+    }
+
+    return DateFormat('dd MMM yyyy').format(parsedDate);
+  }
+
   @override
   void initState() {
     Future.microtask(() {
@@ -29,7 +43,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
     final prescribedState = ref.watch(prescribedProvider);
-    final List<Data> prescribed = prescribedState.data?.data ?? [];
+    final List<PrescriptionData> prescribed = prescribedState.data?.data ?? [];
 
     return Scaffold(
       backgroundColor: ColorManager.primary,
@@ -72,12 +86,15 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
             else if (prescribedState.errorMessage != null)
               Padding(
                 padding: EdgeInsets.all(16.r),
-                child: Text(
-                  prescribedState.errorMessage!,
-                  style: getMedium500Style12(
-                    color: Colors.red,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                child: Center(
+                  child: Text(
+                    prescribedState.errorMessage!,
+                    textAlign: TextAlign.center,
+                    style: getMedium500Style12(
+                      color: ColorManager.blackColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               )
@@ -86,7 +103,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                 padding: EdgeInsets.all(16.r),
                 child: Center(
                   child: Text(
-                    "No prescribed videos found",
+                    "No data found.",
                     style: getMedium500Style12(
                       color: ColorManager.blackColor,
                       fontSize: 14.sp,
@@ -103,35 +120,36 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
     );
   }
 
-  Widget _buildPlaylistItem(Data data) {
+  Widget _buildPlaylistItem(PrescriptionData data) {
     final buttonText = _getButtonText(data);
-    final canOpenDetails = data.isCompleted != true;
+    final totalVideos = data.totalVideos ?? 0;
+    final completedVideos = data.totalCompletedVideos ?? 0;
+    final canOpenDetails = completedVideos < totalVideos;
 
     return PlayListScreenWidget(
       image: data.thumbnailUrl ?? ImageManager.gymGuide,
-      videoCount:
-          "${data.chaptersCount ?? 0} video${(data.chaptersCount ?? 0) == 1 ? '' : 's'}",
+      videoCount: "$completedVideos/$totalVideos videos",
       title: data.title ?? "",
-      videoDuration: "${data.duration ?? 0} min",
-      totalTime: data.level ?? "",
+      videoDuration: "$totalVideos video${totalVideos == 1 ? '' : 's'}",
+      totalTime: _formatDate(data.createdAt),
       buttonText: buttonText,
       buttonIconColor: Colors.white,
       onTap: canOpenDetails
           ? () {
-        Navigator.pushNamed(
+        Navigator.push(
           context,
-          RoutesName.prescibedDetailsScreen,
-          arguments: {
-            'id': data.id,
-          },
+          MaterialPageRoute(
+            builder: (_) => OnlyPlaylistDetailsScreen(id: data.id),
+          ),
         );
       }
           : null,
     );
   }
 
-  String _getButtonText(Data data) {
-    if (data.isCompleted == true) {
+  String _getButtonText(PrescriptionData data) {
+    if ((data.totalCompletedVideos ?? 0) >= (data.totalVideos ?? 0) &&
+        (data.totalVideos ?? 0) > 0) {
       return "Completed";
     }
 

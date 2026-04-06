@@ -1,5 +1,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart' as favourite_model;
 import 'package:touralie33_fo222668a7688/data/models/suggested_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/suggest_repository.dart';
@@ -56,7 +57,7 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: e.toString(),
+        errorMessage: ErrorHandle.formatErrorMessage(e),
       );
     }
   }

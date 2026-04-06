@@ -1,5 +1,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescribed_detail_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/prescribed_details_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/prescribed_detial_api_service.dart';
@@ -55,7 +56,7 @@ class PrescribedDetailsProvider extends StateNotifier<PrescribedDetailsState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: e.toString(),
+        errorMessage: ErrorHandle.formatErrorMessage(e),
       );
     }
   }

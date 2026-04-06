@@ -1,5 +1,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/verify_email_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/verify_email_api_service.dart';
 
@@ -35,7 +36,10 @@ class EmailOtpVerifyProvider extends StateNotifier<EmailOtpState>{
       }
     } catch (e) {
    
-      state = state.copyWith(loading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        loading: false,
+        errorMessage: ErrorHandle.formatErrorMessage(e),
+      );
       return false;
     }
     }

@@ -1,6 +1,6 @@
 class ApiEndpoints {
   static const String baseUrl =
-      "https://offer-goat-ever-shuttle.trycloudflare.com/";
+      "http://192.168.7.12:4001/";
   static const String register = 'api/auth/register';
    static const String login = 'api/auth/login';
 
@@ -16,6 +16,7 @@ class ApiEndpoints {
    static const String  prescriptionResume= 'api/prescription/resume';
    static const String  prescribe= 'api/prescription';
   static String prescribedDetails(String id) => 'api/library/$id';
+  static String prescriptionDetails(String id) => 'api/prescription/$id';
   static const String favourite = 'api/library/favorites';
   static  String favouriteId(String id) => 'api/library/$id/favorite';
   static String libraryProgress(String id) => 'api/library/$id/progress';

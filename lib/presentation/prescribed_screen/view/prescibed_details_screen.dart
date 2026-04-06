@@ -200,7 +200,7 @@ class _PrescibedDetailsScreenState
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
               child: Customebar(
-                text: "Your Prescribed Video",
+                text: "Watch Video",
               ),
             ),
           ),
@@ -230,7 +230,7 @@ class _PrescibedDetailsScreenState
               detailsState.errorMessage!,
               textAlign: TextAlign.center,
               style: getMedium500Style12(
-                color: Colors.red,
+                color: ColorManager.blackColor,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
               ),
@@ -256,7 +256,7 @@ class _PrescibedDetailsScreenState
         ),
         body: Center(
           child: Text(
-            "No details found",
+            "No data found.",
             style: getMedium500Style12(
               color: ColorManager.blackColor,
               fontSize: 14.sp,
@@ -313,7 +313,7 @@ class _PrescibedDetailsScreenState
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: Customebar(
-              text:  "Your Prescribed Video",
+              text:  "Watch Video",
             ),
           ),
         ),
@@ -472,101 +472,101 @@ class _PrescibedDetailsScreenState
                                 ),
                               ],
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-                                color: ColorManager.drawrColor.withValues(
-                                  alpha: .4,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  levelText,
-                                  style: getMedium500Style14(
-                                    color: ColorManager.textPrimary,
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // Container(
+                            //   decoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(8.r),
+                            //     color: ColorManager.drawrColor.withValues(
+                            //       alpha: .4,
+                            //     ),
+                            //   ),
+                            //   child: Padding(
+                            //     padding: const EdgeInsets.all(8.0),
+                            //     child: Text(
+                            //       levelText,
+                            //       style: getMedium500Style14(
+                            //         color: ColorManager.textPrimary,
+                            //         fontSize: 10.sp,
+                            //         fontWeight: FontWeight.w500,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                         SizedBox(height: 10.h),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.r),
-                            color: ColorManager.whiteColor,
-                            border: Border.all(
-                              color: ColorManager.backgroundColorgreen,
-                              width: .5.w,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(12.r),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                   "Workout Set",
-                                      style: getMedium500Style12(
-                                        color: ColorManager.textPrimary,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          IconManager.videoICon,
-                                          fit: BoxFit.cover,
-                                          height: 13.h,
-                                        ),
-                                        SizedBox(width: 4.w),
-                                        Text(
-                                          '${chapters.isEmpty ? 1 : effectiveSelectedChapterIndex + 1}/$chapterCount videos',
-                                          style: getMedium500Style16(
-                                            color: ColorManager.textPrimary,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.h),
-                                if (chapterWidgets.isNotEmpty) ...chapterWidgets,
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15.h),
-                        Customebutton(
-                          onTap: () {
-                            if (_scrollController.hasClients) {
-                              _scrollController.animateTo(
-                                0,
-                                duration: const Duration(milliseconds: 350),
-                                curve: Curves.easeOut,
-                              );
-                            }
-                            setState(() {
-                              _selectedVideoUrl = currentVideoUrl;
-                              _selectedThumbnail = currentThumbnail;
-                              _playRequestId++;
-                            });
-                          },
-                          text:  "Watch Now",
-                          textColor: ColorManager.whiteColor,
-                          color: ColorManager.blackColor,
-                          sufImage: IconManager.playButton,
-                          sufImageColor: ColorManager.whiteColor,
-                        ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(12.r),
+                        //     color: ColorManager.whiteColor,
+                        //     border: Border.all(
+                        //       color: ColorManager.backgroundColorgreen,
+                        //       width: .5.w,
+                        //     ),
+                        //   ),
+                        //   child: Padding(
+                        //     padding: EdgeInsets.all(12.r),
+                        //     child: Column(
+                        //       children: [
+                        //         Row(
+                        //           mainAxisAlignment:
+                        //               MainAxisAlignment.spaceBetween,
+                        //           children: [
+                        //             Text(
+                        //            "Workout Set",
+                        //               style: getMedium500Style12(
+                        //                 color: ColorManager.textPrimary,
+                        //                 fontSize: 16.sp,
+                        //                 fontWeight: FontWeight.w600,
+                        //               ),
+                        //             ),
+                        //             Row(
+                        //               children: [
+                        //                 Image.asset(
+                        //                   IconManager.videoICon,
+                        //                   fit: BoxFit.cover,
+                        //                   height: 13.h,
+                        //                 ),
+                        //                 SizedBox(width: 4.w),
+                        //                 Text(
+                        //                   '${chapters.isEmpty ? 1 : effectiveSelectedChapterIndex + 1}/$chapterCount videos',
+                        //                   style: getMedium500Style16(
+                        //                     color: ColorManager.textPrimary,
+                        //                     fontSize: 13.sp,
+                        //                     fontWeight: FontWeight.w400,
+                        //                   ),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ],
+                        //         ),
+                        //         SizedBox(height: 10.h),
+                        //         if (chapterWidgets.isNotEmpty) ...chapterWidgets,
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        // SizedBox(height: 15.h),
+                        // Customebutton(
+                        //   onTap: () {
+                        //     if (_scrollController.hasClients) {
+                        //       _scrollController.animateTo(
+                        //         0,
+                        //         duration: const Duration(milliseconds: 350),
+                        //         curve: Curves.easeOut,
+                        //       );
+                        //     }
+                        //     setState(() {
+                        //       _selectedVideoUrl = currentVideoUrl;
+                        //       _selectedThumbnail = currentThumbnail;
+                        //       _playRequestId++;
+                        //     });
+                        //   },
+                        //   text:  "Watch Now",
+                        //   textColor: ColorManager.whiteColor,
+                        //   color: ColorManager.blackColor,
+                        //   sufImage: IconManager.playButton,
+                        //   sufImageColor: ColorManager.whiteColor,
+                        // ),
                       ],
                     ),
                   ),

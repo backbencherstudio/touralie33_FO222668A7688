@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/models/personalization_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/personalization_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/personalization_api_service.dart';
@@ -46,7 +47,10 @@ class PersonalizationViewModel extends StateNotifier<PersonalizationState> {
     } catch (e) {
       log("Error fetching categories: $e");
 
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: ErrorHandle.formatErrorMessage(e),
+      );
     }
   }
 }

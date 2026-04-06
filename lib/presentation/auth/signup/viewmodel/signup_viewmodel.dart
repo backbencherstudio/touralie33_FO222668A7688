@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/auth_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/auth_api_service.dart';
@@ -72,7 +73,10 @@ class SignupViewmodel extends StateNotifier<SignUpState>{
       return success;
     } catch (e, st) {
       log('Signup failed: $e', stackTrace: st);
-      state = state.copyWith(isLoading: false, errorMessage: e.toString()); 
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: ErrorHandle.formatErrorMessage(e),
+      );
       return false;
     }
   }

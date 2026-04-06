@@ -61,7 +61,7 @@ class CustomeAppBarHome extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            ImageManager.profilePic,
+                            "",
                             fit: BoxFit.cover,
                           );
                         },
@@ -78,7 +78,7 @@ class CustomeAppBarHome extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  (name != null && name!.trim().isNotEmpty) ? name!.trim() : "Jannatul",
+                  (name != null && name!.trim().isNotEmpty) ? name!.trim() : "Unknown Name",
                   style: getMedium500Style18(
                     color: ColorManager.subtextColor,
                     fontSize: 16.sp,
@@ -87,7 +87,7 @@ class CustomeAppBarHome extends StatelessWidget {
                 Text(
                   (email != null && email!.trim().isNotEmpty)
                       ? email!.trim()
-                      : "jannatul@gmail.com",
+                      : "None",
                   style: getMedium500Style10(
                     color: const Color(0xFFA2A1A1), 
                     fontSize: 12.sp,

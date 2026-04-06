@@ -1,5 +1,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/favourite_id_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/favourite_id_api_service.dart';
 
@@ -25,7 +26,7 @@ class FavouriteIdProvider extends StateNotifier<FavouriteIdState>{
     catch(e){
       state = state.copyWith(
         isloading: false,
-        errormessage: e.toString(),
+        errormessage: ErrorHandle.formatErrorMessage(e),
       );
       rethrow;
     }

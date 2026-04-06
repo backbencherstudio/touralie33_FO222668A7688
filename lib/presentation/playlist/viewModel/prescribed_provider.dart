@@ -1,6 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescribed_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/prescribed_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/prescirbed_api_service.dart';
@@ -54,7 +54,7 @@ class PrescribedProvider extends StateNotifier<PrescribedState> {
     
       state = state.copyWith(
         isLoading: false, 
-        errorMessage: e.toString(),
+        errorMessage: ErrorHandle.formatErrorMessage(e),
       );
     }
   }

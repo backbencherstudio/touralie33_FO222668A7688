@@ -1,6 +1,7 @@
 import 'package:riverpod/legacy.dart';
 import 'package:dio/dio.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescription_resume_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/prescriptio_resume_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/prescription_resume_api_service.dart';
@@ -57,7 +58,7 @@ class GetPrescriptionResumeProvider
     } catch (e) {
       final message = e is DioException && e.response?.statusCode == 401
           ? 'Unauthorized request. Please sign in again.'
-          : e.toString();
+          : ErrorHandle.formatErrorMessage(e);
       state = state.copyWith(
         isLoading: false,
         errorMessage: message,

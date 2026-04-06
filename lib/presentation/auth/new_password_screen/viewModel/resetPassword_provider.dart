@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/resetPassword_reposityory.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/reset_password_api_service.dart';
 
@@ -33,7 +34,10 @@ class ResetPasswordProvider extends StateNotifier<ResetState> {
       state = state.copyWith(isLoading: false, errorMessage: null);
       return response;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: ErrorHandle.formatErrorMessage(e),
+      );
       return false;
     }
   }

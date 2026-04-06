@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/update_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/update_api_service.dart';
 
@@ -48,16 +48,7 @@ class SettingProvider extends StateNotifier<SettingState> {
       );
       return success;
     } catch (e) {
-      String message = e.toString();
-      if (e is DioException) {
-        final data = e.response?.data;
-        final rawMessage = data is Map ? data['message'] : null;
-        if (rawMessage is List) {
-          message = rawMessage.join(', ');
-        } else if (rawMessage != null) {
-          message = rawMessage.toString();
-        }
-      }
+      final message = ErrorHandle.formatErrorMessage(e);
       state = state.copyWith(isloading: false, errormessage: message);
       return false;
     }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart'; // Or just 'package:flutter_riverpod/flutter_riverpod.dart'
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/models/membership_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/member_ship_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/membership_api_service.dart';
@@ -45,7 +46,10 @@ class SubscriptionProvider extends StateNotifier<SubscriptionState> {
       return true;
     } catch (e) {
 
-      state = state.copyWith(isloading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isloading: false,
+        errorMessage: ErrorHandle.formatErrorMessage(e),
+      );
       return false;
     }
   }

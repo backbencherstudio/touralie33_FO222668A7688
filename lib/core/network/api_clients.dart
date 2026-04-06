@@ -69,7 +69,7 @@ class ApiClient {
         rethrow;
       } else {
         log('Non-Dio error (GET): $e', stackTrace: st);
-        throw Exception(e.toString());
+        throw Exception(ErrorHandle.formatErrorMessage(e));
       }
     }
   }
@@ -101,7 +101,7 @@ class ApiClient {
         rethrow;
       } else {
         log('Non-Dio error (POST): $e', stackTrace: st);
-        throw Exception(e.toString());
+        throw Exception(ErrorHandle.formatErrorMessage(e));
       }
     }
   }
@@ -131,7 +131,7 @@ class ApiClient {
         rethrow;
       } else {
         log('Non-Dio error (PUT): $e', stackTrace: st);
-        throw Exception(e.toString());
+        throw Exception(ErrorHandle.formatErrorMessage(e));
       }
     }
   }
@@ -168,7 +168,7 @@ class ApiClient {
         rethrow;
       } else {
         log('Non-Dio error (PATCH): $e', stackTrace: st);
-        throw Exception(e.toString());
+        throw Exception(ErrorHandle.formatErrorMessage(e));
       }
     }
   }
@@ -202,7 +202,7 @@ class ApiClient {
         rethrow;
       } else {
         log('Non-Dio error (DELETE): $e', stackTrace: st);
-        throw Exception(e.toString());
+        throw Exception(ErrorHandle.formatErrorMessage(e));
       }
     }
   }

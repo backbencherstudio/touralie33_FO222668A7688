@@ -1,7 +1,7 @@
 class PriscirbedModel {
   bool? success;
   String? message;
-  List<Data>? data;
+  List<PrescriptionData>? data;
   MetaData? metaData;
 
   PriscirbedModel({this.success, this.message, this.data, this.metaData});
@@ -10,90 +10,68 @@ class PriscirbedModel {
     success = json['success'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <PrescriptionData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(PrescriptionData.fromJson(v));
       });
     }
     metaData = json['meta_data'] != null
-        ? new MetaData.fromJson(json['meta_data'])
+        ? MetaData.fromJson(json['meta_data'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['message'] = this.message;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
-    if (this.metaData != null) {
-      data['meta_data'] = this.metaData!.toJson();
+    if (metaData != null) {
+      data['meta_data'] = metaData!.toJson();
     }
     return data;
   }
 }
 
-class Data {
+class PrescriptionData {
   String? id;
   String? title;
   String? thumbnailUrl;
-  String? url;
   String? watchStatus;
-  String? category;
-  int? chaptersCount;
+  int? totalVideos;
+  int? totalCompletedVideos;
   String? createdAt;
-  int? duration;
-  String? level;
-  bool? isCompleted;
-  int? lastWatchPosition;
 
-  Data(
-      {this.id,
-      this.title,
-      this.thumbnailUrl,
-      this.url,
-      this.watchStatus,
-      this.category,
-      this.chaptersCount,
-      this.createdAt,
-      this.duration,
-      this.level,
-      this.isCompleted,
-      this.lastWatchPosition});
+  PrescriptionData({
+    this.id,
+    this.title,
+    this.thumbnailUrl,
+    this.watchStatus,
+    this.totalVideos,
+    this.totalCompletedVideos,
+    this.createdAt,
+  });
 
-  Data.fromJson(Map<String, dynamic> json) {
+  PrescriptionData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     thumbnailUrl = json['thumbnail_url'];
-    url = json['video_url']?.toString() ??
-        json['url']?.toString() ??
-        json['mp4_url']?.toString() ??
-        json['mp4']?.toString();
     watchStatus = json['watch_status'];
-    category = json['category'];
-    chaptersCount = json['chapters_count'];
+    totalVideos = json['total_videos'];
+    totalCompletedVideos = json['total_completed_videos'];
     createdAt = json['created_at'];
-    duration = json['duration'];
-    level = json['level'];
-    isCompleted = json['is_completed'];
-    lastWatchPosition = json['last_watch_position'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['thumbnail_url'] = this.thumbnailUrl;
-    data['url'] = this.url;
-    data['watch_status'] = this.watchStatus;
-    data['category'] = this.category;
-    data['chapters_count'] = this.chaptersCount;
-    data['created_at'] = this.createdAt;
-    data['duration'] = this.duration;
-    data['level'] = this.level;
-    data['is_completed'] = this.isCompleted;
-    data['last_watch_position'] = this.lastWatchPosition;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['thumbnail_url'] = thumbnailUrl;
+    data['watch_status'] = watchStatus;
+    data['total_videos'] = totalVideos;
+    data['total_completed_videos'] = totalCompletedVideos;
+    data['created_at'] = createdAt;
     return data;
   }
 }
@@ -114,11 +92,11 @@ class MetaData {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['page'] = this.page;
-    data['limit'] = this.limit;
-    data['total'] = this.total;
-    data['search'] = this.search;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['page'] = page;
+    data['limit'] = limit;
+    data['total'] = total;
+    data['search'] = search;
     return data;
   }
 }

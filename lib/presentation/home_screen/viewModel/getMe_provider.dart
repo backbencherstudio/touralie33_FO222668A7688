@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/models/get_me_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/getMe_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/get_me_api_service.dart';
@@ -46,7 +47,10 @@ class GetMeProvider extends StateNotifier<GetState> {
       );
       return ok;
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: ErrorHandle.formatErrorMessage(e),
+      );
       return false;
     }
   }

@@ -27,6 +27,8 @@ class WorkoutSet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasDuration = (duration ?? '').trim().isNotEmpty;
+
     return InkWell(
       onTap:ontap,
       child: Container(
@@ -37,56 +39,70 @@ class WorkoutSet extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  if ((mainImage ?? '').startsWith('http'))
-                    Image.network(
-                      mainImage!,
-                      height: 58.h,
-                      width: 58.w,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                    )
-                  else
-                    Image.asset(mainImage ?? '', height: 58.h, width: 58.w),
-                  SizedBox(width: 12.w),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title ?? "",
-                        style: getMedium500Style14(
-                          color: ColorManager.textPrimary,
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Row(
+              Expanded(
+                child: Row(
+                  children: [
+                    if ((mainImage ?? '').startsWith('http'))
+                      Image.network(
+                        mainImage!,
+                        height: 58.h,
+                        width: 58.w,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                      )
+                    else
+                      Image.asset(mainImage ?? '', height: 58.h, width: 58.w),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: hasDuration
+                            ? MainAxisAlignment.start
+                            : MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            clockIcon ?? IconManager.clock,
-                            fit: BoxFit.cover,
-                            height: 13.h,
-                            width: 11.w,
-                          ),
-                          SizedBox(width: 4.w), 
                           Text(
-                            duration ?? '',
-                            style: getMedium500Style10(
-                              color: ColorManager.subtextColorGrey,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
+                            title ?? "",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: getMedium500Style14(
+                              color: ColorManager.textPrimary,
+                              fontSize: 14.sp,
                             ),
                           ),
+                          if (hasDuration) ...[
+                            SizedBox(height: 12.h),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  clockIcon ?? IconManager.clock,
+                                  fit: BoxFit.cover,
+                                  height: 13.h,
+                                  width: 11.w,
+                                ),
+                                SizedBox(width: 4.w),
+                                Flexible(
+                                  child: Text(
+                                    duration ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: getMedium500Style10(
+                                      color: ColorManager.subtextColorGrey,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-      
+              SizedBox(width: 12.w),
               Container(
                 height: 31.h,
                 width: 31.w,

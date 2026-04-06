@@ -1,5 +1,6 @@
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
+import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 
 class ResetPasswordApiService {
   ApiClient apiClient;
@@ -16,7 +17,7 @@ class ResetPasswordApiService {
       }
     }
     catch(e){
-      throw e.toString();
+      throw Exception(ErrorHandle.formatErrorMessage(e));
     }
   }
 }
