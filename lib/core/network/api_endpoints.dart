@@ -25,4 +25,5 @@ class ApiEndpoints {
   static  String memberShipId(String id) => 'api/membership/$id';
   static const String notification = 'api/notification';
   static const String deleteProfile = 'api/auth/me';
+  static const String changePassword = 'api/auth/change-password';
 }
