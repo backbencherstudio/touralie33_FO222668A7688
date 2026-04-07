@@ -8,6 +8,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.d
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/security_screen/view/security_screen.dart';
 
 class DrawerScreen extends ConsumerWidget {
   const DrawerScreen({super.key});
@@ -108,16 +109,17 @@ class DrawerScreen extends ConsumerWidget {
                 icon: IconManager.subscriptionPlan,
                 title: 'Subscribe Plan',
               ),
-               _DrawerItem(icon: IconManager.security, title: 'Security'),
+               _DrawerItem(
+                ontap: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> SecurityScreen()));
+                },
+                icon: IconManager.security, title: 'Security'),
                _DrawerItem(
                 ontap: () {
                   Navigator.pushReplacementNamed(context, RoutesName.settingScreen);
                 },
                 icon: IconManager.setting, title: 'Settings'),
-               _DrawerItem(
-                icon: IconManager.security,
-                title: 'Help and support',
-              ),
+               
               const Spacer(),
                _DrawerItem(
   ontap: () async {

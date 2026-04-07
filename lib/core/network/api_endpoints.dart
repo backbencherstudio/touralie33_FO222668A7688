@@ -10,7 +10,7 @@ class ApiEndpoints {
    static const String forgotPass = 'api/auth/forgot-password';
    static const String verifyEmail = 'api/auth/verify-email';
    static const String resetPassWord = 'api/auth/reset-password';
-   static const String getMe = 'api/auth/me';
+   static const String getMe= 'api/auth/me';
    static const String updateUser= 'api/auth/update';
    static const String  suggestedVideo= 'api/library';
    static const String  prescriptionResume= 'api/prescription/resume';
@@ -24,4 +24,5 @@ class ApiEndpoints {
   static  const String membership = 'api/membership/plans';
   static  String memberShipId(String id) => 'api/membership/$id';
   static const String notification = 'api/notification';
+  static const String deleteProfile = 'api/auth/me';
 }

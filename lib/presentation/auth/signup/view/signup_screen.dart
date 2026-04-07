@@ -271,21 +271,21 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                   ],
                 ),
                 SizedBox(height: 12.h),
-                Customebutton(
-                  image: IconManager.google,
-                  text: "SignUp With Google",
-                  color: Colors.white,
-                  borderColor: const Color.fromARGB(255, 235, 235, 235),
-                  border: 1.2.w,
-                ),
-                SizedBox(height: 8.h),
-                Customebutton(
-                  image: IconManager.facebook,
-                  text: "SignUP With Facebook",
-                  color: Colors.white,
-                  borderColor: const Color.fromARGB(255, 235, 235, 235),
-                  border: 1.5.w,
-                ),
+                // Customebutton(
+                //   image: IconManager.google,
+                //   text: "SignUp With Google",
+                //   color: Colors.white,
+                //   borderColor: const Color.fromARGB(255, 235, 235, 235),
+                //   border: 1.2.w,
+                // ),
+                // SizedBox(height: 8.h),
+                // Customebutton(
+                //   image: IconManager.facebook,
+                //   text: "SignUP With Facebook",
+                //   color: Colors.white,
+                //   borderColor: const Color.fromARGB(255, 235, 235, 235),
+                //   border: 1.5.w,
+                // ),
                 SizedBox(height: 12.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -305,7 +305,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                         );
                       },
                       child: Text(
-                        " LogIn",
+                        "SignIn",
                         style: getMedium500Style16(
                           color: ColorManager.drawrColor,
                           fontSize: 16.sp,
