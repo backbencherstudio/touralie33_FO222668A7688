@@ -5,6 +5,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/data/models/watch_history_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/library_progress_provider.dart';
@@ -119,7 +120,7 @@ class WatchHistoryList extends ConsumerWidget {
           videoCount:
               "${item.chaptersCount ?? 0} video${(item.chaptersCount ?? 0) == 1 ? '' : 's'}",
           title: item.title ?? "Untitled",
-          videoDuration: "${item.duration ?? 0} min",
+          videoDuration: Utils.formatDurationLabel(item.duration),
           totalTime: item.level ?? "Beginner",
           buttonText: buttonText,
           sufImage: isProgress ? IconManager.playButton : null,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
@@ -30,6 +31,14 @@ class CustomVideoPlayer extends StatefulWidget {
 }
 
 class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+  static const Map<String, String> _networkHeaders = <String, String>{
+    'User-Agent':
+        'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 '
+            '(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+    'Accept': '*/*',
+    'Connection': 'keep-alive',
+  };
+
   VideoPlayerController? _controller;
   bool _isInitializing = false;
   bool _showVideo = false;
@@ -59,9 +68,30 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     final normalizedUrl = _normalizeUrl(url);
     if (normalizedUrl.startsWith('http://') ||
         normalizedUrl.startsWith('https://')) {
-      return VideoPlayerController.networkUrl(Uri.parse(normalizedUrl));
+      return VideoPlayerController.networkUrl(
+        Uri.parse(normalizedUrl),
+        httpHeaders: _networkHeaders,
+      );
     }
     return VideoPlayerController.file(File(normalizedUrl));
+  }
+
+  Future<void> _openExternally() async {
+    final normalizedUrl = _normalizeUrl(widget.videoUrl);
+    final uri = Uri.tryParse(normalizedUrl);
+    if (uri == null) {
+      return;
+    }
+
+    final opened = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to open the video externally.')),
+      );
+    }
   }
 
   @override
@@ -139,7 +169,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       await controller.dispose();
       if (mounted) {
         setState(() {
-          _errorMessage = 'Video could not be loaded.';
+          _errorMessage = 'Video could not be loaded in the app.';
         });
       }
     } finally {
@@ -331,18 +361,32 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                 left: 12.w,
                 right: 12.w,
                 bottom: 12.h,
-                child: Text(
-                  _errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    TextButton(
+                      onPressed: _openExternally,
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black54,
+                      ),
+                      child: const Text('Open externally'),
+                    ),
+                  ],
                 ),
               ),
             GestureDetector(
-              onTap: _startVideo,
+              onTap: _errorMessage == null ? _startVideo : _openExternally,
               child: Container(
                 height: 56.h,
                 width: 56.w,
@@ -351,12 +395,26 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.play_arrow_rounded,
+                  _errorMessage == null
+                      ? Icons.play_arrow_rounded
+                      : Icons.open_in_new_rounded,
                   color: Colors.white,
-                  size: 34.sp,
+                  size: 30.sp,
                 ),
               ),
             ),
+            if (_errorMessage != null)
+              Positioned(
+                top: 12.h,
+                right: 12.w,
+                child: IconButton(
+                  onPressed: _startVideo,
+                  icon: const Icon(
+                    Icons.refresh_rounded,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             if (_isInitializing)
               const Center(
                 child: CircularProgressIndicator(color: Colors.white),
@@ -552,6 +610,14 @@ class _FullScreenVideoPlayer extends StatefulWidget {
 }
 
 class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
+  static const Map<String, String> _networkHeaders = <String, String>{
+    'User-Agent':
+        'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 '
+            '(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+    'Accept': '*/*',
+    'Connection': 'keep-alive',
+  };
+
   VideoPlayerController? _controller;
   String? _errorMessage;
 
@@ -573,9 +639,30 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
     final normalizedUrl = _normalizeUrl(url);
     if (normalizedUrl.startsWith('http://') ||
         normalizedUrl.startsWith('https://')) {
-      return VideoPlayerController.networkUrl(Uri.parse(normalizedUrl));
+      return VideoPlayerController.networkUrl(
+        Uri.parse(normalizedUrl),
+        httpHeaders: _networkHeaders,
+      );
     }
     return VideoPlayerController.file(File(normalizedUrl));
+  }
+
+  Future<void> _openExternally() async {
+    final normalizedUrl = _normalizeUrl(widget.videoUrl);
+    final uri = Uri.tryParse(normalizedUrl);
+    if (uri == null) {
+      return;
+    }
+
+    final opened = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to open the video externally.')),
+      );
+    }
   }
 
   @override
@@ -607,7 +694,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
       await controller.dispose();
       if (mounted) {
         setState(() {
-          _errorMessage = 'Video could not be loaded.';
+          _errorMessage = 'Video could not be loaded in the app.';
         });
       }
     }
@@ -628,9 +715,19 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
           children: [
             Center(
               child: _errorMessage != null
-                  ? Text(
-                      _errorMessage!,
-                      style: const TextStyle(color: Colors.white),
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _errorMessage!,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(height: 12.h),
+                        TextButton(
+                          onPressed: _openExternally,
+                          child: const Text('Open externally'),
+                        ),
+                      ],
                     )
                   : _controller == null
                       ? const CircularProgressIndicator(color: Colors.white)

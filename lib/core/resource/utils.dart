@@ -77,4 +77,33 @@ class Utils {
   static double fullHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
+
+  static String formatDurationLabel(int? totalSeconds) {
+    final safeSeconds = totalSeconds ?? 0;
+    if (safeSeconds <= 0) {
+      return '0 sec';
+    }
+    if (safeSeconds < 60) {
+      return '$safeSeconds sec';
+    }
+
+    final hours = safeSeconds ~/ 3600;
+    final minutes = (safeSeconds % 3600) ~/ 60;
+    final seconds = safeSeconds % 60;
+
+    if (hours > 0) {
+      if (minutes == 0 && seconds == 0) {
+        return '$hours h';
+      }
+      if (seconds == 0) {
+        return '$hours h $minutes min';
+      }
+      return '$hours h $minutes min $seconds sec';
+    }
+
+    if (seconds == 0) {
+      return '$minutes min';
+    }
+    return '$minutes min $seconds sec';
+  }
 }

@@ -6,6 +6,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
@@ -147,7 +148,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                         final item = data[index];
                         return SuggestionVideoWidget(
                           id: item.id,
-                          duration: "${item.duration ?? 0} min",
+                          duration: Utils.formatDurationLabel(item.duration),
                           categoryName: item.category ?? "Categories Name",
                           title: item.title ?? "Back Mobility Program",
                           level: _formatLevel(item.level),
