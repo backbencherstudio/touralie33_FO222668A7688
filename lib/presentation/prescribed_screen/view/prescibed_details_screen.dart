@@ -281,7 +281,7 @@ class _PrescibedDetailsScreenState
         _normalizeStoredPositionMilliseconds(
           workout.lastWatchPosition ?? 0,
           workout.duration,
-        );
+        );///
     final effectiveInitialPositionMilliseconds =
         _selectedPositionMilliseconds ??
         (widget.initialPositionMilliseconds > 0
