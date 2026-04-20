@@ -6,6 +6,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescribed_detail_model.dart'
     as detail_model;
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
@@ -138,13 +139,13 @@ class _PrescibedDetailsScreenState
     if (startSeconds != null &&
         endSeconds != null &&
         endSeconds >= startSeconds) {
-      final durationInMinutes = ((endSeconds - startSeconds) / 60).ceil();
-      return '$durationInMinutes min';
+      final durationInSeconds = endSeconds - startSeconds;
+      return Utils.formatDurationLabel(durationInSeconds);
     }
     if ((startTime ?? '').isNotEmpty && (endTime ?? '').isNotEmpty) {
       return '$startTime - $endTime';
     }
-    return startTime ?? endTime ?? '0 min';
+    return startTime ?? endTime ?? '0 sec';
   }
 
   List<Widget> _buildChapterWorkoutSets({
@@ -463,8 +464,7 @@ class _PrescibedDetailsScreenState
                                 ),
                                 SizedBox(width: 8.w),
                                 Text(
-                      
-                                      '${workout.duration ?? 0} min',
+                                  Utils.formatDurationLabel(workout.duration),
                                   style: getMedium500Style10(
                                     color: ColorManager.textPrimary,
                                     fontSize: 14.sp,

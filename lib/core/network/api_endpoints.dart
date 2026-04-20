@@ -1,6 +1,6 @@
 class ApiEndpoints {
   static const String baseUrl =
-      "http://192.168.7.12:4001/";
+      "https://backend.irclinic.com.au/";
   static const String register = 'api/auth/register';
    static const String login = 'api/auth/login';
 

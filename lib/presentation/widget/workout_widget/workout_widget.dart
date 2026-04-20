@@ -6,6 +6,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/instruction_widget/instruction_widget.dart';
@@ -100,7 +101,7 @@ class WorkoutWidget extends ConsumerWidget {
                               ),
                               SizedBox(width: 5.w),
                               Text(
-                                '${workout?.duration ?? 0} min',
+                                Utils.formatDurationLabel(workout?.duration),
                                 style: getMedium500Style14(
                                   color: ColorManager.blackColor,
                                   fontSize: 12.sp,
