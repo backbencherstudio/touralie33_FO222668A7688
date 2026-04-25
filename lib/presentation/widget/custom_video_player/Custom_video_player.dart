@@ -160,6 +160,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         );
       }
       await _controller!.setVolume(_isMuted ? 0 : 1);
+     
+      await _controller!.setLooping(true);
       await _controller!.play();
       setState(() {
         _showVideo = true;
@@ -677,6 +679,8 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
     try {
       await controller.initialize();
       await controller.seekTo(widget.startFrom);
+      
+      await controller.setLooping(true);
       if (widget.autoPlay) {
         await controller.play();
       }

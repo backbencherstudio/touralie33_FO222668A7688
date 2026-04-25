@@ -1,0 +1,13 @@
+# জাঙ্ক এবং ক্যাশ ফাইল
+.gradle/
+.gradle-local/
+.dart_tool/
+build/
+android/app/build/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+*.apk
+*.zip
+*.jar
+*.so
+.DS_Store

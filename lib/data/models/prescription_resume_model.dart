@@ -26,6 +26,8 @@ class PrescriptionResumeModel {
 
 class PrescriptionResumeData {
   String? id;
+  String? prescriptionId;
+  String? videoId;
   String? title;
   int? duration;
   int? chapterCount;
@@ -43,6 +45,8 @@ class PrescriptionResumeData {
 
   PrescriptionResumeData({
     this.id,
+    this.prescriptionId,
+    this.videoId,
     this.title,
     this.duration,
     this.chapterCount,
@@ -60,7 +64,10 @@ class PrescriptionResumeData {
   });
 
   PrescriptionResumeData.fromJson(Map<String, dynamic> json) {
-    id = json['id']?.toString() ?? json['video_id']?.toString();
+    prescriptionId =
+        json['prescription_id']?.toString() ?? json['id']?.toString();
+    videoId = json['video_id']?.toString();
+    id = prescriptionId ?? videoId;
     title = json['title']?.toString() ?? json['video_title']?.toString();
     duration = json['duration'] ?? json['video_duration'];
     chapterCount = json['chapter_count'] ?? json['total_videos'];
@@ -88,6 +95,8 @@ class PrescriptionResumeData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['prescription_id'] = prescriptionId;
+    data['video_id'] = videoId;
     data['title'] = title;
     data['duration'] = duration;
     data['chapter_count'] = chapterCount;
