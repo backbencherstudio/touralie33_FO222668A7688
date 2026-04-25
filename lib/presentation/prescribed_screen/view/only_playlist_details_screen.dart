@@ -6,6 +6,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescription_details_model.dart'
     as detail_model;
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
@@ -21,11 +22,13 @@ class OnlyPlaylistDetailsScreen extends ConsumerStatefulWidget {
     this.id,
     this.videoUrl,
     this.initialPositionMilliseconds = 0,
+    this.fallbackTabIndex = 0,
   });
 
   final String? id;
   final String? videoUrl;
   final int initialPositionMilliseconds;
+  final int fallbackTabIndex;
 
   @override
   ConsumerState<OnlyPlaylistDetailsScreen> createState() =>
@@ -66,6 +69,22 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
     });
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<bool> _handleBackNavigation() async {
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
+      return false;
+    }
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      RoutesName.parentScreen,
+      (route) => false,
+      arguments: widget.fallbackTabIndex,
+    );
+    return false;
   }
 
   int _resolveSelectedVideoIndex({
@@ -239,47 +258,65 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
     final videos = playlistData?.videos ?? const <detail_model.Videos>[];
 
     if (detailsState.isloading) {
-      return Scaffold(
-        backgroundColor: ColorManager.primary,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60.h),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              child: Customebar(
-                text: "Watch Video",
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) {
+            _handleBackNavigation();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: ColorManager.primary,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.h),
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                child: Customebar(
+                  text: "Watch Video",
+                  ontap: () => _handleBackNavigation(),
+                ),
               ),
             ),
           ),
+          body: const Center(child: CircularProgressIndicator()),
         ),
-        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (detailsState.errorMessage != null) {
-      return Scaffold(
-        backgroundColor: ColorManager.primary,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60.h),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              child: Customebar(
-                text:  "Your Prescribed Video",
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) {
+            _handleBackNavigation();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: ColorManager.primary,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.h),
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                child: Customebar(
+                  text: "Your Prescribed Video",
+                  ontap: () => _handleBackNavigation(),
+                ),
               ),
             ),
           ),
-        ),
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.all(16.r),
-            child: Text(
-              detailsState.errorMessage!,
-              textAlign: TextAlign.center,
-              style: getMedium500Style12(
-                color: ColorManager.blackColor,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
+          body: Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.r),
+              child: Text(
+                detailsState.errorMessage!,
+                textAlign: TextAlign.center,
+                style: getMedium500Style12(
+                  color: ColorManager.blackColor,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
@@ -288,26 +325,35 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
     }
 
     if (playlistData == null || videos.isEmpty) {
-      return Scaffold(
-        backgroundColor: ColorManager.primary,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60.h),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              child: Customebar(
-                text:"Your Prescribed Video",
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) {
+            _handleBackNavigation();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: ColorManager.primary,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.h),
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                child: Customebar(
+                  text: "Your Prescribed Video",
+                  ontap: () => _handleBackNavigation(),
+                ),
               ),
             ),
           ),
-        ),
-        body: Center(
-          child: Text(
-            "No data found.",
-            style: getMedium500Style12(
-              color: ColorManager.blackColor,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
+          body: Center(
+            child: Text(
+              "No data found.",
+              style: getMedium500Style12(
+                color: ColorManager.blackColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),
@@ -343,232 +389,255 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
     );
     final note = selectedVideo.note?.trim() ?? '';
 
-    return Scaffold(
-      backgroundColor: ColorManager.primary,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.h),
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-            child: Customebar(
-              text:  "Watch Video",
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          _handleBackNavigation();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: ColorManager.primary,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.h),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              child: Customebar(
+                text: "Watch Video",
+                ontap: () => _handleBackNavigation(),
+              ),
             ),
           ),
         ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [ColorManager.primary, ColorManager.whiteColor],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [ColorManager.primary, ColorManager.whiteColor],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(12.r),
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    color: ColorManager.whiteColor,
-                    border: Border.all(
-                      color: ColorManager.backgroundColorgreen1,
+          child: Padding(
+            padding: EdgeInsets.all(12.r),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      color: ColorManager.whiteColor,
+                      border: Border.all(
+                        color: ColorManager.backgroundColorgreen1,
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(12.r),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomVideoPlayer(
-                          videoUrl: currentVideoUrl,
-                          thumbnailAsset: currentThumbnail,
-                          initialPositionMilliseconds:
-                              effectiveInitialPositionMilliseconds,
-                          playRequestId: _playRequestId,
-                          onPlaybackStopped: (position) {
-                            _selectedPositionMilliseconds = position;
-                          },
-                          onCompleted: (position) {
-                            _selectedPositionMilliseconds = position;
-                          },
-                        ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                categoryText,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: getMedium500Style14(
-                                  color: ColorManager.subtextColorGrey,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Image.asset(IconManager.bookMark, height: 16.h),
-                          ],
-                        ),
-                        SizedBox(height: 5.h),
-                        Text(
-                          selectedVideo.title ?? playlistData.title ?? 'Back Mobility Program',
-                          style: getMedium500Style12(
-                            color: ColorManager.textPrimary,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w500,
+                    child: Padding(
+                      padding: EdgeInsets.all(12.r),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CustomVideoPlayer(
+                            videoUrl: currentVideoUrl,
+                            thumbnailAsset: currentThumbnail,
+                            initialPositionMilliseconds:
+                                effectiveInitialPositionMilliseconds,
+                            playRequestId: _playRequestId,
+                            onPlaybackStopped: (position) {
+                              _selectedPositionMilliseconds = position;
+                            },
+                            onCompleted: (position) {
+                              _selectedPositionMilliseconds = position;
+                            },
                           ),
-                        ),
-                        SizedBox(height: 5.h),
-                        RichText(
-                          text: TextSpan(
-                            style: getRegular400Style14(
-                              color: const Color.fromARGB(255, 92, 92, 92),
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w400,
-                            ).copyWith(height: 1.6, letterSpacing: 0.5),
+                          SizedBox(height: 10.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              TextSpan(
-                                text: _isExpanded ? description : shortDescription,
-                              ),
-                              if (description.length > 126)
-                                TextSpan(
-                                  text: _isExpanded ? 'Read Less' : 'Read More',
+                              Expanded(
+                                child: Text(
+                                  categoryText,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: getMedium500Style14(
-                                    color: ColorManager.backgroundColorgreen1,
-                                    fontSize: 13.sp,
+                                    color: ColorManager.subtextColorGrey,
+                                    fontSize: 12.sp,
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      setState(() {
-                                        _isExpanded = !_isExpanded;
-                                      });
-                                    },
                                 ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Image.asset(IconManager.bookMark, height: 16.h),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          children: [
-                            _buildMetricCard(_metricValue(selectedVideo.reps, 'Reps')),
-                            SizedBox(width: 10.w),
-                            _buildMetricCard(_metricValue(selectedVideo.sets, 'Sets')),
-                            SizedBox(width: 10.w),
-                            _buildMetricCard(_weightValue(selectedVideo.weight)),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-                        if (note.isNotEmpty) ...[
-                          InkWell(
-                            onTap: () => _showNoteDialog(note),
-                            child: Row(
+                          SizedBox(height: 5.h),
+                          Text(
+                            selectedVideo.title ??
+                                playlistData.title ??
+                                'Back Mobility Program',
+                            style: getMedium500Style12(
+                              color: ColorManager.textPrimary,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: 5.h),
+                          RichText(
+                            text: TextSpan(
+                              style: getRegular400Style14(
+                                color: const Color.fromARGB(255, 92, 92, 92),
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w400,
+                              ).copyWith(height: 1.6, letterSpacing: 0.5),
                               children: [
-                                Icon(
-                                  Icons.info,
-                                  size: 18.sp,
-                                  color: ColorManager.titleText1,
+                                TextSpan(
+                                  text:
+                                      _isExpanded ? description : shortDescription,
                                 ),
-                                SizedBox(width: 8.w),
-                                Text(
-                                  'View Note',
-                                  style: getMedium500Style14(
-                                    color: ColorManager.titleText1,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600,
+                                if (description.length > 126)
+                                  TextSpan(
+                                    text:
+                                        _isExpanded ? 'Read Less' : 'Read More',
+                                    style: getMedium500Style14(
+                                      color:
+                                          ColorManager.backgroundColorgreen1,
+                                      fontSize: 13.sp,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        setState(() {
+                                          _isExpanded = !_isExpanded;
+                                        });
+                                      },
                                   ),
-                                ),
                               ],
                             ),
                           ),
-                          SizedBox(height: 12.h),
-                        ],
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.r),
-                            color: ColorManager.whiteColor,
-                            border: Border.all(
-                              color: ColorManager.backgroundColorgreen,
-                              width: .5.w,
-                            ),
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: [
+                              _buildMetricCard(
+                                _metricValue(selectedVideo.reps, 'Reps'),
+                              ),
+                              SizedBox(width: 10.w),
+                              _buildMetricCard(
+                                _metricValue(selectedVideo.sets, 'Sets'),
+                              ),
+                              SizedBox(width: 10.w),
+                              _buildMetricCard(
+                                _weightValue(selectedVideo.weight),
+                              ),
+                            ],
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.all(12.r),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                   "Workout Set",
-                                      style: getMedium500Style12(
-                                        color: ColorManager.textPrimary,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
+                          SizedBox(height: 10.h),
+                          if (note.isNotEmpty) ...[
+                            InkWell(
+                              onTap: () => _showNoteDialog(note),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.info,
+                                    size: 18.sp,
+                                    color: ColorManager.titleText1,
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    'View Note',
+                                    style: getMedium500Style14(
+                                      color: ColorManager.titleText1,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                          ],
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              color: ColorManager.whiteColor,
+                              border: Border.all(
+                                color: ColorManager.backgroundColorgreen,
+                                width: .5.w,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(12.r),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Workout Set",
+                                        style: getMedium500Style12(
+                                          color: ColorManager.textPrimary,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          IconManager.videoICon,
-                                          fit: BoxFit.cover,
-                                          height: 13.h,
-                                        ),
-                                        SizedBox(width: 4.w),
-                                        Text(
-                                          '${effectiveSelectedVideoIndex + 1}/$chapterCount videos',
-                                          style: getMedium500Style16(
-                                            color: ColorManager.textPrimary,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w400,
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            IconManager.videoICon,
+                                            fit: BoxFit.cover,
+                                            height: 13.h,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.h),
-                                if (chapterWidgets.isNotEmpty) ...chapterWidgets,
-                              ],
+                                          SizedBox(width: 4.w),
+                                          Text(
+                                            '${effectiveSelectedVideoIndex + 1}/$chapterCount videos',
+                                            style: getMedium500Style16(
+                                              color:
+                                                  ColorManager.textPrimary,
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  if (chapterWidgets.isNotEmpty)
+                                    ...chapterWidgets,
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 15.h),
-                        Customebutton(
-                          onTap: () {
-                            if (_scrollController.hasClients) {
-                              _scrollController.animateTo(
-                                0,
-                                duration: const Duration(milliseconds: 350),
-                                curve: Curves.easeOut,
-                              );
-                            }
-                            setState(() {
-                              _selectedVideoUrl = currentVideoUrl;
-                              _selectedThumbnail = currentThumbnail;
-                              _selectedVideoIndex = effectiveSelectedVideoIndex;
-                              _playRequestId++;
-                            });
-                          },
-                          text:  "Watch Now",
-                          textColor: ColorManager.whiteColor,
-                          color: ColorManager.blackColor,
-                          sufImage: IconManager.playButton,
-                          sufImageColor: ColorManager.whiteColor,
-                        ),
-                      ],
+                          SizedBox(height: 15.h),
+                          Customebutton(
+                            onTap: () {
+                              if (_scrollController.hasClients) {
+                                _scrollController.animateTo(
+                                  0,
+                                  duration: const Duration(milliseconds: 350),
+                                  curve: Curves.easeOut,
+                                );
+                              }
+                              setState(() {
+                                _selectedVideoUrl = currentVideoUrl;
+                                _selectedThumbnail = currentThumbnail;
+                                _selectedVideoIndex =
+                                    effectiveSelectedVideoIndex;
+                                _playRequestId++;
+                              });
+                            },
+                            text: "Watch Now",
+                            textColor: ColorManager.whiteColor,
+                            color: ColorManager.blackColor,
+                            sufImage: IconManager.playButton,
+                            sufImageColor: ColorManager.whiteColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 70.h),
-              ],
+                  SizedBox(height: 70.h),
+                ],
+              ),
             ),
           ),
         ),

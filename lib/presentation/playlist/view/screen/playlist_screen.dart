@@ -124,7 +124,6 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
     final buttonText = _getButtonText(data);
     final totalVideos = data.totalVideos ?? 0;
     final completedVideos = data.totalCompletedVideos ?? 0;
-    final canOpenDetails = completedVideos < totalVideos;
 
     return PlayListScreenWidget(
       image: data.thumbnailUrl ?? ImageManager.gymGuide,
@@ -134,16 +133,18 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
       totalTime: _formatDate(data.createdAt),
       buttonText: buttonText,
       buttonIconColor: Colors.white,
-      onTap: canOpenDetails
-          ? () {
+      onTap:  () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => OnlyPlaylistDetailsScreen(id: data.id),
+            builder: (_) => OnlyPlaylistDetailsScreen(
+              id: data.id,
+              fallbackTabIndex: 1,
+            ),
           ),
         );
       }
-          : null,
+        
     );
   }
 

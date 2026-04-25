@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
@@ -9,6 +8,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.d
 import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/only_playlist_details_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/instruction_widget/instruction_widget.dart';
 
 class WorkoutWidget extends ConsumerWidget {
@@ -18,7 +18,7 @@ class WorkoutWidget extends ConsumerWidget {
 
   void _openInstructionDialog({
     required BuildContext context,
-    String? id,
+    String? id, // এটি এখন সঠিক Prescription ID পাবে
     required String description,
     required List<String> points,
     String? videoUrl,
@@ -26,17 +26,19 @@ class WorkoutWidget extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (_) => InstructionWidget(
-        id: id,
         description: description,
         points: points,
         onBegin: () {
-          Navigator.pushNamed(
+          Navigator.pop(context);
+
+          Navigator.push(
             context,
-            RoutesName.prescibedDetailsScreen,
-            arguments: {
-              'id': id,
-              'videoUrl': videoUrl,
-            },
+            MaterialPageRoute(
+              builder: (context) => OnlyPlaylistDetailsScreen(
+                id: id,
+                fallbackTabIndex: 0,
+              ),
+            ),
           );
         },
       ),
@@ -47,14 +49,15 @@ class WorkoutWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final prescriptionState = ref.watch(getPrescriptionResumeProvider);
     final workout = prescriptionState.prescriptionData?.data;
-    final workoutId = workout?.id ?? id;
+
+    final workoutId = workout?.prescriptionId ?? workout?.id ?? id;
+    
     final instruction = workout?.instruction;
     final imageUrl = workout?.thumbnail;
     final videoUrl = workout?.url;
     final canOpenDetails = (workoutId ?? '').trim().isNotEmpty;
     final points = instruction?.points ?? const <String>[];
-    final description =
-        instruction?.description ??
+    final description = instruction?.description ??
         workout?.progressMessage ??
         'No instruction available right now.';
 
@@ -179,8 +182,7 @@ class WorkoutWidget extends ConsumerWidget {
                                       width: double.infinity,
                                       height: 220.h,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) =>
-                                          Image.asset(
+                                      errorBuilder: (_, __, ___) => Image.asset(
                                         ImageManager.gymGuide,
                                         width: double.infinity,
                                         height: 220.h,
