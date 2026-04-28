@@ -69,17 +69,17 @@ class PlayListScreenWidget extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                videoCount ?? "",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: getMedium500Style10(
-                                  color: ColorManager.subtextColorGrey,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 8.h),
+                              // Text(
+                              //   videoCount ?? "",
+                              //   maxLines: 1,
+                              //   overflow: TextOverflow.ellipsis,
+                              //   style: getMedium500Style10(
+                              //     color: ColorManager.subtextColorGrey,
+                              //     fontSize: 14.sp,
+                              //     fontWeight: FontWeight.w400,
+                              //   ),
+                              // ),
+                              // SizedBox(height: 8.h),
                               Text(
                                 title ?? "",
                                 maxLines: 2,
