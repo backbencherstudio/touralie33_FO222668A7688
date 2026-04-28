@@ -7,6 +7,8 @@ class UpdateRepository {
   UpdateRepository({required this.resource});
   Future<bool> updateUser({
     required String name,
+    required String email,
+    required String dateOfBirth,
     required num weight,
     required num height,
     required String gender,
@@ -14,6 +16,8 @@ class UpdateRepository {
   }) async {
     return await resource.updateUser(
       name: name,
+      email: email,
+      dateOfBirth: dateOfBirth,
       weight: weight,
       height: height,
       gender: gender,

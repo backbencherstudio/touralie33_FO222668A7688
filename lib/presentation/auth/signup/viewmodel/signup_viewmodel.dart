@@ -42,30 +42,14 @@ class SignupViewmodel extends StateNotifier<SignUpState>{
       final personalization =
           (await SharedPreferenceData.getOnboardingPersonalizationCsv()).trim();
 
-      final missing = <String>[];
-      if (weight == null || weight.isEmpty) missing.add('weight');
-      if (height == null || height.isEmpty) missing.add('height');
-      if (gender == null || gender.isEmpty) missing.add('gender');
-      if (dateOfBirth == null || dateOfBirth.isEmpty) missing.add('date of birth');
-      if (personalization.isEmpty) missing.add('personalization');
-
-      if (missing.isNotEmpty) {
-        log('Signup blocked: missing onboarding fields: ${missing.join(', ')}');
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: 'Please complete onboarding first: ${missing.join(', ')}.',
-        );
-        return false;
-      }
-
       final success = await repository.register(
         name: name,
         email: email,
         password: password,
-        weight: weight!,
-        height: height!,
-        gender: gender!,
-        dateOfBirth: dateOfBirth!,
+        weight: weight ?? '',
+        height: height ?? '',
+        gender: gender ?? '',
+        dateOfBirth: dateOfBirth ?? '',
         personalization: personalization,
         type: "user",
       );

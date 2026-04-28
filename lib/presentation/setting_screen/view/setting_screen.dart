@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,6 +31,8 @@ class SettingScreen extends ConsumerStatefulWidget {
 
 class _SettingScreenState extends ConsumerState<SettingScreen> {
   final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
 
@@ -62,6 +63,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
     if (!mounted) return;
 
     _userNameController.text = user?.name?.trim() ?? '';
+    _emailController.text = user?.email?.trim() ?? '';
+    _dateOfBirthController.text = _formatDateForDisplay(user?.dateOfBirth);
     _weightController.text = savedWeight ?? '';
     _heightController.text = savedHeight ?? '';
     _remoteAvatarUrl = user?.avatarUrl?.trim() ?? user?.avatar?.trim();
@@ -92,6 +95,38 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       case 2: return 'other';
       default: return 'male';
     }
+  }
+
+  String _formatDateForDisplay(String? value) {
+    final raw = value?.trim() ?? '';
+    if (raw.isEmpty) return '';
+
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) return raw;
+
+    final day = parsed.day.toString().padLeft(2, '0');
+    final month = parsed.month.toString().padLeft(2, '0');
+    final year = parsed.year.toString().padLeft(4, '0');
+    return '$day/$month/$year';
+  }
+
+  String _formatDateForApi(String value) {
+    final raw = value.trim();
+    if (raw.isEmpty) return '';
+
+    final parts = raw.split('/');
+    if (parts.length == 3) {
+      final day = int.tryParse(parts[0]);
+      final month = int.tryParse(parts[1]);
+      final year = int.tryParse(parts[2]);
+      if (day != null && month != null && year != null) {
+        final parsed = DateTime.utc(year, month, day);
+        return parsed.toIso8601String();
+      }
+    }
+
+    final parsed = DateTime.tryParse(raw);
+    return parsed?.toUtc().toIso8601String() ?? raw;
   }
 
   String? _resolveAvatarUrl(String? avatar) {
@@ -212,6 +247,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
   @override
   void dispose() {
     _userNameController.dispose();
+    _emailController.dispose();
+    _dateOfBirthController.dispose();
     _weightController.dispose();
     _heightController.dispose();
     super.dispose();
@@ -227,7 +264,6 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
 
     final heightUnitText = heightUnitIndex == 0 ? "feet" : "cm";
     final weightUnitText = weightUnitIndex == 0 ? "Kg" : "Lb";
-    final user = getMeState.me?.data;
     final resolvedAvatarUrl = _resolveAvatarUrl(_remoteAvatarUrl);
 
     if (!_didInitialize && !getMeState.isLoading) {
@@ -345,6 +381,31 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                                 focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ColorManager.hintTextColor)),
                               ),
                             ),
+                            SizedBox(height: 16.h),
+                            Text("Email", style: getMedium500Style10(color: ColorManager.textPrimary, fontSize: 16.sp)),
+                            TextField(
+                              controller: _emailController,
+                              readOnly: true,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                hintText: 'enter your email',
+                                suffixIcon: Padding(padding: EdgeInsets.all(11.r), child: Image.asset(IconManager.edit, height: 12.h, width: 12.w)),
+                                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ColorManager.hintTextColor)),
+                              ),
+                            ),
+                            SizedBox(height: 16.h),
+                            Text("Date of Birth", style: getMedium500Style10(color: ColorManager.textPrimary, fontSize: 16.sp)),
+                            TextField(
+                              controller: _dateOfBirthController,
+                              keyboardType: TextInputType.datetime,
+                              decoration: InputDecoration(
+                                hintText: 'dd/mm/yyyy',
+                                suffixIcon: Padding(padding: EdgeInsets.all(11.r), child: Image.asset(IconManager.edit, height: 12.h, width: 12.w)),
+                                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ColorManager.hintTextColor)),
+                              ),
+                            ),
                             SizedBox(height: 20.h),
                             Text("Gender", style: getMedium500Style10(color: ColorManager.textPrimary, fontSize: 16.sp)),
                             SizedBox(height: 8.h),
@@ -370,7 +431,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                                                 controller: _weightController,
                                                 keyboardType: TextInputType.number,
                                                 style: TextStyle(fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w500),
-                                                decoration: const InputDecoration(hintText: '52', border: InputBorder.none, isDense: true),
+                                                decoration: InputDecoration(hintText: '25',hintStyle: TextStyle(color: Colors.grey), border: InputBorder.none, isDense: true),
                                               ),
                                             ),
                                             SizedBox(width: 5.w),
@@ -405,7 +466,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                                                 controller: _heightController,
                                                 keyboardType: TextInputType.number,
                                                 style: TextStyle(fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w500),
-                                                decoration: const InputDecoration(hintText: '52', border: InputBorder.none, isDense: true),
+                                                decoration: const InputDecoration(hintText: '52',hintStyle: TextStyle(color: Colors.grey), border: InputBorder.none, isDense: true),
                                               ),
                                             ),
                                             SizedBox(width: 8.w),
@@ -430,6 +491,10 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                       Customebutton(
                         onTap: () async {
                           final name = _userNameController.text.trim();
+                          final email = _emailController.text.trim();
+                          final dateOfBirth = _formatDateForApi(
+                            _dateOfBirthController.text,
+                          );
                           final weight = _weightController.text.trim();
                           final height = _heightController.text.trim();
                           final parsedWeight = num.tryParse(weight);
@@ -437,13 +502,13 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                           final gender = _genderFromIndex(ref.read(genderIndexProvider));
                           final imageFile = pickerState.singleImage != null ? File(pickerState.singleImage!.path) : null;
 
-                          if (name.isEmpty || weight.isEmpty || height.isEmpty) {
+                          if (name.isEmpty || email.isEmpty || weight.isEmpty || height.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All fields are required')));
                             return;
                           }
 
                           final ok = await ref.read(settingProvider.notifier).updateUser(
-                            name: name, weight: parsedWeight!, height: parsedHeight!, gender: gender, image: imageFile,
+                            name: name, email: email, dateOfBirth: dateOfBirth, weight: parsedWeight!, height: parsedHeight!, gender: gender, image: imageFile,
                           );
 
                           if (ok) {

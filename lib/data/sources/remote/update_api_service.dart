@@ -10,6 +10,8 @@ class UpdateApiService {
 
   Future<bool> updateUser({
     required String name,
+    required String email,
+    required String dateOfBirth,
     required num weight,
     required num height,
     required String gender,
@@ -19,10 +21,14 @@ class UpdateApiService {
       await ApiClient.headerSet(null);
       final payload = {
         'name': name,
+        'email': email,
         'weight': weight,
         'height': height,
         'gender': gender,
       };
+      if (dateOfBirth.trim().isNotEmpty) {
+        payload['date_of_birth'] = dateOfBirth.trim();
+      }
 
       final response = image == null
           ? await apiClient.patchRequest(

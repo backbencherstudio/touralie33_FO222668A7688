@@ -121,7 +121,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                       signInState.isLoading 
                       ? const Center(child: CircularProgressIndicator()) 
                       : Customebutton(
-                          text: "Sign In",
+                          text: "Login",
                           onTap: () async {
                           
                             if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -180,7 +180,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                     Text("Didn't have an account ?", style: getMedium500Style16(color: ColorManager.subtextColor, fontSize: 15.sp)),
                     InkWell(
                       onTap: () => Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen),
-                      child: Text(" SignUp", style: getMedium500Style16(color: ColorManager.drawrColor, fontSize: 16.sp)),
+                      child: Text(" Sign Up", style: getMedium500Style16(color: ColorManager.drawrColor, fontSize: 16.sp)),
                     )
                   ],
                 ),
