@@ -202,7 +202,7 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  note,
+                  note.isNotEmpty ? note : "No additional notes provided.",
                   style: getRegular400Style14(
                     color: ColorManager.subtextColorGrey,
                     fontSize: 14.sp,
