@@ -44,7 +44,6 @@ class WorkoutWidget extends ConsumerWidget {
       ),
     );
   }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prescriptionState = ref.watch(getPrescriptionResumeProvider);

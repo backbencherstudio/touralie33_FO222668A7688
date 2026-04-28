@@ -10,12 +10,14 @@ class AuthApiService {
   AuthApiService({required this.apiClient});
   Future<bool> register({required String name,required String email,required String password,required String weight,required String height,required String gender,required String dateOfBirth,required String personalization,required String type}) async {
     try {
-      final weightNum = num.tryParse(weight.trim());
-      final heightNum = num.tryParse(height.trim());
-      if (weightNum == null) {
+      final trimmedWeight = weight.trim();
+      final trimmedHeight = height.trim();
+      final weightNum = trimmedWeight.isEmpty ? null : num.tryParse(trimmedWeight);
+      final heightNum = trimmedHeight.isEmpty ? null : num.tryParse(trimmedHeight);
+      if (trimmedWeight.isNotEmpty && weightNum == null) {
         throw Exception('Invalid weight');
       }
-      if (heightNum == null) {
+      if (trimmedHeight.isNotEmpty && heightNum == null) {
         throw Exception('Invalid height');
       }
 
@@ -25,17 +27,27 @@ class AuthApiService {
           .where((e) => e.isNotEmpty)
           .toList();
 
-      final body ={
+      final Map<String, dynamic> body = {
         'email': email,
         'name': name,
         'password': password,
-        'weight': weightNum,
-        'height': heightNum,
-        'gender': gender,
-        'date_of_birth': dateOfBirth,
-        'personalization': personalizationList,
         'type': type,
       };
+      if (weightNum != null) {
+        body['weight'] = weightNum;
+      }
+      if (heightNum != null) {
+        body['height'] = heightNum;
+      }
+      if (gender.trim().isNotEmpty) {
+        body['gender'] = gender.trim();
+      }
+      if (dateOfBirth.trim().isNotEmpty) {
+        body['date_of_birth'] = dateOfBirth.trim();
+      }
+      if (personalizationList.isNotEmpty) {
+        body['personalization'] = personalizationList;
+      }
       final dynamic response = await apiClient.postRequest(
         body: body,
         endpoints: ApiEndpoints.register,

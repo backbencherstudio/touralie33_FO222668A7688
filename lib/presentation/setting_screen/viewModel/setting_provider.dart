@@ -28,6 +28,8 @@ class SettingProvider extends StateNotifier<SettingState> {
 
   Future<bool> updateUser({
     required String name,
+    required String email,
+    required String dateOfBirth,
     required num weight,
     required num height,
     required String gender,
@@ -37,6 +39,8 @@ class SettingProvider extends StateNotifier<SettingState> {
     try {
       final success = await repository.updateUser(
         name: name,
+        email: email,
+        dateOfBirth: dateOfBirth,
         weight: weight,
         height: height,
         gender: gender,

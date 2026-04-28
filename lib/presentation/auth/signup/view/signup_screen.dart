@@ -255,7 +255,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Text(
-                        "Or SignUp With",
+                        "Or Sign Up With",
                         style: getMedium500Style14(
                           color: ColorManager.subtextColor,
                         ),
@@ -305,7 +305,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                         );
                       },
                       child: Text(
-                        "SignIn",
+                        "Login",
                         style: getMedium500Style16(
                           color: ColorManager.drawrColor,
                           fontSize: 16.sp,

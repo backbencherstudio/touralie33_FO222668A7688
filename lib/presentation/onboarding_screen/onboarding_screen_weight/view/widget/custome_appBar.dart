@@ -6,9 +6,10 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 
 class CustomeAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final VoidCallback? onBackTap; 
+  final VoidCallback? onBackTap;
+  final VoidCallback? onSkipTap;
 
-  const CustomeAppbar({super.key, this.onBackTap});
+  const CustomeAppbar({super.key, this.onBackTap, this.onSkipTap});
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +29,16 @@ class CustomeAppbar extends StatelessWidget implements PreferredSizeWidget {
                   width: 24.w,
                 ),
               ),
-              Text(
-                "Skip",
-                style: getMedium500Style14(
-                  color: ColorManager.textPrimary,
-                  fontWeight: FontWeight.w600,
+              GestureDetector(
+                onTap: onSkipTap,
+                child: Text(
+                  "Skip",
+                  style: getMedium500Style14(
+                    color: ColorManager.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
