@@ -530,7 +530,7 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                             ],
                           ),
                           SizedBox(height: 10.h),
-                          if (note.isNotEmpty) ...[
+                          
                             InkWell(
                               onTap: () => _showNoteDialog(note),
                               child: Row(
@@ -553,7 +553,7 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                               ),
                             ),
                             SizedBox(height: 12.h),
-                          ],
+                          
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12.r),

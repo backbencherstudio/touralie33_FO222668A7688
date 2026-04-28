@@ -95,6 +95,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             );
           }
         },
+        onSkipTap: () async {
+          await SharedPreferenceData.setOnboardingCompleted(true);
+          if (!mounted) return;
+          Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen);
+        },
       ),
       body: SafeArea(
         child: Column(
