@@ -16,34 +16,34 @@ class WorkoutWidget extends ConsumerWidget {
 
   final String? id;
 
-  void _openInstructionDialog({
-    required BuildContext context,
-    String? id, // এটি এখন সঠিক Prescription ID পাবে
-    required String description,
-    required List<String> points,
-    String? videoUrl,
-  }) {
-    showDialog(
-      context: context,
-      builder: (_) => InstructionWidget(
-        description: description,
-        points: points,
-        onBegin: () {
-          Navigator.pop(context);
+  // void _openInstructionDialog({
+  //   required BuildContext context,
+  //   String? id, 
+  //   required String description,
+  //   required List<String> points,
+  //   String? videoUrl,
+  // }) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (_) => InstructionWidget(
+  //       description: description,
+  //       points: points,
+  //       onBegin: () {
+  //         Navigator.pop(context);
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OnlyPlaylistDetailsScreen(
-                id: id,
-                fallbackTabIndex: 0,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  //         Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //             builder: (context) => OnlyPlaylistDetailsScreen(
+  //               id: id,
+  //               fallbackTabIndex: 0,
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prescriptionState = ref.watch(getPrescriptionResumeProvider);
@@ -165,12 +165,14 @@ class WorkoutWidget extends ConsumerWidget {
                         child: GestureDetector(
                           onTap: !canOpenDetails
                               ? null
-                              : () => _openInstructionDialog(
-                                    context: context,
-                                    id: workoutId,
-                                    description: description,
-                                    points: points,
-                                    videoUrl: videoUrl,
+                              :() => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OnlyPlaylistDetailsScreen(
+                                        id: id,
+                                        fallbackTabIndex: 0,
+                                      ),
+                                    ),
                                   ),
                           child: Stack(
                             alignment: Alignment.center,
@@ -207,12 +209,14 @@ class WorkoutWidget extends ConsumerWidget {
                       Customebutton(
                         onTap: !canOpenDetails
                             ? () {}
-                            : () => _openInstructionDialog(
-                                  context: context,
-                                  id: workoutId,
-                                  description: description,
-                                  points: points,
-                                  videoUrl: videoUrl,
+                            : () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OnlyPlaylistDetailsScreen(
+                                      id: id,
+                                      fallbackTabIndex: 0,
+                                    ),
+                                  ),
                                 ),
                         text: "Watch Now",
                         sufImage: IconManager.playButton,

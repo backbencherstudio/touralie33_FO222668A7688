@@ -159,9 +159,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             duration: Utils.formatDurationLabel(video.duration),
                             level: _formatLevel(video.level),
                             isBookmarked: video.isFavorite ?? false,
-                            progressText: '${index + 1}/${suggestedList.length}',
-                            videoCountText:
-                                '${video.chaptersCount ?? 0} Videos',
+                          
+                           
                             imageUrl:
                                 video.thumbnailUrl ?? ImageManager.gymGuide,
                             onPlayTap: () {

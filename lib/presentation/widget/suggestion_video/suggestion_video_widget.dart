@@ -16,8 +16,8 @@ class SuggestionVideoWidget extends ConsumerWidget {
   final String duration;
   final String level;
   final String imageUrl;
-  final String progressText;
-  final String videoCountText;
+
+
   final Color? colorBg;
   final Color? bookmarkIconColor;
   final bool isBookmarked;
@@ -33,8 +33,8 @@ class SuggestionVideoWidget extends ConsumerWidget {
     required this.duration,
     required this.level,
     required this.imageUrl,
-    this.progressText = '1/4',
-    this.videoCountText = '4 Videos',
+ 
+    
     this.onPlayTap,
     this.colorBg,
     this.bookmarkIconColor,
@@ -90,46 +90,46 @@ class SuggestionVideoWidget extends ConsumerWidget {
                             fit: BoxFit.cover,
                           ),
                   ),
-                  Positioned(
-                    left: 6.w,
-                    bottom: 6.h,
-                    child: Text(
-                      progressText,
-                      style: getMedium500Style12(
-                        color: ColorManager.whiteColor,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 0.w,
-                    bottom: 0.h,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-                      decoration: BoxDecoration(
-                        color: ColorManager.backgroundColorgreen,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(5.r),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(IconManager.videoICon, height: 10.h),
-                          SizedBox(width: 4.w),
-                          Text(
-                            videoCountText,
-                            style: TextStyle(
-                              color: ColorManager.subtextColor,
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Positioned(
+                  //   left: 6.w,
+                  //   bottom: 6.h,
+                  //   child: Text(
+                  //     progressText,
+                  //     style: getMedium500Style12(
+                  //       color: ColorManager.whiteColor,
+                  //       fontSize: 14.sp,
+                  //     ),
+                  //   ),
+                  // ),
+                  // Positioned(
+                  //   right: 0.w,
+                  //   bottom: 0.h,
+                  //   child: Container(
+                  //     padding:
+                  //         EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                  //     decoration: BoxDecoration(
+                  //       color: ColorManager.backgroundColorgreen,
+                  //       borderRadius: BorderRadius.only(
+                  //         topLeft: Radius.circular(5.r),
+                  //       ),
+                  //     ),
+                  //     child: Row(
+                  //       mainAxisSize: MainAxisSize.min,
+                  //       children: [
+                  //         Image.asset(IconManager.videoICon, height: 10.h),
+                  //         SizedBox(width: 4.w),
+                  //         Text(
+                  //           videoCountText,
+                  //           style: TextStyle(
+                  //             color: ColorManager.subtextColor,
+                  //             fontSize: 11.sp,
+                  //             fontWeight: FontWeight.w500,
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               SizedBox(height: 6.h),

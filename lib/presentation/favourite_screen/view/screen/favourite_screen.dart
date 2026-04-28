@@ -155,9 +155,8 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                           imageUrl: item.thumbnailUrl ?? ImageManager.gymGuide,
                           isBookmarked: true,
                           bookmarkIconColor: ColorManager.blackColor,
-                          videoCountText:
-                              "${item.chaptersCount ?? 0} Videos",
-                          progressText: "${index + 1}/${data.length}",
+                          
+                        
                           onBookmarkTap: () async {
                             try {
                               await ref
