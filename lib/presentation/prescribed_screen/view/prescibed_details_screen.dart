@@ -57,7 +57,7 @@ class _PrescibedDetailsScreenState
     if (widget.initialPositionMilliseconds > 0) {
       _selectedPositionMilliseconds = widget.initialPositionMilliseconds;
     }
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final id = widget.id;
       if (id != null && id.isNotEmpty) {
         _prescribedDetailsNotifier.getPresCribedDetails(id: id);

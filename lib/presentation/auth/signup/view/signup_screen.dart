@@ -202,7 +202,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                         Customebutton(
                           text: signUpState.isLoading
                               ? "Signing Up..."
-                              : "Sing Up",
+                              : "Sign Up",
                           onTap: signUpState.isLoading
                               ? null
                               : () async {

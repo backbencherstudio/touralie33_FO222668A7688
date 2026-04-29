@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 
-class PlayListScreenWidget extends StatelessWidget {
+class PlayListScreenWidget extends ConsumerWidget {
+  final String? id;
   final String? image;
   final String? videoCount;
   final String? title;
@@ -14,10 +18,15 @@ class PlayListScreenWidget extends StatelessWidget {
   final String? totalTime;
   final String? buttonText, sufImage, bookMarkIcon;
   final VoidCallback? onTap;
+  final Future<void> Function()? onBookmarkTap;
   final Color? buttonIconColor, colorbg;
+  final Color? bookmarkIconColor;
+  final bool isBookmarked;
+  final bool enableBookmarkTap;
 
   const PlayListScreenWidget({
     super.key,
+    this.id,
     this.image,
     this.videoCount,
     this.title,
@@ -29,10 +38,14 @@ class PlayListScreenWidget extends StatelessWidget {
     this.sufImage,
     this.colorbg,
     this.bookMarkIcon,
+    this.onBookmarkTap,
+    this.bookmarkIconColor,
+    this.isBookmarked = false,
+    this.enableBookmarkTap = true,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.all(12.r),
       child: Container(
@@ -150,17 +163,54 @@ class PlayListScreenWidget extends StatelessWidget {
                             ),
                             SizedBox(height: 40.h),
                             InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  RoutesName.favouriteScreen,
-                                  arguments: 2,
-                                );
-                              },
-                              child: Image.asset(
-                                bookMarkIcon ?? IconManager.bookMark,
-                                width: 9.w,
-                                height: 12.h,
+                              onTap: !enableBookmarkTap || id == null || id!.isEmpty
+                                  ? null
+                                  : () async {
+                                      if (onBookmarkTap != null) {
+                                        await onBookmarkTap!();
+                                        return;
+                                      }
+
+                                      try {
+                                        await ref
+                                            .read(favouriteIdProvider.notifier)
+                                            .favouriteId(id: id!);
+                                        ref
+                                            .read(suggestedNotifierProvider.notifier)
+                                            .markSuggestedAsFavourite(id!);
+                                        await ref
+                                            .read(favouriteProvider.notifier)
+                                            .getFavourite();
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Bookmark updated'),
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Failed To add Favourite"),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                              child: Opacity(
+                                opacity:
+                                    !enableBookmarkTap || id == null || id!.isEmpty
+                                        ? 0.5
+                                        : 1,
+                                child: Image.asset(
+                                  IconManager.bookMark,
+                                  height: 12.h,
+                                  color: bookmarkIconColor ??
+                                      (isBookmarked
+                                          ? ColorManager.blackColor
+                                          : ColorManager.subtextColorGrey),
+                                ),
                               ),
                             ),
                           ],

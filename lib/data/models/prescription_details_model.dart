@@ -74,6 +74,7 @@ class Videos {
   String? thumbnailUrl;
   String? category;
   int? lastPlayedPosition;
+  bool? isFavorite;
   bool? isCompleted;
 
   Videos(
@@ -88,6 +89,7 @@ class Videos {
       this.thumbnailUrl,
       this.category,
       this.lastPlayedPosition,
+      this.isFavorite,
       this.isCompleted});
 
   Videos.fromJson(Map<String, dynamic> json) {
@@ -102,6 +104,7 @@ class Videos {
     thumbnailUrl = json['thumbnail_url'];
     category = json['category'];
     lastPlayedPosition = json['last_played_position'];
+    isFavorite = json['is_favorite'];
     isCompleted = json['is_completed'];
   }
 
@@ -118,6 +121,7 @@ class Videos {
     data['thumbnail_url'] = this.thumbnailUrl;
     data['category'] = this.category;
     data['last_played_position'] = this.lastPlayedPosition;
+    data['is_favorite'] = this.isFavorite;
     data['is_completed'] = this.isCompleted;
     return data;
   }
