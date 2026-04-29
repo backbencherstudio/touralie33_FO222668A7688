@@ -24,6 +24,7 @@ class PriscirbedDetailsModel {
 
 class Data {
   String? id;
+  String? prescriptionId;
   String? title;
   String? description;
   int? duration;
@@ -37,23 +38,26 @@ class Data {
   String? category;
   List<VideoChapters>? videoChapters;
 
-  Data(
-      {this.id,
-      this.title,
-      this.description,
-      this.duration,
-      this.level,
-      this.createdAt,
-      this.isFavorite,
-      this.lastWatchPosition,
-      this.isCompleted,
-      this.url,
-      this.thumbnailUrl,
-      this.category,
-      this.videoChapters});
+  Data({
+    this.id,
+    this.prescriptionId,
+    this.title,
+    this.description,
+    this.duration,
+    this.level,
+    this.createdAt,
+    this.isFavorite,
+    this.lastWatchPosition,
+    this.isCompleted,
+    this.url,
+    this.thumbnailUrl,
+    this.category,
+    this.videoChapters,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    prescriptionId = json['prescription_id']?.toString();
     title = json['title'];
     description = json['description'];
     duration = json['duration'];
@@ -76,6 +80,7 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['prescription_id'] = this.prescriptionId;
     data['title'] = this.title;
     data['description'] = this.description;
     data['duration'] = this.duration;
@@ -88,8 +93,9 @@ class Data {
     data['thumbnail_url'] = this.thumbnailUrl;
     data['category'] = this.category;
     if (this.videoChapters != null) {
-      data['video_chapters'] =
-          this.videoChapters!.map((v) => v.toJson()).toList();
+      data['video_chapters'] = this.videoChapters!
+          .map((v) => v.toJson())
+          .toList();
     }
     return data;
   }
@@ -103,13 +109,14 @@ class VideoChapters {
   String? thumbnailUrl;
   String? videoUrl;
 
-  VideoChapters(
-      {this.id,
-      this.title,
-      this.startTime,
-      this.endTime,
-      this.thumbnailUrl,
-      this.videoUrl});
+  VideoChapters({
+    this.id,
+    this.title,
+    this.startTime,
+    this.endTime,
+    this.thumbnailUrl,
+    this.videoUrl,
+  });
 
   VideoChapters.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -117,7 +124,8 @@ class VideoChapters {
     startTime = json['start_time'];
     endTime = json['end_time'];
     thumbnailUrl = json['thumbnail_url'];
-    videoUrl = json['video_url']?.toString() ??
+    videoUrl =
+        json['video_url']?.toString() ??
         json['url']?.toString() ??
         json['mp4_url']?.toString() ??
         json['mp4']?.toString();

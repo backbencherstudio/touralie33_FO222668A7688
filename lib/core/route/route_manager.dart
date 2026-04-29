@@ -23,8 +23,6 @@ import '../../presentation/splash/view/splash_screen.dart';
 import '../resource/constants/strings_manager.dart';
 import 'routes_name.dart';
 
-
-
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -32,7 +30,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case RoutesName.bottomNavRoute:
         return MaterialPageRoute(builder: (_) => BottomNavBarScreen());
-      case RoutesName.onboardingScreen :
+      case RoutesName.onboardingScreen:
         return MaterialPageRoute(builder: (_) => OnboardingScreen());
       case RoutesName.onBordingScreenWeight:
         return MaterialPageRoute(builder: (_) => OnBordingScreenWeight());
@@ -51,7 +49,9 @@ class RouteGenerator {
           final value = args['email'];
           if (value != null) email = value.toString();
         }
-        return MaterialPageRoute(builder: (_) => OtpScreen(email: email?.trim()));
+        return MaterialPageRoute(
+          builder: (_) => OtpScreen(email: email?.trim()),
+        );
       case RoutesName.newPasswordScreen:
         final args = routeSettings.arguments;
         String? email;
@@ -63,7 +63,8 @@ class RouteGenerator {
           if (t != null) token = t.toString();
         }
         return MaterialPageRoute(
-          builder: (_) => NewPasswordScreen(email: email?.trim(), token: token?.trim()),
+          builder: (_) =>
+              NewPasswordScreen(email: email?.trim(), token: token?.trim()),
         );
       case RoutesName.singInUpScreen:
         return MaterialPageRoute(builder: (_) => SingInUpScreen());
@@ -78,7 +79,7 @@ class RouteGenerator {
             child: const ParentScreen(),
           ),
         );
-         case RoutesName.favouriteScreen:
+      case RoutesName.favouriteScreen:
         final args = routeSettings.arguments;
         final initialIndex = args is int ? args : 0;
         return MaterialPageRoute(
@@ -94,15 +95,23 @@ class RouteGenerator {
       case RoutesName.prescibedDetailsScreen:
         final args = routeSettings.arguments;
         String? id;
+        String? prescriptionId;
         String? videoUrl;
         int initialPositionMilliseconds = 0;
         if (args is String) {
           id = args;
         } else if (args is Map) {
           final idValue = args['id'];
+          final prescriptionIdValue =
+              args['prescriptionId'] ??
+              args['prescribedId'] ??
+              args['prescription_id'];
           final videoValue = args['videoUrl'];
           final initialPositionValue = args['initialPositionMilliseconds'];
           if (idValue != null) id = idValue.toString();
+          if (prescriptionIdValue != null) {
+            prescriptionId = prescriptionIdValue.toString();
+          }
           if (videoValue != null) videoUrl = videoValue.toString();
           if (initialPositionValue is int) {
             initialPositionMilliseconds = initialPositionValue;
@@ -114,6 +123,7 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => PrescibedDetailsScreen(
             id: id,
+            prescriptionId: prescriptionId,
             videoUrl: videoUrl,
             initialPositionMilliseconds: initialPositionMilliseconds,
           ),
@@ -122,9 +132,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SettingScreen());
       case RoutesName.homeScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
-      case RoutesName.subscriptionScreen :
-        return MaterialPageRoute(builder: (_) => SubscriptionScreen ());
-      case RoutesName.getInTouchScreen  :
+      case RoutesName.subscriptionScreen:
+        return MaterialPageRoute(builder: (_) => SubscriptionScreen());
+      case RoutesName.getInTouchScreen:
         final args = routeSettings.arguments;
         String? planId;
         String? planTitle;
@@ -148,9 +158,9 @@ class RouteGenerator {
             planPeriod: planPeriod,
           ),
         );
-      case RoutesName.playlistScreen  :
-        return MaterialPageRoute(builder: (_) => PlaylistScreen ());
-      case RoutesName.emailOtpVerify  :
+      case RoutesName.playlistScreen:
+        return MaterialPageRoute(builder: (_) => PlaylistScreen());
+      case RoutesName.emailOtpVerify:
         final args = routeSettings.arguments;
         String? email;
         if (args is String) {
@@ -162,8 +172,9 @@ class RouteGenerator {
         if (email == null || email.trim().isEmpty) {
           return unDefineRoute();
         }
-        return MaterialPageRoute(builder: (_) => EmailOtpVerify(email: email!.trim()));
-     
+        return MaterialPageRoute(
+          builder: (_) => EmailOtpVerify(email: email!.trim()),
+        );
 
       default:
         return unDefineRoute();

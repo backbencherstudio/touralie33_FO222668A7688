@@ -101,13 +101,18 @@ class WatchHistoryList extends ConsumerWidget {
       itemCount: filteredItems.length,
       itemBuilder: (context, index) {
         final item = filteredItems[index];
+        final isCompleted = progressState.completedIds.contains(item.id) ||
+            item.isCompleted == true ||
+            (item.watchStatus ?? '').toUpperCase() == 'COMPLETED';
         final effectiveLastPlayedPosition =
-            _normalizeStoredPositionMilliseconds(
-              progressState.syncedPositionById[item.id] ??
-                  item.lastPlayedPosition ??
-                  0,
-              item.duration,
-            );
+            isCompleted
+                ? 0
+                : _normalizeStoredPositionMilliseconds(
+                    progressState.syncedPositionById[item.id] ??
+                        item.lastPlayedPosition ??
+                        0,
+                    item.duration,
+                  );
         final buttonText = _getButtonText(
           item,
           effectiveLastPlayedPosition,

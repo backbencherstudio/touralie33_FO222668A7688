@@ -38,13 +38,14 @@ class LibraryProgressProvider extends StateNotifier<LibraryProgressState> {
   final Set<String> _syncingIds = <String>{};
 
   LibraryProgressProvider({required this.resource})
-      : super(const LibraryProgressState(isLoading: false));
+    : super(const LibraryProgressState(isLoading: false));
 
   Future<void> syncProgress({
     required String id,
     required int positionMilliseconds,
     bool isCompleted = false,
     bool force = false,
+    String? prescriptionId,
   }) async {
     if (id.isEmpty) return;
 
@@ -52,7 +53,8 @@ class LibraryProgressProvider extends StateNotifier<LibraryProgressState> {
         ? 0
         : positionMilliseconds;
     final previousPositionMilliseconds = _lastSyncedPositionById[id] ?? -1;
-    final shouldSync = force ||
+    final shouldSync =
+        force ||
         isCompleted ||
         previousPositionMilliseconds < 0 ||
         (safePositionMilliseconds - previousPositionMilliseconds).abs() >= 5000;
@@ -64,8 +66,8 @@ class LibraryProgressProvider extends StateNotifier<LibraryProgressState> {
     _syncingIds.add(id);
     final normalizedPositionMilliseconds =
         safePositionMilliseconds < previousPositionMilliseconds
-            ? previousPositionMilliseconds
-            : safePositionMilliseconds;
+        ? previousPositionMilliseconds
+        : safePositionMilliseconds;
     final updatedCompletedIds = <String>{
       ...state.completedIds,
       if (isCompleted) id,
@@ -83,9 +85,10 @@ class LibraryProgressProvider extends StateNotifier<LibraryProgressState> {
     try {
       await resource.syncProgress(
         id: id,
-        lastWatchPositionSeconds:
-            (normalizedPositionMilliseconds / 1000).floor(),
+        lastWatchPositionSeconds: (normalizedPositionMilliseconds / 1000)
+            .floor(),
         isCompleted: isCompleted,
+        prescriptionId: prescriptionId,
       );
       _lastSyncedPositionById[id] = normalizedPositionMilliseconds;
       state = state.copyWith(
@@ -108,11 +111,11 @@ class LibraryProgressProvider extends StateNotifier<LibraryProgressState> {
   }
 }
 
-final libraryProgressProvider = StateNotifierProvider<
-    LibraryProgressProvider, LibraryProgressState>((ref) {
-  return LibraryProgressProvider(
-    resource: LibraryProgressRepository(
-      resource: LibraryProgressApiService(apiClient: ApiClient()),
-    ),
-  );
-});
+final libraryProgressProvider =
+    StateNotifierProvider<LibraryProgressProvider, LibraryProgressState>((ref) {
+      return LibraryProgressProvider(
+        resource: LibraryProgressRepository(
+          resource: LibraryProgressApiService(apiClient: ApiClient()),
+        ),
+      );
+    });
