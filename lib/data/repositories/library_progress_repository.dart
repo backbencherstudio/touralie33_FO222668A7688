@@ -9,11 +9,13 @@ class LibraryProgressRepository {
     required String id,
     required int lastWatchPositionSeconds,
     required bool isCompleted,
+    String? prescriptionId,
   }) async {
     return resource.syncProgress(
       id: id,
       lastWatchPositionSeconds: lastWatchPositionSeconds,
       isCompleted: isCompleted,
+      prescriptionId: prescriptionId,
     );
   }
 }

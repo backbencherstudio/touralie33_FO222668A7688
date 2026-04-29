@@ -10,14 +10,20 @@ class LibraryProgressApiService {
     required String id,
     required int lastWatchPositionSeconds,
     required bool isCompleted,
+    String? prescriptionId,
   }) async {
     try {
+      final body = <String, dynamic>{
+        'last_played_position': lastWatchPositionSeconds,
+        'is_completed': isCompleted,
+      };
+      if (prescriptionId != null && prescriptionId.trim().isNotEmpty) {
+        body['prescription_id'] = prescriptionId;
+      }
+
       final response = await apiClient.patchRequest(
         endpoints: ApiEndpoints.libraryProgress(id),
-        body: {
-          'last_played_position': lastWatchPositionSeconds,
-          'is_completed': isCompleted,
-        },
+        body: body,
       );
       if (response != null && response['success'] == true) {
         return true;

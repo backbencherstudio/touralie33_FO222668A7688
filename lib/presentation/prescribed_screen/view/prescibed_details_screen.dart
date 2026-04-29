@@ -21,11 +21,13 @@ class PrescibedDetailsScreen extends ConsumerStatefulWidget {
   const PrescibedDetailsScreen({
     super.key,
     this.id,
+    this.prescriptionId,
     this.videoUrl,
     this.initialPositionMilliseconds = 0,
   });
 
   final String? id;
+  final String? prescriptionId;
   final String? videoUrl;
   final int initialPositionMilliseconds;
 
@@ -52,8 +54,9 @@ class _PrescibedDetailsScreenState
     super.initState();
     _libraryProgressNotifier = ref.read(libraryProgressProvider.notifier);
     _profileNotifier = ref.read(profileProvider.notifier);
-    _prescribedDetailsNotifier =
-        ref.read(prescribedDetailsNotifierProvider.notifier);
+    _prescribedDetailsNotifier = ref.read(
+      prescribedDetailsNotifierProvider.notifier,
+    );
     if (widget.initialPositionMilliseconds > 0) {
       _selectedPositionMilliseconds = widget.initialPositionMilliseconds;
     }
@@ -161,10 +164,7 @@ class _PrescibedDetailsScreenState
         ),
         child: WorkoutSet(
           mainImage: chapter.thumbnailUrl ?? ImageManager.gymGuide,
-          duration: _formatChapterDuration(
-            chapter.startTime,
-            chapter.endTime,
-          ),
+          duration: _formatChapterDuration(chapter.startTime, chapter.endTime),
           title: chapter.title ?? 'Workout Chapter',
           iconBgColor: entry.key == selectedChapterIndex
               ? ColorManager.backgroundColorgreen
@@ -177,9 +177,11 @@ class _PrescibedDetailsScreenState
               _selectedChapterIndex = entry.key;
               _selectedVideoUrl =
                   chapter.videoUrl ?? workout?.url ?? widget.videoUrl;
-              _selectedThumbnail = chapter.thumbnailUrl ?? workout?.thumbnailUrl;
-              _selectedPositionMilliseconds =
-                  _chapterStartMilliseconds(chapter);
+              _selectedThumbnail =
+                  chapter.thumbnailUrl ?? workout?.thumbnailUrl;
+              _selectedPositionMilliseconds = _chapterStartMilliseconds(
+                chapter,
+              );
             });
           },
         ),
@@ -200,9 +202,7 @@ class _PrescibedDetailsScreenState
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              child: Customebar(
-                text: "Watch Video",
-              ),
+              child: Customebar(text: "Watch Video"),
             ),
           ),
         ),
@@ -218,9 +218,7 @@ class _PrescibedDetailsScreenState
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              child: Customebar(
-                text:  "Your Prescribed Video",
-              ),
+              child: Customebar(text: "Your Prescribed Video"),
             ),
           ),
         ),
@@ -249,9 +247,7 @@ class _PrescibedDetailsScreenState
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              child: Customebar(
-                text:"Your Prescribed Video",
-              ),
+              child: Customebar(text: "Your Prescribed Video"),
             ),
           ),
         ),
@@ -268,43 +264,39 @@ class _PrescibedDetailsScreenState
       );
     }
 
-    final description = 
-        workout.description ??
-        '';
+    final description = workout.description ?? '';
+    final effectivePrescriptionId =
+        widget.prescriptionId ?? workout.prescriptionId;
     final shortDescription = description.length > 126
         ? '${description.substring(0, 126)}... '
         : description;
     final categoryText = workout.category ?? "All";
-    final levelText =  workout.level ?? "";
-    final chapters = workout.videoChapters ?? const <detail_model.VideoChapters>[];
-    final chapterCount = chapters.isEmpty ? 1 : chapters.length;
+    final chapters =
+        workout.videoChapters ?? const <detail_model.VideoChapters>[];
+
     final normalizedBackendPositionMilliseconds =
         _normalizeStoredPositionMilliseconds(
           workout.lastWatchPosition ?? 0,
           workout.duration,
-        );///
+        );
+
     final effectiveInitialPositionMilliseconds =
         _selectedPositionMilliseconds ??
         (widget.initialPositionMilliseconds > 0
             ? widget.initialPositionMilliseconds
             : normalizedBackendPositionMilliseconds);
-    final effectiveSelectedChapterIndex = _selectedChapterIndex ??
+
+    final effectiveSelectedChapterIndex =
+        _selectedChapterIndex ??
         _resolveChapterIndex(
           chapters: chapters,
           positionMilliseconds: effectiveInitialPositionMilliseconds,
         );
-    final currentVideoUrl = _selectedVideoUrl ??
-        widget.videoUrl ??
-        workout.url ??
-        '';
-    final currentThumbnail = _selectedThumbnail ??
-        workout.thumbnailUrl ??
-        ImageManager.gymGuide;
-    final chapterWidgets = _buildChapterWorkoutSets(
-      chapters: chapters,
-      workout: workout,
-      selectedChapterIndex: effectiveSelectedChapterIndex,
-    );
+
+    final currentVideoUrl =
+        _selectedVideoUrl ?? widget.videoUrl ?? workout.url ?? '';
+    final currentThumbnail =
+        _selectedThumbnail ?? workout.thumbnailUrl ?? ImageManager.gymGuide;
 
     return Scaffold(
       backgroundColor: ColorManager.primary,
@@ -315,7 +307,7 @@ class _PrescibedDetailsScreenState
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: Customebar(
               ontap: () => Navigator.pop(context),
-              text:  "Watch Video",
+              text: "Watch Video",
             ),
           ),
         ),
@@ -369,28 +361,35 @@ class _PrescibedDetailsScreenState
                               }
                             }
                             _libraryProgressNotifier.syncProgress(
-                                  id: id,
-                                  positionMilliseconds: position,
-                                );
+                              id: id,
+                              positionMilliseconds: position,
+                              prescriptionId: effectivePrescriptionId,
+                            );
                           },
                           onPlaybackStopped: (position) {
                             final id = widget.id;
                             if (id == null || id.isEmpty) return;
                             _libraryProgressNotifier.syncProgress(
-                                  id: id,
-                                  positionMilliseconds: position,
-                                  force: true,
-                                );
+                              id: id,
+                              positionMilliseconds: position,
+                              force: true,
+                              prescriptionId: effectivePrescriptionId,
+                            );
                           },
                           onCompleted: (position) {
                             final id = widget.id;
                             if (id == null || id.isEmpty) return;
-                            _libraryProgressNotifier.syncProgress(
-                                  id: id,
-                                  positionMilliseconds: position,
-                                  isCompleted: true,
-                                  force: true,
-                                );
+
+                            final totalMs = (workout.duration ?? 0) * 1000;
+                            if (position >= totalMs - 1000) {
+                              _libraryProgressNotifier.syncProgress(
+                                id: id,
+                                positionMilliseconds: position,
+                                isCompleted: true,
+                                force: true,
+                                prescriptionId: effectivePrescriptionId,
+                              );
+                            }
                           },
                         ),
                         SizedBox(height: 10.h),
@@ -414,7 +413,7 @@ class _PrescibedDetailsScreenState
                         ),
                         SizedBox(height: 5.h),
                         Text(
-                         workout.title ?? "Back Mobility Program",
+                          workout.title ?? "Back Mobility Program",
                           style: getMedium500Style12(
                             color: ColorManager.textPrimary,
                             fontSize: 20.sp,
@@ -431,7 +430,9 @@ class _PrescibedDetailsScreenState
                             ).copyWith(height: 1.6, letterSpacing: 0.5),
                             children: [
                               TextSpan(
-                                text: _isExpanded ? description : shortDescription,
+                                text: _isExpanded
+                                    ? description
+                                    : shortDescription,
                               ),
                               if (description.length > 126)
                                 TextSpan(
@@ -473,101 +474,8 @@ class _PrescibedDetailsScreenState
                                 ),
                               ],
                             ),
-                            // Container(
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(8.r),
-                            //     color: ColorManager.drawrColor.withValues(
-                            //       alpha: .4,
-                            //     ),
-                            //   ),
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.all(8.0),
-                            //     child: Text(
-                            //       levelText,
-                            //       style: getMedium500Style14(
-                            //         color: ColorManager.textPrimary,
-                            //         fontSize: 10.sp,
-                            //         fontWeight: FontWeight.w500,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(12.r),
-                        //     color: ColorManager.whiteColor,
-                        //     border: Border.all(
-                        //       color: ColorManager.backgroundColorgreen,
-                        //       width: .5.w,
-                        //     ),
-                        //   ),
-                        //   child: Padding(
-                        //     padding: EdgeInsets.all(12.r),
-                        //     child: Column(
-                        //       children: [
-                        //         Row(
-                        //           mainAxisAlignment:
-                        //               MainAxisAlignment.spaceBetween,
-                        //           children: [
-                        //             Text(
-                        //            "Workout Set",
-                        //               style: getMedium500Style12(
-                        //                 color: ColorManager.textPrimary,
-                        //                 fontSize: 16.sp,
-                        //                 fontWeight: FontWeight.w600,
-                        //               ),
-                        //             ),
-                        //             Row(
-                        //               children: [
-                        //                 Image.asset(
-                        //                   IconManager.videoICon,
-                        //                   fit: BoxFit.cover,
-                        //                   height: 13.h,
-                        //                 ),
-                        //                 SizedBox(width: 4.w),
-                        //                 Text(
-                        //                   '${chapters.isEmpty ? 1 : effectiveSelectedChapterIndex + 1}/$chapterCount videos',
-                        //                   style: getMedium500Style16(
-                        //                     color: ColorManager.textPrimary,
-                        //                     fontSize: 13.sp,
-                        //                     fontWeight: FontWeight.w400,
-                        //                   ),
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ],
-                        //         ),
-                        //         SizedBox(height: 10.h),
-                        //         if (chapterWidgets.isNotEmpty) ...chapterWidgets,
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
-                        // SizedBox(height: 15.h),
-                        // Customebutton(
-                        //   onTap: () {
-                        //     if (_scrollController.hasClients) {
-                        //       _scrollController.animateTo(
-                        //         0,
-                        //         duration: const Duration(milliseconds: 350),
-                        //         curve: Curves.easeOut,
-                        //       );
-                        //     }
-                        //     setState(() {
-                        //       _selectedVideoUrl = currentVideoUrl;
-                        //       _selectedThumbnail = currentThumbnail;
-                        //       _playRequestId++;
-                        //     });
-                        //   },
-                        //   text:  "Watch Now",
-                        //   textColor: ColorManager.whiteColor,
-                        //   color: ColorManager.blackColor,
-                        //   sufImage: IconManager.playButton,
-                        //   sufImageColor: ColorManager.whiteColor,
-                        // ),
                       ],
                     ),
                   ),

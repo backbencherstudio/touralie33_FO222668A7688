@@ -12,6 +12,7 @@ import 'package:touralie33_fo222668a7688/data/models/prescription_details_model.
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/library_progress_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/only_details_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
@@ -37,7 +38,8 @@ class OnlyPlaylistDetailsScreen extends ConsumerStatefulWidget {
       _OnlyPlaylistDetailsScreen();
 }
 
-class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen> {
+class _OnlyPlaylistDetailsScreen
+    extends ConsumerState<OnlyPlaylistDetailsScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isExpanded = false;
   String? _selectedVideoUrl;
@@ -46,12 +48,14 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
   int? _selectedPositionMilliseconds;
   final Map<String, bool> _favoriteOverrides = {};
   int _playRequestId = 0;
+  late final LibraryProgressProvider _libraryProgressNotifier;
   late final ProfileProvider _profileNotifier;
   late final OnlyDetailsNotifier _onlyDetailsNotifier;
 
   @override
   void initState() {
     super.initState();
+    _libraryProgressNotifier = ref.read(libraryProgressProvider.notifier);
     _profileNotifier = ref.read(profileProvider.notifier);
     _onlyDetailsNotifier = ref.read(onlyDetailsProvider.notifier);
     if (widget.initialPositionMilliseconds > 0) {
@@ -102,7 +106,9 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
         _selectedVideoIndex! < videos.length) {
       return _selectedVideoIndex!;
     }
-    final lastPlayedIndex = videos.indexWhere((video) => video.id == lastPlayedVideoId);
+    final lastPlayedIndex = videos.indexWhere(
+      (video) => video.id == lastPlayedVideoId,
+    );
     return lastPlayedIndex >= 0 ? lastPlayedIndex : 0;
   }
 
@@ -245,7 +251,8 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
               _selectedVideoUrl = video.url ?? widget.videoUrl;
               _selectedThumbnail = video.thumbnailUrl;
               _selectedPositionMilliseconds =
-                  video.lastPlayedPosition ?? widget.initialPositionMilliseconds;
+                  video.lastPlayedPosition ??
+                  widget.initialPositionMilliseconds;
               _isExpanded = false;
             });
           },
@@ -269,9 +276,9 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
       await ref.read(favouriteProvider.notifier).getFavourite();
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bookmark updated')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Bookmark updated')));
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -405,11 +412,10 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
         (widget.initialPositionMilliseconds > 0
             ? widget.initialPositionMilliseconds
             : selectedVideo.lastPlayedPosition ?? 0);
-    final currentVideoUrl = _selectedVideoUrl ??
-        widget.videoUrl ??
-        selectedVideo.url ??
-        '';
-    final currentThumbnail = _selectedThumbnail ??
+    final currentVideoUrl =
+        _selectedVideoUrl ?? widget.videoUrl ?? selectedVideo.url ?? '';
+    final currentThumbnail =
+        _selectedThumbnail ??
         selectedVideo.thumbnailUrl ??
         ImageManager.gymGuide;
     final chapterWidgets = _buildVideoWorkoutSets(
@@ -418,8 +424,10 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
     );
     final note = selectedVideo.note?.trim() ?? '';
     final selectedVideoId = selectedVideo.id;
+    final prescriptionId = playlistData.id;
     final isBookmarked = selectedVideoId != null
-        ? (_favoriteOverrides[selectedVideoId] ?? (selectedVideo.isFavorite ?? false))
+        ? (_favoriteOverrides[selectedVideoId] ??
+              (selectedVideo.isFavorite ?? false))
         : false;
 
     return PopScope(
@@ -477,11 +485,44 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                             initialPositionMilliseconds:
                                 effectiveInitialPositionMilliseconds,
                             playRequestId: _playRequestId,
+                            onPositionChanged: (position) {
+                              if (selectedVideoId == null ||
+                                  selectedVideoId.isEmpty) {
+                                return;
+                              }
+                              _selectedPositionMilliseconds = position;
+                              _libraryProgressNotifier.syncProgress(
+                                id: selectedVideoId,
+                                positionMilliseconds: position,
+                                prescriptionId: prescriptionId,
+                              );
+                            },
                             onPlaybackStopped: (position) {
                               _selectedPositionMilliseconds = position;
+                              if (selectedVideoId == null ||
+                                  selectedVideoId.isEmpty) {
+                                return;
+                              }
+                              _libraryProgressNotifier.syncProgress(
+                                id: selectedVideoId,
+                                positionMilliseconds: position,
+                                force: true,
+                                prescriptionId: prescriptionId,
+                              );
                             },
                             onCompleted: (position) {
                               _selectedPositionMilliseconds = position;
+                              if (selectedVideoId == null ||
+                                  selectedVideoId.isEmpty) {
+                                return;
+                              }
+                              _libraryProgressNotifier.syncProgress(
+                                id: selectedVideoId,
+                                positionMilliseconds: position,
+                                isCompleted: true,
+                                force: true,
+                                prescriptionId: prescriptionId,
+                              );
                             },
                           ),
                           SizedBox(height: 10.h),
@@ -501,14 +542,18 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                               ),
                               SizedBox(width: 12.w),
                               InkWell(
-                                onTap: selectedVideoId == null || selectedVideoId.isEmpty
+                                onTap:
+                                    selectedVideoId == null ||
+                                        selectedVideoId.isEmpty
                                     ? null
                                     : () => _handleBookmarkTap(
-                                          videoId: selectedVideoId,
-                                          isBookmarked: isBookmarked,
-                                        ),
+                                        videoId: selectedVideoId,
+                                        isBookmarked: isBookmarked,
+                                      ),
                                 child: Opacity(
-                                  opacity: selectedVideoId == null || selectedVideoId.isEmpty
+                                  opacity:
+                                      selectedVideoId == null ||
+                                          selectedVideoId.isEmpty
                                       ? 0.5
                                       : 1,
                                   child: Image.asset(
@@ -543,16 +588,17 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                               ).copyWith(height: 1.6, letterSpacing: 0.5),
                               children: [
                                 TextSpan(
-                                  text:
-                                      _isExpanded ? description : shortDescription,
+                                  text: _isExpanded
+                                      ? description
+                                      : shortDescription,
                                 ),
                                 if (description.length > 126)
                                   TextSpan(
-                                    text:
-                                        _isExpanded ? 'Read Less' : 'Read More',
+                                    text: _isExpanded
+                                        ? 'Read Less'
+                                        : 'Read More',
                                     style: getMedium500Style14(
-                                      color:
-                                          ColorManager.backgroundColorgreen1,
+                                      color: ColorManager.backgroundColorgreen1,
                                       fontSize: 13.sp,
                                     ),
                                     recognizer: TapGestureRecognizer()
@@ -582,30 +628,30 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                             ],
                           ),
                           SizedBox(height: 10.h),
-                          
-                            InkWell(
-                              onTap: () => _showNoteDialog(note),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.info,
-                                    size: 18.sp,
+
+                          InkWell(
+                            onTap: () => _showNoteDialog(note),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.info,
+                                  size: 18.sp,
+                                  color: ColorManager.titleText1,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'View Note',
+                                  style: getMedium500Style14(
                                     color: ColorManager.titleText1,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  SizedBox(width: 8.w),
-                                  Text(
-                                    'View Note',
-                                    style: getMedium500Style14(
-                                      color: ColorManager.titleText1,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 12.h),
-                          
+                          ),
+                          SizedBox(height: 12.h),
+
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12.r),
@@ -642,8 +688,7 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                                           Text(
                                             '${effectiveSelectedVideoIndex + 1}/$chapterCount videos',
                                             style: getMedium500Style16(
-                                              color:
-                                                  ColorManager.textPrimary,
+                                              color: ColorManager.textPrimary,
                                               fontSize: 13.sp,
                                               fontWeight: FontWeight.w400,
                                             ),
