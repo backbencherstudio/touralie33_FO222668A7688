@@ -10,6 +10,8 @@ import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescription_details_model.dart'
     as detail_model;
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/only_details_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
@@ -42,6 +44,7 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
   String? _selectedThumbnail;
   int? _selectedVideoIndex;
   int? _selectedPositionMilliseconds;
+  final Map<String, bool> _favoriteOverrides = {};
   int _playRequestId = 0;
   late final ProfileProvider _profileNotifier;
   late final OnlyDetailsNotifier _onlyDetailsNotifier;
@@ -251,6 +254,32 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
     }).toList();
   }
 
+  Future<void> _handleBookmarkTap({
+    required String videoId,
+    required bool isBookmarked,
+  }) async {
+    try {
+      await ref.read(favouriteIdProvider.notifier).favouriteId(id: videoId);
+      if (!mounted) return;
+
+      setState(() {
+        _favoriteOverrides[videoId] = !isBookmarked;
+      });
+
+      await ref.read(favouriteProvider.notifier).getFavourite();
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bookmark updated')),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update bookmark')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final detailsState = ref.watch(onlyDetailsProvider);
@@ -388,6 +417,10 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
       selectedVideoIndex: effectiveSelectedVideoIndex,
     );
     final note = selectedVideo.note?.trim() ?? '';
+    final selectedVideoId = selectedVideo.id;
+    final isBookmarked = selectedVideoId != null
+        ? (_favoriteOverrides[selectedVideoId] ?? (selectedVideo.isFavorite ?? false))
+        : false;
 
     return PopScope(
       canPop: false,
@@ -467,7 +500,26 @@ class _OnlyPlaylistDetailsScreen extends ConsumerState<OnlyPlaylistDetailsScreen
                                 ),
                               ),
                               SizedBox(width: 12.w),
-                              Image.asset(IconManager.bookMark, height: 16.h),
+                              InkWell(
+                                onTap: selectedVideoId == null || selectedVideoId.isEmpty
+                                    ? null
+                                    : () => _handleBookmarkTap(
+                                          videoId: selectedVideoId,
+                                          isBookmarked: isBookmarked,
+                                        ),
+                                child: Opacity(
+                                  opacity: selectedVideoId == null || selectedVideoId.isEmpty
+                                      ? 0.5
+                                      : 1,
+                                  child: Image.asset(
+                                    IconManager.bookMark,
+                                    height: 16.h,
+                                    color: isBookmarked
+                                        ? ColorManager.blackColor
+                                        : ColorManager.subtextColorGrey,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: 5.h),

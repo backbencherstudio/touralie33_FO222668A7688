@@ -36,7 +36,7 @@ class _BottomsheetWidgetState extends ConsumerState<BottomsheetWidget> {
     final categories =
         ref.watch(personalizationProvider.notifier).personalizationData?.data ??
             [];
-    final totalItems = categories.length + 1;
+    final totalItems = categories.length;
 
     return Container(
       constraints: BoxConstraints(maxHeight: 650.h),
@@ -84,13 +84,9 @@ class _BottomsheetWidgetState extends ConsumerState<BottomsheetWidget> {
                     : SingleChildScrollView(
                         child: Column(
                           children: List.generate(totalItems, (index) {
-                            final isAllOption = index == 0;
                             final isSelected = selectedIndex == index;
-                            final category =
-                                isAllOption ? null : categories[index - 1];
-                            final title = isAllOption
-                                ? 'All'
-                                : (category?.title ?? '');
+                            final category = categories[index];
+                            final title = category.title ?? '';
 
                             return Padding(
                               padding: EdgeInsets.symmetric(
@@ -105,7 +101,7 @@ class _BottomsheetWidgetState extends ConsumerState<BottomsheetWidget> {
                                       .state = index;
                                   await ref
                                       .read(favouriteProvider.notifier)
-                                      .applyCategoryFilter(category?.id);
+                                      .applyCategoryFilter(category.id);
                                   if (context.mounted) {
                                     Navigator.pop(context);
                                   }

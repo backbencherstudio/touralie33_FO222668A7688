@@ -126,6 +126,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
     final completedVideos = data.totalCompletedVideos ?? 0;
 
     return PlayListScreenWidget(
+      id: data.id,
       image: data.thumbnailUrl ?? ImageManager.gymGuide,
       videoCount: "$completedVideos/$totalVideos videos",
       title: data.title ?? "",

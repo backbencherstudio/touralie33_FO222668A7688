@@ -169,7 +169,7 @@ class WorkoutWidget extends ConsumerWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => OnlyPlaylistDetailsScreen(
-                                        id: id,
+                                        id: workoutId,
                                         fallbackTabIndex: 0,
                                       ),
                                     ),
@@ -213,7 +213,7 @@ class WorkoutWidget extends ConsumerWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => OnlyPlaylistDetailsScreen(
-                                      id: id,
+                                      id: workoutId,
                                       fallbackTabIndex: 0,
                                     ),
                                   ),

@@ -116,6 +116,7 @@ class WatchHistoryList extends ConsumerWidget {
         final isProgress = buttonText == "In Progress";
 
         return PlayListScreenWidget(
+          id: item.id,
           image: item.thumbnailUrl ?? ImageManager.gymGuide,
           videoCount:
               "${item.chaptersCount ?? 0} video${(item.chaptersCount ?? 0) == 1 ? '' : 's'}",
@@ -126,7 +127,6 @@ class WatchHistoryList extends ConsumerWidget {
           sufImage: isProgress ? IconManager.playButton : null,
           buttonIconColor: isProgress ? Colors.black : Colors.white,
           colorbg: const Color(0XFFF5F9F1),
-          bookMarkIcon: IconManager.bookMarkFill,
           onTap: () {
             Navigator.pushNamed(
               context,
