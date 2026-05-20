@@ -9,7 +9,6 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.d
 
 
 final weightUnitProvider = StateProvider<String>((ref) => "Kg");
-final selectedWeightProvider = StateProvider<int>((ref) => 50); 
 
 class OnBordingScreenWeight extends ConsumerStatefulWidget {
   const OnBordingScreenWeight({super.key});
@@ -19,185 +18,180 @@ class OnBordingScreenWeight extends ConsumerStatefulWidget {
 }
 
 class _OnBordingScreenWeightState extends ConsumerState<OnBordingScreenWeight> {
-  late ScrollController _scrollController;
-  final double itemWidth = 60.0; 
+  final TextEditingController _weightController = TextEditingController(text: "");
 
   @override
   void initState() {
     super.initState();
-
-    
-    int initialIndex = 50 - 20;
-
-  
-    _scrollController = ScrollController(
-      initialScrollOffset: initialIndex * itemWidth.w,
-    );
+    _weightController.addListener(() {
+      SharedPreferenceData.setOnboardingWeight(_weightController.text.trim());
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      SharedPreferenceData.setOnboardingWeight(
-        ref.read(selectedWeightProvider).toString(),
-      );
+      SharedPreferenceData.setOnboardingWeight(_weightController.text.trim());
       SharedPreferenceData.setOnboardingWeightUnit(ref.read(weightUnitProvider));
     });
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _weightController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final selectedUnit = ref.watch(weightUnitProvider);
-    final selectedWeight = ref.watch(selectedWeightProvider);
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
       backgroundColor: ColorManager.primary,
-      body: Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 50.h), 
-              Image.asset(
-                ImageManager.weight,
-                width: 108.w,
-                height: 108.h,
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                "What is your Weight",
-                style: getMedium500Style16(
-                  color: ColorManager.textPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16.sp,
-                ),
-              ),
-              SizedBox(height: 40.h),
-          
-              SizedBox(
-                height: 70.h,
-                child: ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 81, 
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width / 2 - (itemWidth.w / 2),
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.symmetric(horizontal: 30.w),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 50.h),
+                  Image.asset(
+                    ImageManager.weight,
+                    width: 108.w,
+                    height: 108.h,
                   ),
-                  itemBuilder: (context, index) {
-                    int weightValue = index + 20;
-                    bool isSelected = selectedWeight == weightValue;
-          
-                    return GestureDetector(
-                      onTap: () {
-                      
-                        ref.read(selectedWeightProvider.notifier).state = weightValue;
-                        SharedPreferenceData.setOnboardingWeight("$weightValue");
-          
-                      
-                        _scrollController.animateTo(
-                          index * itemWidth.w,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      child: Container(
-                        width: itemWidth.w,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isSelected
-                              ? ColorManager.backgroundColorgreen
-                              : Colors.transparent,
-                        ),
-                        child: Text(
-                          "$weightValue",
-                          style: getMedium500Style16(
-                            color: isSelected ? Colors.black : Colors.grey.withOpacity(0.6),
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
-                            fontSize: isSelected ? 18.sp : 14.sp,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-          
-              SizedBox(height: 30.h),
-          
-              // --- Kg / Lb Toggle Switch ---
-              Container(
-                height: 35.h,
-                width: 110.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r),
-                  color: ColorManager.bgColorgrey,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Row(
-                    children: [
-                 
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            ref.read(weightUnitProvider.notifier).state = "Kg";
-                            SharedPreferenceData.setOnboardingWeightUnit("Kg");
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.r),
-                              color: selectedUnit == "Kg"
-                                  ? ColorManager.backgroundColorgreen
-                                  : Colors.transparent,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Kg",
-                                style: getMedium500Style14(
-                                  color: ColorManager.textPrimary,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                  SizedBox(height: 16.h),
+                  Text(
+                    "What is your Weight",
+                    style: getMedium500Style16(
+                      color: ColorManager.textPrimary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  SizedBox(height: 40.h),
+                  Container(
+                    height: 55.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 60.w,
+                          child: TextField(
+                            controller: _weightController,
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.right,
+                            style: getMedium500Style16(color: ColorManager.textPrimary),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "00",
+                              hintStyle: getMedium500Style14(
+                                color: ColorManager.textSecondary,
                               ),
                             ),
                           ),
                         ),
-                      ),
-            
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            ref.read(weightUnitProvider.notifier).state = "Lb";
-                            SharedPreferenceData.setOnboardingWeightUnit("Lb");
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.r),
-                              color: selectedUnit == "Lb"
-                                  ? ColorManager.backgroundColorgreen
-                                  : Colors.transparent,
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
+                          child: Text(
+                            "|",
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              color: Colors.grey.shade400,
                             ),
-                            child: Center(
-                              child: Text(
-                                "Lb",
-                                style: getMedium500Style14(
-                                  color: ColorManager.textPrimary,
-                                  fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 50.w,
+                          child: Text(
+                            selectedUnit,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30.h),
+                  Container(
+                    height: 35.h,
+                    width: 110.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.r),
+                      color: ColorManager.bgColorgrey,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                ref.read(weightUnitProvider.notifier).state = "Kg";
+                                SharedPreferenceData.setOnboardingWeightUnit("Kg");
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: selectedUnit == "Kg"
+                                      ? ColorManager.backgroundColorgreen
+                                      : Colors.transparent,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Kg",
+                                    style: getMedium500Style14(
+                                      color: ColorManager.textPrimary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                ref.read(weightUnitProvider.notifier).state = "Lb";
+                                SharedPreferenceData.setOnboardingWeightUnit("Lb");
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: selectedUnit == "Lb"
+                                      ? ColorManager.backgroundColorgreen
+                                      : Colors.transparent,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Lb",
+                                    style: getMedium500Style14(
+                                      color: ColorManager.textPrimary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

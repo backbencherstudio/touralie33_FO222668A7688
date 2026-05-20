@@ -12,7 +12,7 @@ class ApiEndpoints {
    static const String resetPassWord = 'api/auth/reset-password';
    static const String getMe= 'api/auth/me';
    static const String updateUser= 'api/auth/update';
-   static const String  suggestedVideo= 'api/library';
+   static const String  suggestedVideo= 'api/library'; 
    static const String  prescriptionResume= 'api/prescription/resume';
    static const String  prescribe= 'api/prescription';
   static String prescribedDetails(String id) => 'api/library/$id';
