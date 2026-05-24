@@ -8,6 +8,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.d
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/core/service/notification_service.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
@@ -186,7 +187,8 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                           Expanded(
                             child: InkWell(
                               onTap: () async {
-                                SharedPreferenceData.removeToken();
+                                await NotificationService.clearTokenOnLogout();
+                                await SharedPreferenceData.removeToken();
                                 final success = await ref.read(deleteProvider.notifier).deleteProfile();
                                 if (success) {
                                   if (!context.mounted) return;

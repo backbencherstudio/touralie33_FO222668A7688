@@ -8,6 +8,7 @@ class ApiEndpoints {
    static const String library = 'api/library/categories';
    static const String verifyOtp = 'api/auth/check-otp';
    static const String forgotPass = 'api/auth/forgot-password';
+   static const String logout = 'api/auth/logout';
    static const String verifyEmail = 'api/auth/verify-email';
    static const String resetPassWord = 'api/auth/reset-password';
    static const String getMe= 'api/auth/me';

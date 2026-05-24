@@ -1,6 +1,7 @@
 import 'dart:developer';
 import '../../../core/network/api_clients.dart';
 import '../../../core/network/api_endpoints.dart';
+import '../../../core/service/notification_service.dart';
 import '../../../core/network/error_handle.dart';
 import 'package:dio/dio.dart';
 import '../local/shared_preference/shared_preference.dart';
@@ -8,12 +9,26 @@ import '../local/shared_preference/shared_preference.dart';
 class AuthApiService {
   final ApiClient apiClient;
   AuthApiService({required this.apiClient});
-  Future<bool> register({required String name,required String email,required String password,required String weight,required String height,required String gender,required String dateOfBirth,required String personalization,required String type}) async {
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+    required String weight,
+    required String height,
+    required String gender,
+    required String dateOfBirth,
+    required String personalization,
+    required String type,
+  }) async {
     try {
       final trimmedWeight = weight.trim();
       final trimmedHeight = height.trim();
-      final weightNum = trimmedWeight.isEmpty ? null : num.tryParse(trimmedWeight);
-      final heightNum = trimmedHeight.isEmpty ? null : num.tryParse(trimmedHeight);
+      final weightNum = trimmedWeight.isEmpty
+          ? null
+          : num.tryParse(trimmedWeight);
+      final heightNum = trimmedHeight.isEmpty
+          ? null
+          : num.tryParse(trimmedHeight);
       if (trimmedWeight.isNotEmpty && weightNum == null) {
         throw Exception('Invalid weight');
       }
@@ -56,7 +71,9 @@ class AuthApiService {
         throw Exception('Registration failed: empty response');
       }
       if (response is! Map) {
-        throw Exception('Registration failed: unexpected response type ${response.runtimeType}');
+        throw Exception(
+          'Registration failed: unexpected response type ${response.runtimeType}',
+        );
       }
 
       final map = Map<String, dynamic>.from(response);
@@ -82,9 +99,17 @@ class AuthApiService {
     }
   }
 
-  Future<bool> login({required String email, required String password}) async {
+  Future<bool> login({
+    required String email,
+    required String password,
+    String? fcmToken,
+  }) async {
     try {
-      final body = {"email": email, "password": password};
+      final body = {
+        "email": email,
+        "password": password,
+        "fcm_token": fcmToken ?? '',
+      };
       final dynamic response = await apiClient.postRequest(
         body: body,
         endpoints: ApiEndpoints.login,
@@ -93,6 +118,7 @@ class AuthApiService {
         await SharedPreferenceData.setToken(
           response['authorization']['access_token'],
         );
+        await NotificationService.syncTokenAfterLogin();
         final token = await SharedPreferenceData.getToken();
         log("$token");
         return true;
@@ -109,9 +135,10 @@ class AuthApiService {
       rethrow;
     }
   }
-  Future<bool> forgotPass({required String email,}) async {
+
+  Future<bool> forgotPass({required String email}) async {
     try {
-      final body = {"email": email, };
+      final body = {"email": email};
       final dynamic response = await apiClient.postRequest(
         body: body,
         endpoints: ApiEndpoints.forgotPass,
@@ -121,6 +148,28 @@ class AuthApiService {
       } else {
         return false;
       }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<bool> logout() async {
+    try {
+      await ApiClient.headerSet(null);
+      final dynamic response = await apiClient.postRequest(
+        body: const {},
+        endpoints: ApiEndpoints.logout,
+      );
+      if (response['success'] == true) {
+        return true;
+      }
+      final message = response is Map ? response['message'] : null;
+      if (message is String && message.isNotEmpty) {
+        throw Exception(message);
+      }
+      return false;
+    } on DioException catch (e) {
+      throw Exception(ErrorHandle.handleDioError(e));
     } catch (error) {
       rethrow;
     }
