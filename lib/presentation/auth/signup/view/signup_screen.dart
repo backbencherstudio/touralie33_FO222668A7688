@@ -234,6 +234,16 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                           onTap: signUpState.isLoading
                               ? null
                               : () async {
+                                  if (!isCheck) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Please accept the Terms & Conditions',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
                                   final success = await ref
                                       .read(signUpViewModelProvider.notifier)
                                       .signup(
