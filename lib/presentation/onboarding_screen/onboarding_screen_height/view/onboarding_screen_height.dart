@@ -158,7 +158,7 @@ class _OnboardingScreenHeightState extends ConsumerState<OnboardingScreenHeight>
                                 width: 60.w,
                                 child: TextField(
                                   controller: _heightController,
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.text,
                                   textAlign: TextAlign.right,
                                   style: getMedium500Style16(color: ColorManager.textPrimary),
                                   decoration: InputDecoration(
