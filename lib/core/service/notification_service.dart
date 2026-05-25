@@ -35,6 +35,7 @@ class NotificationService {
 
   static Future<void> initialize() async {
     await _requestPermission();
+    await _configureForegroundPresentation();
     await _initializeLocalNotifications();
     _listenTokenRefresh();
     await _saveCurrentFcmToken();
@@ -66,6 +67,14 @@ class NotificationService {
     log('Notification permission: ${settings.authorizationStatus}');
   }
 
+  static Future<void> _configureForegroundPresentation() async {
+    await _messaging.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
   static Future<void> _initializeLocalNotifications() async {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
@@ -89,6 +98,9 @@ class NotificationService {
         'Foreground message received: title=${message.notification?.title}, '
         'body=${message.notification?.body}, data=${message.data}',
       );
+      if (!kIsWeb && Platform.isIOS) {
+        return;
+      }
       await showNotification(message);
     });
 
