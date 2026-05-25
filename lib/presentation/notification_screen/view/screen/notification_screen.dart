@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/data/models/notification_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/notification_screen/viewModel/notification_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/notification_widget/notification_widget.dart';
 
@@ -56,7 +55,7 @@ class _NotificationScreen1State extends ConsumerState<NotificationScreen1> {
   @override
   Widget build(BuildContext context) {
     final notificationState = ref.watch(notificationProvider);
-    final notifications = notificationState.getData?.data ?? <Data>[];
+    final notifications = notificationState.notifications;
 
     Future.microtask(() {
       if (notifications.isNotEmpty && notificationState.unreadCount > 0) {

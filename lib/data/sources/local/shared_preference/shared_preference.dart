@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:touralie33_fo222668a7688/data/models/notification_model.dart';
 
 class SharedPreferenceData {
   static const _keyAuthToken = 'auth_token';
@@ -16,6 +19,7 @@ class SharedPreferenceData {
   static const _keyOnboardingDob = 'onboarding_dob';
   static const _keyOnboardingPersonalization = 'onboarding_personalization';
   static const _keySeenNotificationIds = 'seen_notification_ids';
+  static const _keyStoredNotifications = 'stored_notifications';
 
   static Future<void> setToken(String? token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -192,6 +196,35 @@ class SharedPreferenceData {
   static Future<void> clearSeenNotificationIds() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_keySeenNotificationIds);
+  }
+
+  static Future<void> setStoredNotifications(List<Data> notifications) async {
+    final prefs = await SharedPreferences.getInstance();
+    final encoded = notifications.map((item) => item.toJson()).toList();
+    await prefs.setString(_keyStoredNotifications, jsonEncode(encoded));
+  }
+
+  static Future<List<Data>> getStoredNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_keyStoredNotifications);
+    if (raw == null || raw.isEmpty) {
+      return <Data>[];
+    }
+
+    final decoded = jsonDecode(raw);
+    if (decoded is! List) {
+      return <Data>[];
+    }
+
+    return decoded
+        .whereType<Map>()
+        .map((item) => Data.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
+  }
+
+  static Future<void> clearStoredNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_keyStoredNotifications);
   }
 
   static Future<void> clearOnboardingData() async {

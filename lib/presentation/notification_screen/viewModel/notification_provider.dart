@@ -1,26 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
-import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
+import 'package:touralie33_fo222668a7688/core/service/notification_service.dart';
 import 'package:touralie33_fo222668a7688/data/models/notification_model.dart';
-import 'package:touralie33_fo222668a7688/data/repositories/notification_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
-import 'package:touralie33_fo222668a7688/data/sources/remote/notification_api_service.dart';
 
 class NotificationState {
   final bool isloading;
   final String? errormessage;
-  final NotificationModel? getData;
+  final List<Data> notifications;
   final List<String> seenNotificationIds;
 
   NotificationState({
     this.errormessage,
     required this.isloading,
-    this.getData,
+    this.notifications = const <Data>[],
     this.seenNotificationIds = const <String>[],
   });
 
   int get unreadCount {
-    final notifications = getData?.data ?? <Data>[];
     if (notifications.isEmpty) return 0;
     return notifications
         .where((item) => item.id != null && !seenNotificationIds.contains(item.id))
@@ -36,23 +34,25 @@ class NotificationState {
   NotificationState copyWith({
     bool? isloading,
     String? errormessage,
-    NotificationModel? getData,
+    List<Data>? notifications,
     List<String>? seenNotificationIds,
   }) {
     return NotificationState(
       isloading: isloading ?? this.isloading,
-      errormessage: errormessage ?? this.errormessage,
-      getData: getData ?? this.getData,
+      errormessage: errormessage,
+      notifications: notifications ?? this.notifications,
       seenNotificationIds: seenNotificationIds ?? this.seenNotificationIds,
     );
   }
 }
 
 class NotificationProvider extends StateNotifier<NotificationState> {
-  final NotificationRepository source;
+  NotificationProvider() : super(NotificationState(isloading: false)) {
+    _subscription = NotificationService.notificationStream.listen(_handleIncoming);
+    unawaited(getNotification());
+  }
 
-  NotificationProvider({required this.source})
-      : super(NotificationState(isloading: false));
+  late final StreamSubscription<Data> _subscription;
 
   Future<void> _loadSeenNotifications() async {
     final seenIds = await SharedPreferenceData.getSeenNotificationIds();
@@ -63,25 +63,24 @@ class NotificationProvider extends StateNotifier<NotificationState> {
     state = state.copyWith(isloading: true, errormessage: null);
     try {
       await _loadSeenNotifications();
-      final response = await source.notification();
+      final notifications = await SharedPreferenceData.getStoredNotifications();
       state = state.copyWith(
         isloading: false,
         errormessage: null,
-        getData: response,
+        notifications: notifications,
       );
       return true;
-    } catch (e) {
+    } catch (_) {
       state = state.copyWith(
         isloading: false,
-        errormessage: ErrorHandle.formatErrorMessage(e),
+        errormessage: 'Failed to load notifications',
       );
       return false;
     }
   }
 
   Future<void> markAllAsRead() async {
-    final notifications = state.getData?.data ?? <Data>[];
-    final ids = notifications
+    final ids = state.notifications
         .map((item) => item.id)
         .whereType<String>()
         .where((id) => id.isNotEmpty)
@@ -90,13 +89,27 @@ class NotificationProvider extends StateNotifier<NotificationState> {
     await SharedPreferenceData.setSeenNotificationIds(ids);
     state = state.copyWith(seenNotificationIds: ids);
   }
+
+  Future<void> _handleIncoming(Data notification) async {
+    final updated = <Data>[
+      notification,
+      ...state.notifications.where((item) => item.id != notification.id),
+    ];
+    await SharedPreferenceData.setStoredNotifications(updated);
+    state = state.copyWith(
+      notifications: updated,
+      errormessage: null,
+    );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }
 
 final notificationProvider =
     StateNotifierProvider<NotificationProvider, NotificationState>((ref) {
-  return NotificationProvider(
-    source: NotificationRepository(
-      resource: NotificationApiService(apiClient: ApiClient()),
-    ),
-  );
+  return NotificationProvider();
 });

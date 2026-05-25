@@ -12,6 +12,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/email_otp_verify.dart
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signup/viewmodel/signup_viewmodel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final eyeSecure = StateProvider<bool>((ref) => false);
 final checkIcon = StateProvider<bool>((ref) => false);
@@ -186,13 +187,40 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 10.w),
-                                Text(
-                                  "I Accept the Terms & Conditions",
-                                  style: getMedium500Style14(
-                                    color: ColorManager.textPrimary,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "I Accept the",
+                                      style: getMedium500Style14(
+                                        color: ColorManager.textPrimary,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () async {
+                                        final Uri url = Uri.parse(
+                                          'https://www.dashboard.irclinic.com.au/legal/terms-and-condition',
+                                        );
+                                        if (!await launchUrl(
+                                          url,
+                                          mode: LaunchMode.externalApplication,
+                                        )) {
+                                          throw Exception(
+                                            'Could not launch $url',
+                                          );
+                                        }
+                                      },
+                                      child: Text(
+                                        "Terms & Conditions",
+                                        style: getMedium500Style14(
+                                          color: ColorManager.textPrimary,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -221,7 +249,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                                         builder: (context) => EmailOtpVerify(
                                           email: _emailController.text.trim(),
                                         ),
-                                      ), 
+                                      ),
                                       (route) => false,
                                     );
                                   } else {
