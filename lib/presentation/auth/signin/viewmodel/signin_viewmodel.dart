@@ -25,10 +25,18 @@ class SignInViewModel extends StateNotifier<SignInState> {
 
   SignInViewModel({required this.repository}) : super(SignInState(isLoading: false));
 
-  Future<bool> signIn({required String email, required String password}) async {
+  Future<bool> signIn({
+    required String email,
+    required String password,
+    String? fcmToken,
+  }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final success = await repository.login(email: email, password: password);
+      final success = await repository.login(
+        email: email,
+        password: password,
+        fcmToken: fcmToken,
+      );
       state = state.copyWith(isLoading: false); 
       return success;
     } catch (e) {

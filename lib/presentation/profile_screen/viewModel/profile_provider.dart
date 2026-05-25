@@ -39,6 +39,8 @@ class ProfileProvider extends StateNotifier<ProfileState>{
     }
   }
 }
+
+
 final profileProvider= StateNotifierProvider<ProfileProvider,ProfileState>((ref){
  return ProfileProvider(resource: WatchHistoryRepository(resource: WatchHistoryApiService(apiClient: ApiClient(), watchHistoryModel: WatchHistoryModel())));
 });

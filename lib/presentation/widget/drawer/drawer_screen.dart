@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
+import 'package:touralie33_fo222668a7688/core/service/notification_service.dart';
+import 'package:touralie33_fo222668a7688/data/repositories/auth_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
+import 'package:touralie33_fo222668a7688/data/sources/remote/auth_api_service.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/security_screen/view/security_screen.dart';
 
@@ -123,9 +127,13 @@ class DrawerScreen extends ConsumerWidget {
               const Spacer(),
                _DrawerItem(
   ontap: () async {
-
+    try {
+      await AuthRepository(
+        remoteSource: AuthApiService(apiClient: ApiClient()),
+      ).logout();
+    } catch (_) {}
+    await NotificationService.clearTokenOnLogout();
     await SharedPreferenceData.removeToken();
-    
 
     if (context.mounted) {
       Navigator.pushNamedAndRemoveUntil(

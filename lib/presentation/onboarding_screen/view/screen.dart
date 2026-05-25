@@ -25,12 +25,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<bool> _validateAndPersistCurrentStep() async {
     switch (_currentPage) {
       case 0:
-        await SharedPreferenceData.setOnboardingWeight(
-          ref.read(selectedWeightProvider).toString(),
-        );
         await SharedPreferenceData.setOnboardingWeightUnit(
           ref.read(weightUnitProvider),
         );
+        final weight = (await SharedPreferenceData.getOnboardingWeight())?.trim();
+        if (weight == null || weight.isEmpty) {
+          _showSnack('Please enter your weight.');
+          return false;
+        }
         return true;
 
       case 1:
@@ -88,6 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       backgroundColor: ColorManager.primary,
       appBar: CustomeAppbar(
         onBackTap: () {
+          FocusScope.of(context).unfocus();
           if (_currentPage > 0) {
             _pageController.previousPage(
               duration: Duration(milliseconds: 300),
@@ -96,6 +99,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           }
         },
         onSkipTap: () async {
+          FocusScope.of(context).unfocus();
           await SharedPreferenceData.setOnboardingCompleted(true);
           if (!mounted) return;
           Navigator.pushReplacementNamed(context, RoutesName.singInUpScreen);
@@ -130,6 +134,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: PageView(
                 controller: _pageController,
                 onPageChanged: (index) {
+                  FocusScope.of(context).unfocus();
                   setState(() {
                     _currentPage = index;
                   });
@@ -152,6 +157,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () async {
+                    FocusScope.of(context).unfocus();
                     final ok = await _validateAndPersistCurrentStep();
                     if (!ok) return;
                     if (_currentPage < totalPages - 1) {

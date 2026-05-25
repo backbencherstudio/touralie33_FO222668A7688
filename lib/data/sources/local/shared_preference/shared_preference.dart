@@ -5,6 +5,7 @@ class SharedPreferenceData {
   static const _keyResetPasswordToken = 'reset_password_token';
   static const _keyRole = 'role';
   static const _keyEmail = 'email';
+  static const _keyFcmToken = 'fcm_token';
 
   static const _keyOnboardingCompleted = 'onboarding_completed';
   static const _keyOnboardingWeight = 'onboarding_weight';
@@ -14,8 +15,9 @@ class SharedPreferenceData {
   static const _keyOnboardingGender = 'onboarding_gender';
   static const _keyOnboardingDob = 'onboarding_dob';
   static const _keyOnboardingPersonalization = 'onboarding_personalization';
+  static const _keySeenNotificationIds = 'seen_notification_ids';
 
-static Future<void> setToken(String? token) async {
+  static Future<void> setToken(String? token) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(_keyAuthToken, "$token");
   }
@@ -28,6 +30,21 @@ static Future<void> setToken(String? token) async {
   static Future<void> removeToken() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove(_keyAuthToken);
+  }
+
+  static Future<void> setFcmToken(String? token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyFcmToken, token ?? '');
+  }
+
+  static Future<String?> getFcmToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyFcmToken);
+  }
+
+  static Future<void> removeFcmToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_keyFcmToken);
   }
 
   static Future<void> setResetPasswordToken(String? token) async {
@@ -160,6 +177,21 @@ static Future<void> setToken(String? token) async {
   static Future<String> getOnboardingPersonalizationCsv() async {
     final values = await getOnboardingPersonalization();
     return values.join(',');
+  }
+
+  static Future<void> setSeenNotificationIds(List<String> ids) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_keySeenNotificationIds, ids);
+  }
+
+  static Future<List<String>> getSeenNotificationIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_keySeenNotificationIds) ?? <String>[];
+  }
+
+  static Future<void> clearSeenNotificationIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_keySeenNotificationIds);
   }
 
   static Future<void> clearOnboardingData() async {

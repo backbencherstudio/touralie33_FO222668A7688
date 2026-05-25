@@ -58,6 +58,12 @@ class _NotificationScreen1State extends ConsumerState<NotificationScreen1> {
     final notificationState = ref.watch(notificationProvider);
     final notifications = notificationState.getData?.data ?? <Data>[];
 
+    Future.microtask(() {
+      if (notifications.isNotEmpty && notificationState.unreadCount > 0) {
+        ref.read(notificationProvider.notifier).markAllAsRead();
+      }
+    });
+
     return Dialog(
       insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
       backgroundColor: Colors.transparent,
@@ -125,11 +131,12 @@ class _NotificationScreen1State extends ConsumerState<NotificationScreen1> {
                     ),
                     itemBuilder: (context, index) {
                       final item = notifications[index];
+                      final isRead = notificationState.isRead(item);
                       return NotificationWidget(
                         time: _formatTime(item.createdAt),
                         title: item.title,
                         description: item.description,
-                        color: index == 0 ? ColorManager.errorColor : null,
+                        isRead: isRead,
                       );
                     },
                   ),

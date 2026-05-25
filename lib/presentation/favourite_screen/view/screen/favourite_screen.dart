@@ -17,7 +17,6 @@ import 'package:touralie33_fo222668a7688/presentation/widget/suggestion_video/su
 
 class FavouriteScreen extends ConsumerStatefulWidget {
   const FavouriteScreen({super.key});
-
   @override
   ConsumerState<FavouriteScreen> createState() => _FavouriteScreenState();
 }
