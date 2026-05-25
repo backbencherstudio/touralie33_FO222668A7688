@@ -4,6 +4,7 @@
 .dart_tool/
 build/
 android/app/build/
+temp_auto_push.bat
 ios/Flutter/Generated.xcconfig
 ios/Flutter/flutter_export_environment.sh
 *.apk
@@ -11,3 +12,5 @@ ios/Flutter/flutter_export_environment.sh
 *.jar
 *.so
 .DS_Store
+.gitignore
+branch_structure.json
