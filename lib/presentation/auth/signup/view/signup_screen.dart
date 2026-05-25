@@ -335,7 +335,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                       child: Text(
                         "Login",
                         style: getMedium500Style16(
-                          color: ColorManager.drawrColor,
+                          color: ColorManager.drawrColor,//
                           fontSize: 16.sp,
                         ),
                       ),
