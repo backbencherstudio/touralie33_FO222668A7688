@@ -1,7 +1,5 @@
 import 'package:touralie33_fo222668a7688/data/models/prescription_details_model.dart';
-import 'package:touralie33_fo222668a7688/data/sources/remote/prescirbed_api_service.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/prescription_details_service.dart';
-import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/prescibed_details_screen.dart';
 
 class PrescriptionDetailsRepository {
   PrescriptionDetailsService resource;

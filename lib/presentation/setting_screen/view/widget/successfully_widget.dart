@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
-import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 
 class SuccessfullyWidget extends StatelessWidget {
   const SuccessfullyWidget({super.key});
@@ -39,6 +37,6 @@ class SuccessfullyWidget extends StatelessWidget {
           ),
         ),
       ),
-    );;
+    );
   }
 }

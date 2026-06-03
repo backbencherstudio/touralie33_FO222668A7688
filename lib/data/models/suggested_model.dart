@@ -115,9 +115,9 @@ class MetaData {
 }
 
 class Filter {
-  Null? categoryId;
-  Null? startDate;
-  Null? endDate;
+  String? categoryId;
+  String? startDate;
+  String? endDate;
 
   Filter({this.categoryId, this.startDate, this.endDate});
 

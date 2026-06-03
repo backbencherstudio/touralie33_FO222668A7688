@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 

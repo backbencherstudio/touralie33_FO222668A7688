@@ -32,7 +32,7 @@ class PlanWidget extends StatelessWidget {
         color: ColorManager.whiteColor,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: ColorManager.backgroundColorgreen.withOpacity(0.5),
+          color: ColorManager.backgroundColorgreen.withValues(alpha: 0.5),
         ),
       ),
       child: Padding(

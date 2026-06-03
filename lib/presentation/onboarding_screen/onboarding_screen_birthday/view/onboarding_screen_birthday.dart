@@ -42,7 +42,6 @@ class _OnboardingScreenBirthdayState
 
   @override
  void dispose() {
-    // TODO: implement dispose
     _dayController.dispose();
     _MonthController.dispose();
     _yearController.dispose();
@@ -81,7 +80,7 @@ class _OnboardingScreenBirthdayState
 
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             spreadRadius: 1,
                             blurRadius: 10,
                             offset: Offset(0, 4),
@@ -122,8 +121,8 @@ class _OnboardingScreenBirthdayState
                       
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(
-                              0.05,
+                            color: Colors.black.withValues(
+                              alpha: 0.05,
                             ), 
                             spreadRadius: 1,
                             blurRadius: 10,
@@ -167,8 +166,8 @@ class _OnboardingScreenBirthdayState
                     
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(
-                              0.05,
+                            color: Colors.black.withValues(
+                              alpha: 0.05,
                             ), 
                             spreadRadius: 1,
                             blurRadius: 10,

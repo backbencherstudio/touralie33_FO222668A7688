@@ -9,7 +9,6 @@ import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/only_playlist_details_screen.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/instruction_widget/instruction_widget.dart';
 
 class WorkoutWidget extends ConsumerWidget {
   const WorkoutWidget({super.key, this.id});
@@ -51,12 +50,12 @@ class WorkoutWidget extends ConsumerWidget {
 
     final workoutId = workout?.prescriptionId ?? workout?.id ?? id;
     
-    final instruction = workout?.instruction;
+   // final instruction = workout?.instruction;
     final imageUrl = workout?.thumbnail;
-    final videoUrl = workout?.url;
+   // final videoUrl = workout?.url;
     final canOpenDetails = (workoutId ?? '').trim().isNotEmpty;
-    final points = instruction?.points ?? const <String>[];
-    final description = instruction?.description ??
+   // final points = instruction?.points ?? const <String>[];
+    //final description = instruction?.description ??
         workout?.progressMessage ??
         'No instruction available right now.';
 
