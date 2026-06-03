@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/delete_profile_repository.dart';
-import 'package:touralie33_fo222668a7688/data/repositories/update_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/delete_profile_api_service.dart';
-import 'package:touralie33_fo222668a7688/data/sources/remote/update_api_service.dart';
 
 class DeleteState {
   final bool isloading;

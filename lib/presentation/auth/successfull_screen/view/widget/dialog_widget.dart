@@ -44,6 +44,6 @@ class DialogWidget extends StatelessWidget {
           ),
         ),
       ),
-    );;
+    );
   }
 }

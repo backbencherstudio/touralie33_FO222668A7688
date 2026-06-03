@@ -22,7 +22,7 @@ class WeightSettingWidget extends ConsumerWidget {
       width: double.infinity, 
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.r),
-        color: ColorManager.beginerColor.withOpacity(0.5),
+        color: ColorManager.beginerColor.withValues(alpha: 0.5),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),

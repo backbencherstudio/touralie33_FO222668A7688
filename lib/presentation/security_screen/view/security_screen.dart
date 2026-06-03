@@ -38,7 +38,6 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
   
   @override
   void initState() {
-    // TODO: implement initState
     Future.microtask((){
       ref.read(getMeProvider.notifier).getMe();
     });
@@ -100,6 +99,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
     });
 
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: _handleWillPop,
       child: Scaffold(

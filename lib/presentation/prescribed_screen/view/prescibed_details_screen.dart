@@ -9,13 +9,11 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.d
 import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescribed_detail_model.dart'
     as detail_model;
-import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/prescribed_details_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/library_progress_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/workout_set/workOut_set.dart';
 
 class PrescibedDetailsScreen extends ConsumerStatefulWidget {
   const PrescibedDetailsScreen({
@@ -136,58 +134,58 @@ class _PrescibedDetailsScreenState
     return 0;
   }
 
-  String _formatChapterDuration(String? startTime, String? endTime) {
-    final startSeconds = _parseTimeToSeconds(startTime);
-    final endSeconds = _parseTimeToSeconds(endTime);
-    if (startSeconds != null &&
-        endSeconds != null &&
-        endSeconds >= startSeconds) {
-      final durationInSeconds = endSeconds - startSeconds;
-      return Utils.formatDurationLabel(durationInSeconds);
-    }
-    if ((startTime ?? '').isNotEmpty && (endTime ?? '').isNotEmpty) {
-      return '$startTime - $endTime';
-    }
-    return startTime ?? endTime ?? '0 sec';
-  }
+  // String _formatChapterDuration(String? startTime, String? endTime) {
+  //   final startSeconds = _parseTimeToSeconds(startTime);
+  //   final endSeconds = _parseTimeToSeconds(endTime);
+  //   if (startSeconds != null &&
+  //       endSeconds != null &&
+  //       endSeconds >= startSeconds) {
+  //     final durationInSeconds = endSeconds - startSeconds;
+  //     return Utils.formatDurationLabel(durationInSeconds);
+  //   }
+  //   if ((startTime ?? '').isNotEmpty && (endTime ?? '').isNotEmpty) {
+  //     return '$startTime - $endTime';
+  //   }
+  //   return startTime ?? endTime ?? '0 sec';
+  // }
 
-  List<Widget> _buildChapterWorkoutSets({
-    required List<detail_model.VideoChapters> chapters,
-    required detail_model.Data? workout,
-    required int selectedChapterIndex,
-  }) {
-    return chapters.asMap().entries.map((entry) {
-      final chapter = entry.value;
-      return Padding(
-        padding: EdgeInsets.only(
-          bottom: entry.key == chapters.length - 1 ? 0 : 15.h,
-        ),
-        child: WorkoutSet(
-          mainImage: chapter.thumbnailUrl ?? ImageManager.gymGuide,
-          duration: _formatChapterDuration(chapter.startTime, chapter.endTime),
-          title: chapter.title ?? 'Workout Chapter',
-          iconBgColor: entry.key == selectedChapterIndex
-              ? ColorManager.backgroundColorgreen
-              : null,
-          borderColor: entry.key == selectedChapterIndex
-              ? ColorManager.backgroundColorgreen1
-              : null,
-          ontap: () {
-            setState(() {
-              _selectedChapterIndex = entry.key;
-              _selectedVideoUrl =
-                  chapter.videoUrl ?? workout?.url ?? widget.videoUrl;
-              _selectedThumbnail =
-                  chapter.thumbnailUrl ?? workout?.thumbnailUrl;
-              _selectedPositionMilliseconds = _chapterStartMilliseconds(
-                chapter,
-              );
-            });
-          },
-        ),
-      );
-    }).toList();
-  }
+  // List<Widget> _buildChapterWorkoutSets({
+  //   required List<detail_model.VideoChapters> chapters,
+  //   required detail_model.Data? workout,
+  //   required int selectedChapterIndex,
+  // }) {
+  //   return chapters.asMap().entries.map((entry) {
+  //     final chapter = entry.value;
+  //     return Padding(
+  //       padding: EdgeInsets.only(
+  //         bottom: entry.key == chapters.length - 1 ? 0 : 15.h,
+  //       ),
+  //       child: WorkoutSet(
+  //         mainImage: chapter.thumbnailUrl ?? ImageManager.gymGuide,
+  //         duration: _formatChapterDuration(chapter.startTime, chapter.endTime),
+  //         title: chapter.title ?? 'Workout Chapter',
+  //         iconBgColor: entry.key == selectedChapterIndex
+  //             ? ColorManager.backgroundColorgreen
+  //             : null,
+  //         borderColor: entry.key == selectedChapterIndex
+  //             ? ColorManager.backgroundColorgreen1
+  //             : null,
+  //         ontap: () {
+  //           setState(() {
+  //             _selectedChapterIndex = entry.key;
+  //             _selectedVideoUrl =
+  //                 chapter.videoUrl ?? workout?.url ?? widget.videoUrl;
+  //             _selectedThumbnail =
+  //                 chapter.thumbnailUrl ?? workout?.thumbnailUrl;
+  //             _selectedPositionMilliseconds = _chapterStartMilliseconds(
+  //               chapter,
+  //             );
+  //           });
+  //         },
+  //       ),
+  //     );
+  //   }).toList();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -286,12 +284,12 @@ class _PrescibedDetailsScreenState
             ? widget.initialPositionMilliseconds
             : normalizedBackendPositionMilliseconds);
 
-    final effectiveSelectedChapterIndex =
-        _selectedChapterIndex ??
-        _resolveChapterIndex(
-          chapters: chapters,
-          positionMilliseconds: effectiveInitialPositionMilliseconds,
-        );
+    // final effectiveSelectedChapterIndex =
+    //     _selectedChapterIndex ??
+    //     _resolveChapterIndex(
+    //       chapters: chapters,
+    //       positionMilliseconds: effectiveInitialPositionMilliseconds,
+    //     );
 
     final currentVideoUrl =
         _selectedVideoUrl ?? widget.videoUrl ?? workout.url ?? '';

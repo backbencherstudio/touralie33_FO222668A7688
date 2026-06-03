@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/email_otp_verify_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/widget/customeApp.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/otp/view/widget/pinFieldWidget.dart';

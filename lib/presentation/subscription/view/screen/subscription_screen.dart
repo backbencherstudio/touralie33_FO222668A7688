@@ -23,7 +23,6 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     Future.microtask((){
       ref.read(subscriptionProvider.notifier).subscription();
     });
-    // TODO: implement initState
     super.initState();
   }
   @override
