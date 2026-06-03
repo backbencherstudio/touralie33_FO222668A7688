@@ -20,11 +20,12 @@ class SubscriptionScreen extends ConsumerStatefulWidget {
 class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   @override
   void initState() {
-    Future.microtask((){
+    Future.microtask(() {
       ref.read(subscriptionProvider.notifier).subscription();
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final subscriptionState = ref.watch(subscriptionProvider);
@@ -38,58 +39,63 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: Customebar(
-              text: "Membership!",
+              text: "Clinic Packages!",
               ontap: () {
-                Navigator.pushReplacementNamed(context, RoutesName.parentScreen);
+                Navigator.pushReplacementNamed(
+                  context,
+                  RoutesName.parentScreen,
+                );
               },
             ),
           ),
         ),
       ),
       body: Container(
-
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-          colors: [ColorManager.primary, Colors.white],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        )),
+          gradient: LinearGradient(
+            colors: [ColorManager.primary, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 10.h),
               Center(
-                  child: Image.asset(
-                IconManager.subscriptionIcon,
-                fit: BoxFit.cover,
-                height: 40.h,
-                width: 40.w,
-              )),
+                child: Image.asset(
+                  IconManager.subscriptionIcon,
+                  fit: BoxFit.cover,
+                  height: 40.h,
+                  width: 40.w,
+                ),
+              ),
               SizedBox(height: 10.h),
               Center(
                 child: Text(
-                  "Unlock more benefits",
+                  "Explore our physical",
                   style: getMedium500Style12(
-                      color: ColorManager.textPrimary,
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w600),
+                    color: ColorManager.textPrimary,
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               Center(
                 child: Text(
-                  "With a memberships!", // Fixed typo
+                  "therapy services!", // Fixed typo
                   style: getMedium500Style12(
-                      color: ColorManager.textPrimary,
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w600),
+                    color: ColorManager.textPrimary,
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               SizedBox(height: 15.h),
 
-        
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Builder(
@@ -120,7 +126,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 24.h),
                           child: Text(
-                            "No membership plans found",
+                            "No packages found",
                             textAlign: TextAlign.center,
                             style: getMedium500Style12(
                               color: ColorManager.textPrimary,
@@ -148,11 +154,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                               Navigator.pushReplacementNamed(
                                 context,
                                 RoutesName.getInTouchScreen,
-                                arguments: {
-                                  'id': plan.id,
-                                  'title': plan.title,
-                                  
-                                },
+                                arguments: {'id': plan.id, 'title': plan.title},
                               );
                             },
                           );

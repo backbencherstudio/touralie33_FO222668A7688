@@ -15,11 +15,11 @@ class PlanWidget extends StatelessWidget {
 
   const PlanWidget({
     super.key,
-   this.title,
- this.price,
-     this.description,
-   this.featureHeader,
-     this.features,
+    this.title,
+    this.price,
+    this.description,
+    this.featureHeader,
+    this.features,
     this.onSelect,
   });
 
@@ -27,7 +27,7 @@ class PlanWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(bottom: 20.h), 
+      margin: EdgeInsets.only(bottom: 20.h),
       decoration: BoxDecoration(
         color: ColorManager.whiteColor,
         borderRadius: BorderRadius.circular(16.r),
@@ -45,53 +45,56 @@ class PlanWidget extends StatelessWidget {
             Text(
               title ?? '',
               style: getMedium500Style10(
-                  color: ColorManager.textPrimary,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500),
+                color: ColorManager.textPrimary,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             // Price (e.g. $199.00/week)
             Text(
               price ?? '',
               style: getMedium500Style14(
-                  color: ColorManager.textPrimary,
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w600),
+                color: ColorManager.textPrimary,
+                fontSize: 30.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-               if (featureHeader != null && featureHeader!.isNotEmpty)
-            SizedBox(height: 8.h),
+            if (featureHeader != null && featureHeader!.isNotEmpty)
+              SizedBox(height: 8.h),
             // Description
             Text(
               description ?? '',
               style: getMedium500Style14(
-                  color: ColorManager.textPrimary,
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w400),
+                color: ColorManager.textPrimary,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-               if (featureHeader != null && featureHeader!.isNotEmpty)
-            SizedBox(height: 15.h),
+            if (featureHeader != null && featureHeader!.isNotEmpty)
+              SizedBox(height: 15.h),
             // Feature Header (e.g. Gym + Hydrotherapy)
             Text(
               featureHeader ?? "",
               style: getMedium500Style14(
-                  color: ColorManager.textPrimary,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600),
+                color: ColorManager.textPrimary,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             if (featureHeader != null && featureHeader!.isNotEmpty)
-           SizedBox(height: 10.h),
-            
+              SizedBox(height: 10.h),
+
             // Dynamic List of Features
-          ...(features ?? []).map((feature) => Padding(
-                  padding: EdgeInsets.only(bottom: 8.h),
-                  child: PlanRowWidget(text: feature),
-                )),
-   if (featureHeader != null && featureHeader!.isNotEmpty)
-            SizedBox(height: 20.h),
+            ...(features ?? []).map(
+              (feature) => Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: PlanRowWidget(text: feature),
+              ),
+            ),
+            if (featureHeader != null && featureHeader!.isNotEmpty)
+              SizedBox(height: 20.h),
             // Button
-            Customebutton(
-              text: "Select Plan",
-              onTap: onSelect, 
-            )
+            Customebutton(text: "Contact Clinic", onTap: onSelect),
           ],
         ),
       ),

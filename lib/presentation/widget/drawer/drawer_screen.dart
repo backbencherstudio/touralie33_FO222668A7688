@@ -34,7 +34,9 @@ class DrawerScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(getMeProvider);
     final user = state.me?.data;
-    final resolvedAvatarUrl = _resolveAvatarUrl(user?.avatarUrl ?? user?.avatar);
+    final resolvedAvatarUrl = _resolveAvatarUrl(
+      user?.avatarUrl ?? user?.avatar,
+    );
 
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.68,
@@ -49,9 +51,7 @@ class DrawerScreen extends ConsumerWidget {
                 child: Container(
                   width: 60.r * 2,
                   height: 60.r * 2,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
                   clipBehavior: Clip.antiAlias,
                   child: resolvedAvatarUrl != null
                       ? Image.network(
@@ -64,10 +64,7 @@ class DrawerScreen extends ConsumerWidget {
                             );
                           },
                         )
-                      : Image.asset(
-                          ImageManager.profilePic,
-                          fit: BoxFit.cover,
-                        ),
+                      : Image.asset(ImageManager.profilePic, fit: BoxFit.cover),
                 ),
               ),
               SizedBox(height: 12.h),
@@ -106,46 +103,59 @@ class DrawerScreen extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 14.h),
-               _DrawerItem(
+              _DrawerItem(
                 ontap: () {
-                          Navigator.pushReplacementNamed(context, RoutesName.subscriptionScreen);
+                  Navigator.pushReplacementNamed(
+                    context,
+                    RoutesName.subscriptionScreen,
+                  );
                 },
                 icon: IconManager.subscriptionPlan,
-                title: 'Subscribe Plan',
+                title: 'Clinic Plans',
               ),
-               _DrawerItem(
+              _DrawerItem(
                 ontap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> SecurityScreen()));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SecurityScreen()),
+                  );
                 },
-                icon: IconManager.security, title: 'Security'),
-               _DrawerItem(
+                icon: IconManager.security,
+                title: 'Security',
+              ),
+              _DrawerItem(
                 ontap: () {
-                  Navigator.pushReplacementNamed(context, RoutesName.settingScreen);
+                  Navigator.pushReplacementNamed(
+                    context,
+                    RoutesName.settingScreen,
+                  );
                 },
-                icon: IconManager.setting, title: 'Settings'),
-               
-              const Spacer(),
-               _DrawerItem(
-  ontap: () async {
-    try {
-      await AuthRepository(
-        remoteSource: AuthApiService(apiClient: ApiClient()),
-      ).logout();
-    } catch (_) {}
-    await NotificationService.clearTokenOnLogout();
-    await SharedPreferenceData.removeToken();
+                icon: IconManager.setting,
+                title: 'Settings',
+              ),
 
-    if (context.mounted) {
-      Navigator.pushNamedAndRemoveUntil(
-        context, 
-        RoutesName.signInScreen, 
-        (route) => false,        
-      );
-    }
-  },
-  icon: IconManager.logout, 
-  title: 'Logout',
-),
+              const Spacer(),
+              _DrawerItem(
+                ontap: () async {
+                  try {
+                    await AuthRepository(
+                      remoteSource: AuthApiService(apiClient: ApiClient()),
+                    ).logout();
+                  } catch (_) {}
+                  await NotificationService.clearTokenOnLogout();
+                  await SharedPreferenceData.removeToken();
+
+                  if (context.mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      RoutesName.signInScreen,
+                      (route) => false,
+                    );
+                  }
+                },
+                icon: IconManager.logout,
+                title: 'Logout',
+              ),
             ],
           ),
         ),
@@ -157,7 +167,7 @@ class DrawerScreen extends ConsumerWidget {
 class _DrawerItem extends StatelessWidget {
   final String icon;
   final String title;
-  final VoidCallback ? ontap;
+  final VoidCallback? ontap;
 
   const _DrawerItem({required this.icon, required this.title, this.ontap});
 
@@ -166,11 +176,11 @@ class _DrawerItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 16.h),
       child: InkWell(
-        onTap:ontap,
+        onTap: ontap,
         borderRadius: BorderRadius.circular(10.r),
         child: Row(
           children: [
-            Image.asset(icon,fit: BoxFit.cover,height: 16.h,width: 16.w,),
+            Image.asset(icon, fit: BoxFit.cover, height: 16.h, width: 16.w),
             SizedBox(width: 12.w),
             Text(
               title,
