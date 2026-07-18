@@ -11,6 +11,7 @@ import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboardi
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_height/view/onboarding_screen_height.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/widget/custome_appBar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   @override
@@ -79,9 +80,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _showSnack(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    Fluttertoast.showToast(msg: message);
   }
 
   @override

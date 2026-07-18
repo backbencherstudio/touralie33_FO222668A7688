@@ -14,6 +14,7 @@ import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/sugg
 import 'package:touralie33_fo222668a7688/presentation/widget/bottomSheet/bottomSheet_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/suggestion_video/suggestion_video_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class FavouriteScreen extends ConsumerStatefulWidget {
   const FavouriteScreen({super.key});
@@ -168,19 +169,11 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                                   .read(favouriteProvider.notifier)
                                   .getFavourite();
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Bookmark updated'),
-                                  ),
-                                );
+                                Fluttertoast.showToast(msg: 'Bookmark updated');
                               }
                             } catch (_) {
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Failed to update bookmark'),
-                                  ),
-                                );
+                                Fluttertoast.showToast(msg: 'Failed to update bookmark');
                               }
                             }
                           },

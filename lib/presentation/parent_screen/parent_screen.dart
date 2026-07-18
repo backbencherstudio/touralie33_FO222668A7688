@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
@@ -20,6 +22,8 @@ class ParentScreen extends ConsumerStatefulWidget {
 }
 
 class _ParentScreenState extends ConsumerState<ParentScreen> {
+  DateTime? _lastPressedAt;
+
   @override
   void initState() {
     super.initState();
@@ -46,7 +50,22 @@ class _ParentScreenState extends ConsumerState<ParentScreen> {
   (icon: IconManager.favourite, label: 'Favourite'),
   (icon: IconManager.profile, label: 'Profile'),
 ];
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        final now = DateTime.now();
+        if (_lastPressedAt == null ||
+            now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+          _lastPressedAt = now;
+          Fluttertoast.showToast(msg: "Press back again to exit");
+        } else {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
       key: scaffoldKey,
       backgroundColor: ColorManager.primary,
       drawer: const DrawerScreen(),
@@ -117,6 +136,7 @@ class _ParentScreenState extends ConsumerState<ParentScreen> {
               );
             }),
           ),
+        ),
         ),
       ),
     );

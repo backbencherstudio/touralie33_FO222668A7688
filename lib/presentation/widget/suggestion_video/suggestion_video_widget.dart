@@ -7,6 +7,7 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.d
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class SuggestionVideoWidget extends ConsumerWidget {
@@ -168,19 +169,11 @@ class SuggestionVideoWidget extends ConsumerWidget {
                                   .read(favouriteProvider.notifier)
                                   .getFavourite();
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Bookmark updated'),
-                                  ),
-                                );
+                                Fluttertoast.showToast(msg: 'Bookmark updated');
                               }
                             } catch (e) {
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text("Failed To add Favourite"),
-                                  ),
-                                );
+                                Fluttertoast.showToast(msg: "Failed To add Favourite");
                               }
                             }
                           },

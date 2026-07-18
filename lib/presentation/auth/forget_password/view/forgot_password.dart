@@ -8,6 +8,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/viewmodel/forgot_password_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ForgotPassword extends ConsumerStatefulWidget {
   const ForgotPassword({super.key});
@@ -124,14 +125,8 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
 
                                           if (!ok) {
                                             if (!context.mounted) return;
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  ref.read(forgotPasswordProvider).errorMessage ??
-                                                      'Failed to send OTP',
-                                                ),
-                                              ),
-                                            );
+                                            Fluttertoast.showToast(msg: ref.read(forgotPasswordProvider).errorMessage ??
+                                                      'Failed to send OTP');
                                             return;
                                           }
 

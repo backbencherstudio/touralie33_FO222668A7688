@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
   final String videoUrl;
@@ -88,9 +89,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       mode: LaunchMode.externalApplication,
     );
     if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unable to open the video externally.')),
-      );
+      Fluttertoast.showToast(msg: 'Unable to open the video externally.');
     }
   }
 
@@ -661,9 +660,7 @@ class _FullScreenVideoPlayerState extends State<_FullScreenVideoPlayer> {
       mode: LaunchMode.externalApplication,
     );
     if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unable to open the video externally.')),
-      );
+      Fluttertoast.showToast(msg: 'Unable to open the video externally.');
     }
   }
 

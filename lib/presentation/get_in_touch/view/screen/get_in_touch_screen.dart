@@ -10,6 +10,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/cu
 import 'package:touralie33_fo222668a7688/presentation/get_in_touch/view/widget/success_full_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/get_in_touch/viewModel/get_in_touch_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class GetInTouchScreen extends ConsumerStatefulWidget {
   const GetInTouchScreen({
@@ -52,15 +53,11 @@ class _GetInTouchScreenState extends ConsumerState<GetInTouchScreen> {
     final message = _messageController.text.trim();
 
     if (planId == null || planId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Plan id not found')),
-      );
+      Fluttertoast.showToast(msg: 'Plan id not found');
       return;
     }
     if (name.isEmpty || email.isEmpty || phone.isEmpty || message.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
-      );
+      Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
 
@@ -90,9 +87,7 @@ class _GetInTouchScreenState extends ConsumerState<GetInTouchScreen> {
     }
 
     final errorMessage = ref.read(getInTouchProvider).errormessage;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(errorMessage ?? 'Failed to submit')),
-    );
+    Fluttertoast.showToast(msg: errorMessage ?? 'Failed to submit');
   }
 
   @override
