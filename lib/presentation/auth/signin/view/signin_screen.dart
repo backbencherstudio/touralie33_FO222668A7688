@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
@@ -21,6 +23,7 @@ class SigninScreen extends ConsumerStatefulWidget {
 class _SigninScreenState extends ConsumerState<SigninScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  DateTime? _lastPressedAt;
 
   @override
   void dispose() {
@@ -35,7 +38,22 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
     final isEyeon = ref.watch(eyeSecure);
     final isCheck = ref.watch(checkIcon);
 
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        final now = DateTime.now();
+        if (_lastPressedAt == null ||
+            now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+          _lastPressedAt = now;
+          Fluttertoast.showToast(msg: "Press back again to exit");
+        } else {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -147,13 +165,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                               onTap: () async {
                                 if (_emailController.text.isEmpty ||
                                     _passwordController.text.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        "Email and Password are required",
-                                      ),
-                                    ),
-                                  );
+                                  Fluttertoast.showToast(msg: "Email and Password are required");
                                   return;
                                 }
                                 final storedFcmToken =
@@ -181,14 +193,8 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                                   final latestState = ref.read(
                                     signInViewModelProvider,
                                   );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        latestState.errorMessage ??
-                                            "Login Failed!",
-                                      ),
-                                    ),
-                                  );
+                                  Fluttertoast.showToast(msg: latestState.errorMessage ??
+                                            "Login Failed!");
                                 }
                               },
                             ),
@@ -227,7 +233,7 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
             ),
           ),
         ),
-      ),
+      ),)
     );
   }
 }

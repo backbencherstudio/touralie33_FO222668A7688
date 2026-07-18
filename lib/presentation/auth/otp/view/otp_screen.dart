@@ -8,6 +8,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/
 import 'package:touralie33_fo222668a7688/presentation/auth/otp/view/widget/pinFieldWidget.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/otp/viewmodel/otp_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
   final String? email;
@@ -92,9 +93,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                                 );
                               } else {
                                 if (!context.mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(ref.read(otpProvider).errorMessage ?? 'Invalid OTP')),
-                                );
+                                Fluttertoast.showToast(msg: ref.read(otpProvider).errorMessage ?? 'Invalid OTP');
                               }
                             },
                           ),

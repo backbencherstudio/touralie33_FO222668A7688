@@ -8,6 +8,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/new_password_screen/v
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/widget/dialog_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NewPasswordScreen extends ConsumerStatefulWidget {
   final String? email;
@@ -96,7 +97,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                           final confirm = _confirmPasswordController.text.trim();
 
                           if (pass != confirm) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
+                            Fluttertoast.showToast(msg: 'Passwords do not match');
                             return;
                           }
 
@@ -111,9 +112,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                             showDialog(context: context, builder: (context) => const DialogWidget());
                           } else {
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(resetState.errorMessage ?? 'Error resetting password')),
-                            );
+                            Fluttertoast.showToast(msg: resetState.errorMessage ?? 'Error resetting password');
                           }
                         },
                       ),

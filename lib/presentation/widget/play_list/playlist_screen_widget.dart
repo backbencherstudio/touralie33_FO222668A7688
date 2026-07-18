@@ -8,6 +8,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/cu
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PlayListScreenWidget extends ConsumerWidget {
   final String? id;
@@ -182,19 +183,11 @@ class PlayListScreenWidget extends ConsumerWidget {
                                             .read(favouriteProvider.notifier)
                                             .getFavourite();
                                         if (context.mounted) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Bookmark updated'),
-                                            ),
-                                          );
+                                          Fluttertoast.showToast(msg: 'Bookmark updated');
                                         }
                                       } catch (e) {
                                         if (context.mounted) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text("Failed To add Favourite"),
-                                            ),
-                                          );
+                                          Fluttertoast.showToast(msg: "Failed To add Favourite");
                                         }
                                       }
                                     },

@@ -20,6 +20,7 @@ import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget
 import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/successfully_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/setting_screen/view/widget/weight_setting_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 
@@ -200,9 +201,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                                   );
                                 } else {
                                   if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(deleteState.errormessage ?? "Delete failed")),
-                                  );
+                                  Fluttertoast.showToast(msg: deleteState.errormessage ?? "Delete failed");
                                 }
                               },
                               child: Container(
@@ -505,7 +504,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                           final imageFile = pickerState.singleImage != null ? File(pickerState.singleImage!.path) : null;
 
                           if (name.isEmpty || email.isEmpty || weight.isEmpty || height.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All fields are required')));
+                            Fluttertoast.showToast(msg: 'All fields are required');
                             return;
                           }
 
@@ -524,7 +523,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                             showDialog(context: context, builder: (context) => const SuccessfullyWidget());
                           } else {
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(settingState.errormessage ?? 'Update failed')));
+                            Fluttertoast.showToast(msg: settingState.errormessage ?? 'Update failed');
                           }
                         },
                         text: "Save",

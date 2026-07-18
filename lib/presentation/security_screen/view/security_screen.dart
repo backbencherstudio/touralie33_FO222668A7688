@@ -10,6 +10,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/cu
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/security_screen/viewModel/change_password_provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 final currentPasswordVisibilityProvider = StateProvider<bool>((ref) => true);
@@ -57,16 +58,12 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
     final newPass = _newPasswordController.text.trim();
 
     if (currentPass.isEmpty || newPass.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
-      );
+      Fluttertoast.showToast(msg: 'Please fill all fields');
       return;
     }
 
     if (currentPass == newPass) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('New password must be different from current password')),
-      );
+      Fluttertoast.showToast(msg: 'New password must be different from current password');
       return;
     }
 
@@ -78,9 +75,7 @@ class _SecurityScreenState extends ConsumerState<SecurityScreen> {
     final message = success
         ? (currentState.successMessage ?? 'Password updated successfully')
         : (currentState.errorMessage ?? 'Failed to update password');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    Fluttertoast.showToast(msg: message);
 
     if (success) {
       _goHome();

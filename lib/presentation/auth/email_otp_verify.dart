@@ -8,6 +8,7 @@ import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/
 import 'package:touralie33_fo222668a7688/presentation/auth/otp/view/widget/pinFieldWidget.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/widget/dialog_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EmailOtpVerify extends ConsumerStatefulWidget {
   final String email;
@@ -116,9 +117,7 @@ class _EmailOtpVerifyState extends ConsumerState<EmailOtpVerify> {
 );
         } else {
       
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(otpState.errorMessage ?? "Verification Failed")),
-          );
+          Fluttertoast.showToast(msg: otpState.errorMessage ?? "Verification Failed");
         }
       },
 ),

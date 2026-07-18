@@ -18,6 +18,7 @@ import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/p
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_set/workOut_set.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OnlyPlaylistDetailsScreen extends ConsumerStatefulWidget {
   const OnlyPlaylistDetailsScreen({
@@ -276,14 +277,10 @@ class _OnlyPlaylistDetailsScreen
       await ref.read(favouriteProvider.notifier).getFavourite();
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Bookmark updated')));
+      Fluttertoast.showToast(msg: 'Bookmark updated');
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update bookmark')),
-      );
+      Fluttertoast.showToast(msg: 'Failed to update bookmark');
     }
   }
 
