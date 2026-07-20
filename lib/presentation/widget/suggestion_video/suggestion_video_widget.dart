@@ -146,7 +146,7 @@ class SuggestionWidget extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(width: 4.w),
-                  InkWell(
+                  GestureDetector(
                     onTap: !enableBookmarkTap || id == null || id!.isEmpty
                         ? null
                         : () async {
@@ -171,7 +171,7 @@ class SuggestionWidget extends ConsumerWidget {
                             } catch (e) {
                               if (context.mounted) {
                                 Fluttertoast.showToast(
-                                  msg: "Failed To add Favourite",
+                                  msg: "Error: $e",
                                 );
                               }
                             }

@@ -163,7 +163,7 @@ class PlayListScreenWidget extends ConsumerWidget {
                               ],
                             ),
                             SizedBox(height: 40.h),
-                            InkWell(
+                            GestureDetector(
                               onTap: !enableBookmarkTap || id == null || id!.isEmpty
                                   ? null
                                   : () async {
@@ -187,7 +187,7 @@ class PlayListScreenWidget extends ConsumerWidget {
                                         }
                                       } catch (e) {
                                         if (context.mounted) {
-                                          Fluttertoast.showToast(msg: "Failed To add Favourite");
+                                          Fluttertoast.showToast(msg: "Error: $e");
                                         }
                                       }
                                     },

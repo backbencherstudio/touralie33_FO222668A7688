@@ -1,7 +1,8 @@
 import 'package:riverpod/legacy.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/core/network/error_handle.dart';
-import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart' as favourite_model;
+import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart'
+    as favourite_model;
 import 'package:touralie33_fo222668a7688/data/models/suggested_model.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/suggest_repository.dart';
 import 'package:touralie33_fo222668a7688/data/sources/remote/suggested_api_service.dart';
@@ -41,7 +42,7 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
   final SuggestRepository repository;
 
   SuggestedProvider({required this.repository})
-      : super(SuggestedState(isLoading: false));
+    : super(SuggestedState(isLoading: false));
 
   Future<void> getSuggested() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -155,9 +156,11 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
     state = state.copyWith(suggestedData: updatedModel);
   }
 }
-final suggestedNotifierProvider = StateNotifierProvider<SuggestedProvider, SuggestedState>((ref) {
-  final repository = SuggestRepository(
-    resource: SuggestedApiService(apiClient: ApiClient())
-  );
-  return SuggestedProvider(repository: repository);
-});
+
+final suggestedNotifierProvider =
+    StateNotifierProvider<SuggestedProvider, SuggestedState>((ref) {
+      final repository = SuggestRepository(
+        resource: SuggestedApiService(apiClient: ApiClient()),
+      );
+      return SuggestedProvider(repository: repository);
+    });

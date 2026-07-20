@@ -148,19 +148,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             return GestureDetector(
                               onTap: () {
                                 if (video.mediaType == "PDF") {
-                                  Navigator.pushNamed(context, RoutesName.pdfDetailsScreen);
+                                  Navigator.pushNamed(
+                                    context,
+                                    RoutesName.pdfDetailsScreen,
+                                    arguments: {
+                                      'id': video.id,
+                                      'title': video.title,
+                                    },
+                                  );
                                 } else if (video.mediaType == "IMAGE") {
-                                  Navigator.pushNamed(context, RoutesName.imageDetailsScreen);
+                                  Navigator.pushNamed(
+                                    context,
+                                    RoutesName.imageDetailsScreen,
+                                  );
                                 } else {
-                                  Navigator.pushNamed(context, RoutesName.prescibedDetailsScreen, arguments: {
-                                    'id': video.id,
-                                  });
+                                  Navigator.pushNamed(
+                                    context,
+                                    RoutesName.prescibedDetailsScreen,
+                                    arguments: {'id': video.id},
+                                  );
                                 }
                               },
                               child: Container(
                                 padding: EdgeInsets.all(8.sp),
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: const Color(0xffD3D4D2)),
+                                  border: Border.all(
+                                    color: const Color(0xffD3D4D2),
+                                  ),
                                   borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 child: Column(
@@ -169,20 +183,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   children: [
                                     Expanded(
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8.r),
-                                        child: CachedNetworkImage(
-                                          imageUrl: video.thumbnailUrl ?? "",
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              const Center(
-                                                child: CircularProgressIndicator(),
-                                              ),
-                                          errorWidget: (context, url, error) =>
-                                              const Center(
-                                                child: Icon(Icons.error),
-                                              ),
+                                        borderRadius: BorderRadius.circular(
+                                          8.r,
                                         ),
+                                        child: video.mediaType == "PDF"
+                                            ? Container(
+                                                width: double.infinity,
+                                                color: Colors.grey[200],
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.picture_as_pdf,
+                                                    size: 40.sp,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              )
+                                            : CachedNetworkImage(
+                                                imageUrl:
+                                                    video.thumbnailUrl ?? "",
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Center(
+                                                          child: Icon(
+                                                            Icons.error,
+                                                          ),
+                                                        ),
+                                              ),
                                       ),
                                     ),
                                     8.verticalSpace,
@@ -200,14 +233,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           ),
                                         ),
                                         SizedBox(width: 4.w),
-                                        Image.asset(
-                                          IconManager.bookMark,
-                                          height: 12.h,
-                                          color: ColorManager.subtextColorGrey,
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: Image.asset(
+                                            IconManager.bookMark,
+                                            height: 12.h,
+                                            color:
+                                                ColorManager.subtextColorGrey,
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    if (video.mediaType == "VIDEO" || video.mediaType == null) ...[
+                                    if (video.mediaType == "VIDEO" ||
+                                        video.mediaType == null) ...[
                                       4.verticalSpace,
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -223,10 +261,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               fit: BoxFit.scaleDown,
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                video.duration?.toString() ?? "0",
+                                                video.duration?.toString() ??
+                                                    "0",
                                                 maxLines: 1,
                                                 style: getMedium500Style10(
-                                                  color: ColorManager.subtextColorGrey,
+                                                  color: ColorManager
+                                                      .subtextColorGrey,
                                                   fontSize: 12.sp,
                                                 ),
                                               ),

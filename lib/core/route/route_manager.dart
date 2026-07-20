@@ -9,7 +9,8 @@ import 'package:touralie33_fo222668a7688/presentation/auth/signup/view/signup_sc
 import 'package:touralie33_fo222668a7688/presentation/get_in_touch/view/screen/get_in_touch_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/home_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/image_details_screen.dart';
-import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/pdf_details_screen.dart' show PdfDetailsScreen;
+import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/pdf_details_screen.dart'
+    show PdfDetailsScreen;
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/welcome_screen/view/welcome_screen.dart';
@@ -43,7 +44,18 @@ class RouteGenerator {
       case RoutesName.forgotPassword:
         return MaterialPageRoute(builder: (_) => ForgotPassword());
       case RoutesName.pdfDetailsScreen:
-        return MaterialPageRoute(builder: (_) => PdfDetailsScreen());
+        final args = routeSettings.arguments;
+        String? id;
+        String? title;
+        if (args is Map) {
+          final value = args['id'];
+          if (value != null) id = value.toString();
+          final titleValue = args['title'];
+          if (titleValue != null) title = titleValue.toString();
+        }
+        return MaterialPageRoute(
+          builder: (_) => PdfDetailsScreen(id: id, title: title),
+        );
       case RoutesName.imageDetailsScreen:
         return MaterialPageRoute(builder: (_) => ImageDetailsScreen());
       case RoutesName.otpScreen:
