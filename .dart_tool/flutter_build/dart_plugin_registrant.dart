@@ -9,13 +9,17 @@ import 'dart:io'; // flutter_ignore: dart_io_import.
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' as flutter_local_notifications;
 import 'package:image_picker_android/image_picker_android.dart' as image_picker_android;
+import 'package:path_provider_android/path_provider_android.dart' as path_provider_android;
 import 'package:shared_preferences_android/shared_preferences_android.dart' as shared_preferences_android;
+import 'package:sqflite_android/sqflite_android.dart' as sqflite_android;
 import 'package:url_launcher_android/url_launcher_android.dart' as url_launcher_android;
 import 'package:video_player_android/video_player_android.dart' as video_player_android;
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' as flutter_local_notifications;
 import 'package:image_picker_ios/image_picker_ios.dart' as image_picker_ios;
+import 'package:path_provider_foundation/path_provider_foundation.dart' as path_provider_foundation;
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart' as shared_preferences_foundation;
+import 'package:sqflite_darwin/sqflite_darwin.dart' as sqflite_darwin;
 import 'package:url_launcher_ios/url_launcher_ios.dart' as url_launcher_ios;
 import 'package:video_player_avfoundation/video_player_avfoundation.dart' as video_player_avfoundation;
 import 'package:connectivity_plus/connectivity_plus.dart' as connectivity_plus;
@@ -32,7 +36,9 @@ import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:file_selector_macos/file_selector_macos.dart' as file_selector_macos;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' as flutter_local_notifications;
 import 'package:image_picker_macos/image_picker_macos.dart' as image_picker_macos;
+import 'package:path_provider_foundation/path_provider_foundation.dart' as path_provider_foundation;
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart' as shared_preferences_foundation;
+import 'package:sqflite_darwin/sqflite_darwin.dart' as sqflite_darwin;
 import 'package:url_launcher_macos/url_launcher_macos.dart' as url_launcher_macos;
 import 'package:video_player_avfoundation/video_player_avfoundation.dart' as video_player_avfoundation;
 import 'package:wakelock_plus/wakelock_plus.dart' as wakelock_plus;
@@ -80,10 +86,28 @@ class _PluginRegistrant {
       }
 
       try {
+        path_provider_android.PathProviderAndroid.registerWith();
+      } catch (err) {
+        print(
+          '`path_provider_android` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         shared_preferences_android.SharedPreferencesAndroid.registerWith();
       } catch (err) {
         print(
           '`shared_preferences_android` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        sqflite_android.SqfliteAndroid.registerWith();
+      } catch (err) {
+        print(
+          '`sqflite_android` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }
@@ -135,10 +159,28 @@ class _PluginRegistrant {
       }
 
       try {
+        path_provider_foundation.PathProviderFoundation.registerWith();
+      } catch (err) {
+        print(
+          '`path_provider_foundation` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         shared_preferences_foundation.SharedPreferencesFoundation.registerWith();
       } catch (err) {
         print(
           '`shared_preferences_foundation` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        sqflite_darwin.SqfliteDarwin.registerWith();
+      } catch (err) {
+        print(
+          '`sqflite_darwin` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }
@@ -290,10 +332,28 @@ class _PluginRegistrant {
       }
 
       try {
+        path_provider_foundation.PathProviderFoundation.registerWith();
+      } catch (err) {
+        print(
+          '`path_provider_foundation` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         shared_preferences_foundation.SharedPreferencesFoundation.registerWith();
       } catch (err) {
         print(
           '`shared_preferences_foundation` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        sqflite_darwin.SqfliteDarwin.registerWith();
+      } catch (err) {
+        print(
+          '`sqflite_darwin` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }

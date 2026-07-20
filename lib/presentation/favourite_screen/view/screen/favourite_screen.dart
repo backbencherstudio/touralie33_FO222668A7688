@@ -137,8 +137,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(10),
                       itemCount: data.length,
-                      gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10.w,
                         mainAxisSpacing: 10.h,
@@ -146,7 +145,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                       ),
                       itemBuilder: (context, index) {
                         final item = data[index];
-                        return SuggestionVideoWidget(
+                        return SuggestionWidget(
                           id: item.id,
                           duration: Utils.formatDurationLabel(item.duration),
                           categoryName: item.category ?? "Categories Name",
@@ -155,8 +154,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                           imageUrl: item.thumbnailUrl ?? ImageManager.gymGuide,
                           isBookmarked: true,
                           bookmarkIconColor: ColorManager.blackColor,
-                          
-                        
+
                           onBookmarkTap: () async {
                             try {
                               await ref
@@ -173,7 +171,9 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                               }
                             } catch (_) {
                               if (context.mounted) {
-                                Fluttertoast.showToast(msg: 'Failed to update bookmark');
+                                Fluttertoast.showToast(
+                                  msg: 'Failed to update bookmark',
+                                );
                               }
                             }
                           },
@@ -181,9 +181,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                             Navigator.pushNamed(
                               context,
                               RoutesName.prescibedDetailsScreen,
-                              arguments: {
-                                'id': item.id,
-                              },
+                              arguments: {'id': item.id},
                             );
                           },
                         );

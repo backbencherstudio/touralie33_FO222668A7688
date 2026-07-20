@@ -8,6 +8,8 @@ import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/signin_sc
 import 'package:touralie33_fo222668a7688/presentation/auth/signup/view/signup_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/get_in_touch/view/screen/get_in_touch_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/home_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/image_details_screen.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/view/screen/pdf_details_screen.dart' show PdfDetailsScreen;
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/onboarding_screen_weight/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/view/screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/onboarding_screen/welcome_screen/view/welcome_screen.dart';
@@ -40,6 +42,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SigninScreen());
       case RoutesName.forgotPassword:
         return MaterialPageRoute(builder: (_) => ForgotPassword());
+      case RoutesName.pdfDetailsScreen:
+        return MaterialPageRoute(builder: (_) => PdfDetailsScreen());
+      case RoutesName.imageDetailsScreen:
+        return MaterialPageRoute(builder: (_) => ImageDetailsScreen());
       case RoutesName.otpScreen:
         final args = routeSettings.arguments;
         String? email;

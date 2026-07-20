@@ -24,4 +24,7 @@ class RoutesName {
   static const String playlistScreen  = "/playlistScreen ";
   static const String favouriteScreen = "/favouriteScreen";
   static const String emailOtpVerify  = "/emailOtpVerify ";
+  static const String pdfDetailsScreen = "/PdfDetailsScreen";
+  static const String imageDetailsScreen = "/ImageDetailsScreen";
+  
 }
