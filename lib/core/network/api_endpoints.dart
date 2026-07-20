@@ -1,6 +1,8 @@
 class ApiEndpoints {
   static const String baseUrl =
-      "https://backend.irclinic.com.au/";
+      "http://10.10.9.51:4001/";
+  // static const String baseUrl =
+  //     "https://backend.irclinic.com.au/";
   static const String register = 'api/auth/register';
    static const String login = 'api/auth/login';
 
