@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
-import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/view/only_playlist_details_screen.dart';
 
@@ -15,215 +14,237 @@ class WorkoutWidget extends ConsumerWidget {
 
   final String? id;
 
-  // void _openInstructionDialog({
-  //   required BuildContext context,
-  //   String? id, 
-  //   required String description,
-  //   required List<String> points,
-  //   String? videoUrl,
-  // }) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (_) => InstructionWidget(
-  //       description: description,
-  //       points: points,
-  //       onBegin: () {
-  //         Navigator.pop(context);
-
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (context) => OnlyPlaylistDetailsScreen(
-  //               id: id,
-  //               fallbackTabIndex: 0,
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final prescriptionState = ref.watch(getPrescriptionResumeProvider);
     final workout = prescriptionState.prescriptionData?.data;
 
     final workoutId = workout?.prescriptionId ?? workout?.id ?? id;
-    
-   // final instruction = workout?.instruction;
     final imageUrl = workout?.thumbnail;
-   // final videoUrl = workout?.url;
     final canOpenDetails = (workoutId ?? '').trim().isNotEmpty;
-   // final points = instruction?.points ?? const <String>[];
-    //final description = instruction?.description ??
-        workout?.progressMessage ??
-        'No instruction available right now.';
+    
+    final int rawProgress = workout?.watchProgress ?? 0;
+    final double progressValue = (rawProgress.clamp(0, 100)) / 100;
 
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        color: ColorManager.primary,
-        border: Border.all(
-          width: 1,
-          color: ColorManager.backgroundColorgreen.withValues(alpha: .5),
+        color: ColorManager.backgroundColorgreen,
+        image: const DecorationImage(
+          image: AssetImage(ImageManager.vertical),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(Colors.black12, BlendMode.dstIn),
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(12.r),
-        child: prescriptionState.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : prescriptionState.errorMessage != null
-                ? Text(
-                    prescriptionState.errorMessage!,
-                    style: getMedium500Style12(
-                      color: ColorManager.subtextColor,
-                      fontSize: 14.sp,
+      child: prescriptionState.isLoading
+          ? const Center(child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: CircularProgressIndicator(),
+            ))
+          : prescriptionState.errorMessage != null
+              ? Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                      prescriptionState.errorMessage!,
+                      style: getMedium500Style12(
+                        color: ColorManager.subtextColor,
+                        fontSize: 14.sp,
+                      ),
                     ),
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Today's Workout",
-                            style: getMedium500Style12(
-                              color: Colors.grey,
-                              fontSize: 12.sp,
+                            "todays workout",
+                            style: getMedium500Style14(
+                              color: ColorManager.subtextColor,
+                              fontSize: 14.sp,
                             ),
                           ),
-                          Row(
-                            children: [
-                              Image.asset(
-                                IconManager.clock,
-                                height: 16.h,
-                                color: ColorManager.blackColor,
+                          SizedBox(height: 10.h),
+                          Text(
+                            '${workout?.chapterCount ?? 1} video',
+                            style: getMedium500Style14(
+                              color: ColorManager.subtextColor,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            "keep going - be consistent",
+                            style: getMedium500Style14(
+                              color: ColorManager.subtextColor,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: GestureDetector(
+                              onTap: !canOpenDetails
+                                  ? null
+                                  :() => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => OnlyPlaylistDetailsScreen(
+                                            id: workoutId,
+                                            fallbackTabIndex: 0,
+                                          ),
+                                        ),
+                                      ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  imageUrl != null && imageUrl.startsWith('http')
+                                      ? Image.network(
+                                          imageUrl,
+                                          width: double.infinity,
+                                          height: 200.h,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) => Image.asset(
+                                            ImageManager.gymGuide,
+                                            width: double.infinity,
+                                            height: 200.h,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : Image.asset(
+                                          ImageManager.gymGuide,
+                                          width: double.infinity,
+                                          height: 200.h,
+                                          fit: BoxFit.cover,
+                                        ),
+                                  SizedBox(
+                                    width: 60.w,
+                                    height: 60.h,
+                                    child: Image.asset(IconManager.playCircle),
+                                  ),
+                                ],
                               ),
-                              SizedBox(width: 5.w),
-                              Text(
-                                Utils.formatDurationLabel(workout?.duration),
-                                style: getMedium500Style14(
-                                  color: ColorManager.blackColor,
-                                  fontSize: 12.sp,
-                                ),
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          Center(
+                            child: GestureDetector(
+                              onTap: !canOpenDetails
+                                  ? null
+                                  :() => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => OnlyPlaylistDetailsScreen(
+                                            id: workoutId,
+                                            fallbackTabIndex: 0,
+                                          ),
+                                        ),
+                                      ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Watch Now",
+                                    style: getMedium500Style16(
+                                      color: ColorManager.subtextColor,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Icon(Icons.play_arrow, size: 20.sp, color: ColorManager.subtextColor),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 5.h),
-                      Text(
-                        workout?.title ?? "Today's Workout",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: getMedium500Style14(
-                          color: ColorManager.subtextColor,
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    SizedBox(height: 10.h),
+                    // Remaining progress section
+                    Container(
+                      color: Colors.white.withOpacity(0.3),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                IconManager.videoICon,
-                                fit: BoxFit.cover,
-                                height: 14.h,
-                                width: 14.w,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                '${workout?.chapterCount ?? 0} Videos',
-                                style: getMedium500Style14(
-                                  color: ColorManager.subtextColor,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w400,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Remaining progress",
+                                  style: getMedium500Style20(
+                                    color: ColorManager.subtextColor,
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(height: 6.h),
+                                Text(
+                                  "Great progress, buddy! Stay\nconsistent and keep up your\nfitness routine.",
+                                  style: getMedium500Style12(
+                                    color: ColorManager.subtextColor,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            padding: const EdgeInsets.all(4.0),
+                            child: CircularPercentIndicator(
+                              radius: 30.r,
+                              lineWidth: 4.w,
+                              percent: progressValue,
+                              backgroundColor: Colors.transparent,
+                              progressColor: ColorManager.backgroundColorgreen1,
+                              circularStrokeCap: CircularStrokeCap.round,
+                              center: Container(
+                                width: 48.w,
+                                height: 48.h,
+                                decoration: BoxDecoration(
+                                  color: ColorManager.backgroundColorgreen.withOpacity(0.2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '$rawProgress%',
+                                      style: getMedium500Style16(
+                                        color: ColorManager.subtextColor,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Progress",
+                                      style: getMedium500Style10(
+                                        color: ColorManager.subtextColor,
+                                        fontSize: 8.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
-                      if ((workout?.progressMessage ?? '').trim().isNotEmpty) ...[
-                        SizedBox(height: 8.h),
-                        Text(
-                          workout!.progressMessage!,
-                          style: getMedium500Style14(
-                            color: ColorManager.subtextColorGrey,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                      SizedBox(height: 15.h),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20.r),
-                        child: GestureDetector(
-                          onTap: !canOpenDetails
-                              ? null
-                              :() => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => OnlyPlaylistDetailsScreen(
-                                        id: workoutId,
-                                        fallbackTabIndex: 0,
-                                      ),
-                                    ),
-                                  ),
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              imageUrl != null && imageUrl.startsWith('http')
-                                  ? Image.network(
-                                      imageUrl,
-                                      width: double.infinity,
-                                      height: 220.h,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => Image.asset(
-                                        ImageManager.gymGuide,
-                                        width: double.infinity,
-                                        height: 220.h,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  : Image.asset(
-                                      ImageManager.gymGuide,
-                                      width: double.infinity,
-                                      height: 220.h,
-                                      fit: BoxFit.cover,
-                                    ),
-                              SizedBox(
-                                width: 80.w,
-                                height: 80.h,
-                                child: Image.asset(IconManager.playCircle),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 15.h),
-                      Customebutton(
-                        onTap: !canOpenDetails
-                            ? () {}
-                            : () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => OnlyPlaylistDetailsScreen(
-                                      id: workoutId,
-                                      fallbackTabIndex: 0,
-                                    ),
-                                  ),
-                                ),
-                        text: "Watch Now",
-                        sufImage: IconManager.playButton,
-                        sufImageColor: ColorManager.blackColor,
-                      ),
-                    ],
-                  ),
-      ),
+                    ),
+                  ],
+                ),
     );
   }
 }

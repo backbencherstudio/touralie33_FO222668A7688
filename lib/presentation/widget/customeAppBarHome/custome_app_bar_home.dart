@@ -55,21 +55,10 @@ class CustomeAppBarHome extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: resolvedAvatarUrl != null
-                    ? Image.network(
-                        resolvedAvatarUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            "",
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    : Image.asset(
-                        ImageManager.profilePic,
-                        fit: BoxFit.cover,
-                      ),
+                child: Image.asset(
+                  ImageManager.profilePic,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(width: 12.w),

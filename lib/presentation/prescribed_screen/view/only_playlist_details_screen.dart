@@ -538,7 +538,7 @@ class _OnlyPlaylistDetailsScreen
                                 ),
                               ),
                               SizedBox(width: 12.w),
-                              InkWell(
+                              GestureDetector(
                                 onTap:
                                     selectedVideoId == null ||
                                         selectedVideoId.isEmpty

@@ -9,15 +9,13 @@ import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favo
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
-class SuggestionVideoWidget extends ConsumerWidget {
+class SuggestionWidget extends ConsumerWidget {
   final String? id;
   final String categoryName;
   final String title;
   final String duration;
   final String level;
   final String imageUrl;
-
 
   final Color? colorBg;
   final Color? bookmarkIconColor;
@@ -26,7 +24,7 @@ class SuggestionVideoWidget extends ConsumerWidget {
   final VoidCallback? onPlayTap;
   final Future<void> Function()? onBookmarkTap;
 
-  const SuggestionVideoWidget({
+  const SuggestionWidget({
     super.key,
     this.id,
     required this.categoryName,
@@ -34,8 +32,7 @@ class SuggestionVideoWidget extends ConsumerWidget {
     required this.duration,
     required this.level,
     required this.imageUrl,
- 
-    
+
     this.onPlayTap,
     this.colorBg,
     this.bookmarkIconColor,
@@ -149,7 +146,7 @@ class SuggestionVideoWidget extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(width: 4.w),
-                  InkWell(
+                  GestureDetector(
                     onTap: !enableBookmarkTap || id == null || id!.isEmpty
                         ? null
                         : () async {
@@ -173,17 +170,21 @@ class SuggestionVideoWidget extends ConsumerWidget {
                               }
                             } catch (e) {
                               if (context.mounted) {
-                                Fluttertoast.showToast(msg: "Failed To add Favourite");
+                                Fluttertoast.showToast(
+                                  msg: "Error: $e",
+                                );
                               }
                             }
                           },
                     child: Opacity(
-                      opacity:
-                          !enableBookmarkTap || id == null || id!.isEmpty ? 0.5 : 1,
+                      opacity: !enableBookmarkTap || id == null || id!.isEmpty
+                          ? 0.5
+                          : 1,
                       child: Image.asset(
                         IconManager.bookMark,
                         height: 12.h,
-                        color: bookmarkIconColor ??
+                        color:
+                            bookmarkIconColor ??
                             (isBookmarked
                                 ? ColorManager.blackColor
                                 : ColorManager.subtextColorGrey),
@@ -211,7 +212,11 @@ class SuggestionVideoWidget extends ConsumerWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Image.asset(IconManager.clock, height: 14.h, width: 14.w),
+                        Image.asset(
+                          IconManager.clock,
+                          height: 14.h,
+                          width: 14.w,
+                        ),
                         SizedBox(width: 4.w),
                         Flexible(
                           child: FittedBox(
@@ -237,8 +242,10 @@ class SuggestionVideoWidget extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(9.r),
                         color: ColorManager.beginerColor,
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 7.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 7.w,
+                        vertical: 4.h,
+                      ),
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(

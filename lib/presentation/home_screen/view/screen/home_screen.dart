@@ -1,18 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getMe_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/getPrescription_resume_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customeAppBarHome/custome_app_bar_home.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/remaining_progress/remaining_progress_widget.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/suggestion_video/suggestion_video_widget.dart';
+
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_widget/workout_widget.dart';
+
+import '../../../../core/resource/constants/icon_manager.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, this.onOpenDrawer});
@@ -24,24 +24,19 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  String _formatLevel(String? level) {
-    if (level == null || level.isEmpty) return 'Beginner';
-    final normalized = level.toLowerCase();
-    return normalized[0].toUpperCase() + normalized.substring(1);
+  @override
+  void initState() {
+    Future.microtask(() {
+      ref.read(suggestedNotifierProvider.notifier).getSuggested();
+      ref.read(getPrescriptionResumeProvider.notifier).getPrescription();
+    });
+    super.initState();
   }
 
   @override
-  void initState() {
-   Future.microtask((){
-    ref.read(suggestedNotifierProvider.notifier).getSuggested();
-    ref.read(getPrescriptionResumeProvider.notifier).getPrescription();
-   });
-    super.initState();
-  }
-  @override
   Widget build(BuildContext context) {
     final suggested = ref.watch(suggestedNotifierProvider);
-    final suggestedList = suggested.suggestedData?.data ??[];
+    final suggestedList = suggested.suggestedData?.data ?? [];
     final state = ref.watch(getMeProvider);
     final user = state.me?.data;
     return Scaffold(
@@ -63,7 +58,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           await ref.read(suggestedNotifierProvider.notifier).getSuggested();
-          await ref.read(getPrescriptionResumeProvider.notifier).getPrescription();
+          await ref
+              .read(getPrescriptionResumeProvider.notifier)
+              .getPrescription();
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -71,28 +68,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RemainingProgressWidget(),
-              SizedBox(height: 15.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text(
-                  "Your Prescribed Video",
-                  style: getMedium500Style12(
-                    color: ColorManager.subtextColor,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Padding(padding: EdgeInsets.all(16.r), child: WorkoutWidget()),
+              WorkoutWidget(),
               SizedBox(height: 15.h),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: ColorManager.whiteColor,
                   border: Border.all(
-                            color: ColorManager.subtextColorGrey,width: .2
-                          ),
+                    color: ColorManager.subtextColorGrey,
+                    width: .2,
+                  ),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30.r),
                     topRight: Radius.circular(30.r),
@@ -108,7 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       //   decoration: BoxDecoration(
                       //     color: ColorManager.hintTextColor,
                       //     borderRadius: BorderRadius.circular(30.r),
-                          
+
                       //   ),
                       // ),
                       SizedBox(height: 15.h),
@@ -116,7 +101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Suggested Videos",
+                            "Suggested Exercises",
                             style: getMedium500Style16(
                               color: ColorManager.subtextColor,
                               fontSize: 18.sp,
@@ -150,31 +135,149 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: suggestedList.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10.w,
-                            mainAxisSpacing: 15.h,
-                            mainAxisExtent: 190.h,
-                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10.w,
+                                mainAxisSpacing: 15.h,
+                                mainAxisExtent: 150.h,
+                              ),
                           itemBuilder: (context, index) {
                             final video = suggestedList[index];
-                            return SuggestionVideoWidget(
-                              id: video.id,
-                              categoryName: video.category ?? "",
-                              title: video.title ?? "No Title",
-                              duration: Utils.formatDurationLabel(video.duration),
-                              level: _formatLevel(video.level),
-                              isBookmarked: video.isFavorite ?? false,
-                            
-                             
-                              imageUrl:
-                                  video.thumbnailUrl ?? ImageManager.gymGuide,
-                              onPlayTap: () {
-                                debugPrint("Playing: ${video.title}");
-                                Navigator.pushNamed(context, RoutesName.prescibedDetailsScreen,arguments: {
-              'id': video.id,
-            },);
+
+                            return GestureDetector(
+                              onTap: () {
+                                if (video.mediaType == "PDF") {
+                                  Navigator.pushNamed(
+                                    context,
+                                    RoutesName.pdfDetailsScreen,
+                                    arguments: {
+                                      'id': video.id,
+                                      'title': video.title,
+                                    },
+                                  );
+                                } else if (video.mediaType == "IMAGE") {
+                                  Navigator.pushNamed(
+                                    context,
+                                    RoutesName.imageDetailsScreen,
+                                  );
+                                } else {
+                                  Navigator.pushNamed(
+                                    context,
+                                    RoutesName.prescibedDetailsScreen,
+                                    arguments: {'id': video.id},
+                                  );
+                                }
                               },
+                              child: Container(
+                                padding: EdgeInsets.all(8.sp),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(0xffD3D4D2),
+                                  ),
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                          8.r,
+                                        ),
+                                        child: video.mediaType == "PDF"
+                                            ? Container(
+                                                width: double.infinity,
+                                                color: Colors.grey[200],
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.picture_as_pdf,
+                                                    size: 40.sp,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              )
+                                            : CachedNetworkImage(
+                                                imageUrl:
+                                                    video.thumbnailUrl ?? "",
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Center(
+                                                          child: Icon(
+                                                            Icons.error,
+                                                          ),
+                                                        ),
+                                              ),
+                                      ),
+                                    ),
+                                    8.verticalSpace,
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            video.title ?? "",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: getMedium500Style12(
+                                              color: ColorManager.subtextColor,
+                                              fontSize: 16.sp,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: Image.asset(
+                                            IconManager.bookMark,
+                                            height: 12.h,
+                                            color:
+                                                ColorManager.subtextColorGrey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (video.mediaType == "VIDEO" ||
+                                        video.mediaType == null) ...[
+                                      4.verticalSpace,
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Image.asset(
+                                            IconManager.clock,
+                                            height: 14.h,
+                                            width: 14.w,
+                                          ),
+                                          SizedBox(width: 4.w),
+                                          Flexible(
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                video.duration?.toString() ??
+                                                    "0",
+                                                maxLines: 1,
+                                                style: getMedium500Style10(
+                                                  color: ColorManager
+                                                      .subtextColorGrey,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
                             );
                           },
                         ),
@@ -183,7 +286,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
-         
             ],
           ),
         ),
