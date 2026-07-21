@@ -288,8 +288,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               fit: BoxFit.scaleDown,
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                video.duration?.toString() ??
-                                                    "0",
+                                                _formatDuration(video.duration),
                                                 maxLines: 1,
                                                 style: getMedium500Style10(
                                                   color: ColorManager
@@ -318,5 +317,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
     );
+  }
+
+  String _formatDuration(int? durationInSeconds) {
+    if (durationInSeconds == null || durationInSeconds <= 0) return "0 sec";
+    int minutes = durationInSeconds ~/ 60;
+    int seconds = durationInSeconds % 60;
+    if (minutes > 0 && seconds > 0) {
+      return "$minutes min $seconds sec";
+    } else if (minutes > 0) {
+      return "$minutes min";
+    } else {
+      return "$seconds sec";
+    }
   }
 }

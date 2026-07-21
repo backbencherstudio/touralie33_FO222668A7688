@@ -107,18 +107,14 @@ class PlayListScreenWidget extends ConsumerWidget {
                                   color: ColorManager.blackColor,
                                 ),
                                 SizedBox(width: 4.w),
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: 60.w),
-                                  child: Text(
-                                    totalTime ?? "",
-                                    maxLines: 1,
-                                    textAlign: TextAlign.end,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: getMedium500Style12(
-                                      color: ColorManager.textPrimary,
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                Text(
+                                  totalTime ?? "",
+                                  maxLines: 1,
+                                  textAlign: TextAlign.end,
+                                  style: getMedium500Style12(
+                                    color: ColorManager.textPrimary,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -156,7 +152,6 @@ class PlayListScreenWidget extends ConsumerWidget {
                                 ),
                               ],
                             ),
-
                           ],
                         ),
                       ],
