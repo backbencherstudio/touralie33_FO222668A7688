@@ -9,7 +9,6 @@ import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/bottomSheet/bottomSheet_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -66,30 +65,30 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: ColorManager.playlistBox,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.r),
-                                topRight: Radius.circular(25.r),
-                              ),
-                            ),
-                            builder: (context) {
-                              return BottomsheetWidget();
-                            },
-                          );
-                        },
-                        child: Image.asset(
-                          IconManager.filter,
-                          fit: BoxFit.cover,
-                          height: 20.h,
-                          width: 20.w,
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     showModalBottomSheet(
+                      //       context: context,
+                      //       isScrollControlled: true,
+                      //       backgroundColor: ColorManager.playlistBox,
+                      //       shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.only(
+                      //           topLeft: Radius.circular(25.r),
+                      //           topRight: Radius.circular(25.r),
+                      //         ),
+                      //       ),
+                      //       builder: (context) {
+                      //         return BottomsheetWidget();
+                      //       },
+                      //     );
+                      //   },
+                      //   child: Image.asset(
+                      //     IconManager.filter,
+                      //     fit: BoxFit.cover,
+                      //     height: 20.h,
+                      //     width: 20.w,
+                      //   ),
+                      // ),
                     ],
                   ),
                   SizedBox(height: 11.h),
@@ -137,7 +136,9 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                       ),
                       itemBuilder: (context, index) {
                         final item = data[index];
-                        final isBookmarked = item.isFavorite ?? true; // In Favourite screen, it defaults to true
+                        final isBookmarked =
+                            item.isFavorite ??
+                            true; // In Favourite screen, it defaults to true
 
                         return GestureDetector(
                           onTap: () {
@@ -145,10 +146,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                               Navigator.pushNamed(
                                 context,
                                 RoutesName.pdfDetailsScreen,
-                                arguments: {
-                                  'id': item.id,
-                                  'title': item.title,
-                                },
+                                arguments: {'id': item.id, 'title': item.title},
                               );
                             } else if (item.mediaType == "IMAGE") {
                               Navigator.pushNamed(
@@ -178,9 +176,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                               children: [
                                 Expanded(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                      8.r,
-                                    ),
+                                    borderRadius: BorderRadius.circular(8.r),
                                     child: item.mediaType == "PDF"
                                         ? Container(
                                             width: double.infinity,
@@ -194,8 +190,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                                             ),
                                           )
                                         : CachedNetworkImage(
-                                            imageUrl:
-                                                item.thumbnailUrl ?? "",
+                                            imageUrl: item.thumbnailUrl ?? "",
                                             width: double.infinity,
                                             fit: BoxFit.cover,
                                             placeholder: (context, url) =>
@@ -206,9 +201,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                                             errorWidget:
                                                 (context, url, error) =>
                                                     const Center(
-                                                      child: Icon(
-                                                        Icons.error,
-                                                      ),
+                                                      child: Icon(Icons.error),
                                                     ),
                                           ),
                                   ),
@@ -232,16 +225,23 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                                       onTap: () async {
                                         try {
                                           await ref
-                                              .read(favouriteIdProvider.notifier)
+                                              .read(
+                                                favouriteIdProvider.notifier,
+                                              )
                                               .favouriteId(id: item.id!);
                                           ref
-                                              .read(suggestedNotifierProvider.notifier)
+                                              .read(
+                                                suggestedNotifierProvider
+                                                    .notifier,
+                                              )
                                               .addSuggestedFromFavourite(item);
                                           await ref
                                               .read(favouriteProvider.notifier)
                                               .getFavourite();
                                           if (context.mounted) {
-                                            Fluttertoast.showToast(msg: 'Bookmark updated');
+                                            Fluttertoast.showToast(
+                                              msg: 'Bookmark updated',
+                                            );
                                           }
                                         } catch (_) {
                                           if (context.mounted) {
@@ -252,9 +252,13 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                                         }
                                       },
                                       child: Image.asset(
-                                        isBookmarked ? IconManager.bookMarkFill : IconManager.bookMark,
+                                        isBookmarked
+                                            ? IconManager.bookMarkFill
+                                            : IconManager.bookMark,
                                         height: 16.h,
-                                        color: isBookmarked ? ColorManager.backgroundColorgreen : ColorManager.subtextColorGrey,
+                                        color: isBookmarked
+                                            ? ColorManager.backgroundColorgreen
+                                            : ColorManager.subtextColorGrey,
                                       ),
                                     ),
                                   ],
@@ -279,8 +283,8 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                                             _formatDuration(item.duration),
                                             maxLines: 1,
                                             style: getMedium500Style10(
-                                              color: ColorManager
-                                                  .subtextColorGrey,
+                                              color:
+                                                  ColorManager.subtextColorGrey,
                                               fontSize: 12.sp,
                                             ),
                                           ),
