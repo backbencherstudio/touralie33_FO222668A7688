@@ -57,7 +57,13 @@ class RouteGenerator {
           builder: (_) => PdfDetailsScreen(id: id, title: title),
         );
       case RoutesName.imageDetailsScreen:
-        return MaterialPageRoute(builder: (_) => ImageDetailsScreen());
+        final args = routeSettings.arguments;
+        String? id;
+        if (args is Map) {
+          final value = args['id'];
+          if (value != null) id = value.toString();
+        }
+        return MaterialPageRoute(builder: (_) => ImageDetailsScreen(id: id));
       case RoutesName.otpScreen:
         final args = routeSettings.arguments;
         String? email;

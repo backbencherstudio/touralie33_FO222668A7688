@@ -82,7 +82,7 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
     state = state.copyWith(suggestedData: updatedModel);
   }
 
-  void markSuggestedAsFavourite(String id) {
+  void toggleSuggestedFavourite(String id) {
     final currentModel = state.suggestedData;
     final currentList = currentModel?.data;
 
@@ -104,7 +104,11 @@ class SuggestedProvider extends StateNotifier<SuggestedState> {
         createdAt: item.createdAt,
         duration: item.duration,
         level: item.level,
-        isFavorite: true,
+        isFavorite: !(item.isFavorite ?? false),
+        watchStatus: item.watchStatus,
+        isCompleted: item.isCompleted,
+        lastPlayedPosition: item.lastPlayedPosition,
+        mediaType: item.mediaType,
       );
     }).toList();
 

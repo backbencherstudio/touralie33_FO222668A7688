@@ -3,10 +3,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
+import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/prescribed_details_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 
@@ -123,9 +127,16 @@ class _ImageDetailsScreenState extends ConsumerState<ImageDetailsScreen> {
     final shortDescription = description.length > 126
         ? '${description.substring(0, 126)}... '
         : description;
-    // final categoryText = workout.category ?? "All";
 
     final currentImageUrl = workout.thumbnailUrl ?? workout.url;
+    final isBookmarked = workout.isFavorite ?? false;
+
+    // Prevent ImageDecoder exceptions on Android by not passing non-image files to CachedNetworkImage
+    final isValidImage =
+        currentImageUrl != null &&
+        currentImageUrl.isNotEmpty &&
+        !currentImageUrl.toLowerCase().endsWith('.pdf') &&
+        !currentImageUrl.toLowerCase().endsWith('.mp4');
 
     return Scaffold(
       backgroundColor: ColorManager.primary,
@@ -169,33 +180,46 @@ class _ImageDetailsScreenState extends ConsumerState<ImageDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12.r),
-                          child:
-                              (currentImageUrl != null &&
-                                  currentImageUrl.isNotEmpty)
-                              ? CachedNetworkImage(
-                                  imageUrl: currentImageUrl,
-                                  width: double.infinity,
-                                  fit: BoxFit.contain,
-                                  placeholder: (context, url) => const Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.all(40.0),
-                                      child: CircularProgressIndicator(),
-                                    ),
+                        GestureDetector(
+                          onTap: () {
+                            if (isValidImage) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ImageViewerScreen(
+                                    url: currentImageUrl,
+                                    title: workout.title ?? "Image Viewer",
                                   ),
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(
-                                        ImageManager.gymGuide,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                      ),
-                                )
-                              : Image.asset(
-                                  ImageManager.gymGuide,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
                                 ),
+                              );
+                            }
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: isValidImage
+                                ? CachedNetworkImage(
+                                    imageUrl: currentImageUrl,
+                                    width: double.infinity,
+                                    fit: BoxFit.contain,
+                                    placeholder: (context, url) => const Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(40.0),
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
+                                          ImageManager.gymGuide,
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                        ),
+                                  )
+                                : Image.asset(
+                                    ImageManager.gymGuide,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
                         ),
                         SizedBox(height: 10.h),
                         Row(
@@ -212,7 +236,49 @@ class _ImageDetailsScreenState extends ConsumerState<ImageDetailsScreen> {
                               ),
                             ),
                             SizedBox(width: 12.w),
-                            Image.asset(IconManager.bookMark, height: 16.h),
+                            GestureDetector(
+                              onTap: () async {
+                                if (workout.id == null || workout.id!.isEmpty)
+                                  return;
+
+                                // Optimistic UI update
+                                ref
+                                    .read(suggestedNotifierProvider.notifier)
+                                    .toggleSuggestedFavourite(workout.id!);
+                                ref
+                                    .read(prescribedDetailsNotifierProvider.notifier)
+                                    .togglePrescribedFavourite();
+                                    
+                                try {
+                                  await ref
+                                      .read(favouriteIdProvider.notifier)
+                                      .favouriteId(id: workout.id!);
+                                  await ref
+                                      .read(favouriteProvider.notifier)
+                                      .getFavourite();
+                                  
+                                  Fluttertoast.showToast(msg: 'Bookmark updated');
+                                } catch (e) {
+                                  // Revert optimistic update
+                                  ref
+                                      .read(suggestedNotifierProvider.notifier)
+                                      .toggleSuggestedFavourite(workout.id!);
+                                  ref
+                                      .read(prescribedDetailsNotifierProvider.notifier)
+                                      .togglePrescribedFavourite();
+                                  Fluttertoast.showToast(msg: "Error: $e");
+                                }
+                              },
+                              child: Image.asset(
+                                isBookmarked
+                                    ? IconManager.bookMarkFill
+                                    : IconManager.bookMark,
+                                height: 16.h,
+                                color: isBookmarked
+                                    ? ColorManager.backgroundColorgreen
+                                    : null,
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 5.h),
@@ -262,6 +328,66 @@ class _ImageDetailsScreenState extends ConsumerState<ImageDetailsScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ImageViewerScreen extends StatelessWidget {
+  final String url;
+  final String title;
+
+  const ImageViewerScreen({Key? key, required this.url, required this.title})
+    : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ColorManager.primary,
+      body: Stack(
+        children: [
+          // The Interactive Viewer
+          Positioned.fill(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Center(
+                child: CachedNetworkImage(
+                  imageUrl: url,
+                  fit: BoxFit.contain,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
+                  errorWidget: (context, url, error) => const Center(
+                    child: Icon(Icons.error, color: Colors.white, size: 50),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // Floating Close Button
+          Positioned(
+            top: 0,
+            right: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(top: 16.h, right: 16.w),
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: EdgeInsets.all(8.r),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.close, color: Colors.white, size: 24.sp),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -11,6 +11,9 @@ import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/sugg
 import 'package:touralie33_fo222668a7688/presentation/widget/customeAppBarHome/custome_app_bar_home.dart';
 
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_widget/workout_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
 
 import '../../../../core/resource/constants/icon_manager.dart';
 
@@ -144,6 +147,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                           itemBuilder: (context, index) {
                             final video = suggestedList[index];
+                            final isBookmarked = video.isFavorite ?? false;
 
                             return GestureDetector(
                               onTap: () {
@@ -160,8 +164,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   Navigator.pushNamed(
                                     context,
                                     RoutesName.imageDetailsScreen,
+                                    arguments: {'id': video.id},
                                   );
-                                } else {
+                                } else if (video.mediaType == "VIDEO") {
                                   Navigator.pushNamed(
                                     context,
                                     RoutesName.prescibedDetailsScreen,
@@ -234,12 +239,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         ),
                                         SizedBox(width: 4.w),
                                         GestureDetector(
-                                          onTap: () {},
+                                          onTap: () async {
+                                              // Optimistic UI update instantly
+                                              ref
+                                                  .read(suggestedNotifierProvider.notifier)
+                                                  .toggleSuggestedFavourite(video.id!);
+
+                                              try {
+                                                await ref
+                                                    .read(favouriteIdProvider.notifier)
+                                                    .favouriteId(id: video.id!);
+
+                                                ref
+                                                    .read(favouriteProvider.notifier)
+                                                    .getFavourite();
+                                                
+                                                Fluttertoast.showToast(msg: 'Bookmark updated');
+                                              } catch (e) {
+                                                // Revert optimistic update on failure
+                                                ref
+                                                    .read(suggestedNotifierProvider.notifier)
+                                                    .toggleSuggestedFavourite(video.id!);
+                                                Fluttertoast.showToast(msg: 'Failed to update bookmark');
+                                              }
+                                          },
                                           child: Image.asset(
-                                            IconManager.bookMark,
-                                            height: 12.h,
-                                            color:
-                                                ColorManager.subtextColorGrey,
+                                            isBookmarked ? IconManager.bookMarkFill : IconManager.bookMark,
+                                            height: 16.h,
+                                            color: isBookmarked ? ColorManager.backgroundColorgreen : ColorManager.subtextColorGrey,
                                           ),
                                         ),
                                       ],

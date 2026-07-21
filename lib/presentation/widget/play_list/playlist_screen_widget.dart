@@ -172,13 +172,15 @@ class PlayListScreenWidget extends ConsumerWidget {
                                         return;
                                       }
 
+                                      // Optimistic update
+                                      ref
+                                          .read(suggestedNotifierProvider.notifier)
+                                          .toggleSuggestedFavourite(id!);
+                                          
                                       try {
                                         await ref
                                             .read(favouriteIdProvider.notifier)
                                             .favouriteId(id: id!);
-                                        ref
-                                            .read(suggestedNotifierProvider.notifier)
-                                            .markSuggestedAsFavourite(id!);
                                         await ref
                                             .read(favouriteProvider.notifier)
                                             .getFavourite();
@@ -186,6 +188,10 @@ class PlayListScreenWidget extends ConsumerWidget {
                                           Fluttertoast.showToast(msg: 'Bookmark updated');
                                         }
                                       } catch (e) {
+                                        // Revert on failure
+                                        ref
+                                            .read(suggestedNotifierProvider.notifier)
+                                            .toggleSuggestedFavourite(id!);
                                         if (context.mounted) {
                                           Fluttertoast.showToast(msg: "Error: $e");
                                         }

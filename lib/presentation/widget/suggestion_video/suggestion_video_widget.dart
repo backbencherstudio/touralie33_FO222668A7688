@@ -161,7 +161,7 @@ class SuggestionWidget extends ConsumerWidget {
                                   .favouriteId(id: id!);
                               ref
                                   .read(suggestedNotifierProvider.notifier)
-                                  .markSuggestedAsFavourite(id!);
+                                  .toggleSuggestedFavourite(id!);
                               await ref
                                   .read(favouriteProvider.notifier)
                                   .getFavourite();
