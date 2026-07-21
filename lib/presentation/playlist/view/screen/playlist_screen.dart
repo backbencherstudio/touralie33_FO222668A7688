@@ -29,7 +29,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
       return rawDate;
     }
 
-    return DateFormat('dd MMM yyyy').format(parsedDate);
+    return DateFormat('dd-MM-yyyy').format(parsedDate);
   }
 
   @override

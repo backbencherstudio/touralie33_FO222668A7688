@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,6 +18,43 @@ import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favo
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/prescribed_details_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
+
+Future<void> downloadPdf(String url, String title) async {
+  try {
+    Fluttertoast.showToast(msg: "Downloading PDF...");
+
+    if (Platform.isAndroid) {
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
+    }
+
+    Directory? directory;
+    if (Platform.isAndroid) {
+      directory = Directory('/storage/emulated/0/Download');
+      if (!await directory.exists()) {
+        directory = await getExternalStorageDirectory();
+      }
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
+    if (directory != null) {
+      String fileName = title.replaceAll(' ', '_');
+      if (fileName.isEmpty) fileName = 'document';
+      String savePath = "${directory.path}/$fileName.pdf";
+
+      await Dio().download(url, savePath);
+      Fluttertoast.showToast(msg: "Saved to Downloads");
+    } else {
+      Fluttertoast.showToast(msg: "Could not access storage");
+    }
+  } catch (e) {
+    Fluttertoast.showToast(msg: "Download failed");
+  }
+}
+
 
 class PdfDetailsScreen extends ConsumerStatefulWidget {
   const PdfDetailsScreen({super.key, this.id, this.title});
@@ -141,6 +183,17 @@ class _PdfDetailsScreenState extends ConsumerState<PdfDetailsScreen> {
             child: Customebar(
               ontap: () => Navigator.pop(context),
               text: widget.title ?? "PDF Details",
+              showNotification: false,
+              trailing: IconButton(
+                icon: Icon(Icons.download, color: ColorManager.textPrimary),
+                onPressed: () {
+                  if (workout.url != null && workout.url!.isNotEmpty) {
+                    downloadPdf(workout.url!, workout.title ?? "PDF Document");
+                  } else {
+                    Fluttertoast.showToast(msg: "No PDF URL found");
+                  }
+                },
+              ),
             ),
           ),
         ),
@@ -378,7 +431,17 @@ class PdfViewerScreen extends StatelessWidget {
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-            child: Customebar(ontap: () => Navigator.pop(context), text: title),
+            child: Customebar(
+              ontap: () => Navigator.pop(context),
+              text: title,
+              showNotification: false,
+              trailing: IconButton(
+                icon: Icon(Icons.download, color: ColorManager.textPrimary),
+                onPressed: () {
+                  downloadPdf(url, title);
+                },
+              ),
+            ),
           ),
         ),
       ),

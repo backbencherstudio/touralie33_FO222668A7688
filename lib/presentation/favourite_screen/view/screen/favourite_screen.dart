@@ -276,8 +276,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                                           fit: BoxFit.scaleDown,
                                           alignment: Alignment.centerLeft,
                                           child: Text(
-                                            item.duration?.toString() ??
-                                                "0",
+                                            _formatDuration(item.duration),
                                             maxLines: 1,
                                             style: getMedium500Style10(
                                               color: ColorManager
@@ -303,5 +302,18 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
         ),
       ),
     );
+  }
+
+  String _formatDuration(int? durationInSeconds) {
+    if (durationInSeconds == null || durationInSeconds <= 0) return "0 sec";
+    int minutes = durationInSeconds ~/ 60;
+    int seconds = durationInSeconds % 60;
+    if (minutes > 0 && seconds > 0) {
+      return "$minutes min $seconds sec";
+    } else if (minutes > 0) {
+      return "$minutes min";
+    } else {
+      return "$seconds sec";
+    }
   }
 }
