@@ -44,6 +44,7 @@ class Data {
   String? thumbnailUrl;
   String? category;
   int? chaptersCount;
+  String? mediaType;
 
   Data(
       {this.id,
@@ -54,7 +55,8 @@ class Data {
       this.isFavorite,
       this.thumbnailUrl,
       this.category,
-      this.chaptersCount});
+      this.chaptersCount,
+      this.mediaType});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -66,6 +68,7 @@ class Data {
     thumbnailUrl = json['thumbnail_url']?.toString();
     category = json['category']?.toString();
     chaptersCount = json['chapters_count'];
+    mediaType = json['media_type']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +82,7 @@ class Data {
     data['thumbnail_url'] = thumbnailUrl;
     data['category'] = category;
     data['chapters_count'] = chaptersCount;
+    data['media_type'] = mediaType;
     return data;
   }
 }

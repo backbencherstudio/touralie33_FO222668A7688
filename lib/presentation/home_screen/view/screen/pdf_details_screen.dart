@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
@@ -255,9 +254,12 @@ class _PdfDetailsScreenState extends ConsumerState<PdfDetailsScreen> {
                                       .read(suggestedNotifierProvider.notifier)
                                       .toggleSuggestedFavourite(workout.id!);
                                   ref
-                                      .read(prescribedDetailsNotifierProvider.notifier)
+                                      .read(
+                                        prescribedDetailsNotifierProvider
+                                            .notifier,
+                                      )
                                       .togglePrescribedFavourite();
-                                      
+
                                   try {
                                     await ref
                                         .read(favouriteIdProvider.notifier)
@@ -265,15 +267,22 @@ class _PdfDetailsScreenState extends ConsumerState<PdfDetailsScreen> {
                                     await ref
                                         .read(favouriteProvider.notifier)
                                         .getFavourite();
-                                    
-                                    Fluttertoast.showToast(msg: 'Bookmark updated');
+
+                                    Fluttertoast.showToast(
+                                      msg: 'Bookmark updated',
+                                    );
                                   } catch (e) {
                                     // Revert optimistic update
                                     ref
-                                        .read(suggestedNotifierProvider.notifier)
+                                        .read(
+                                          suggestedNotifierProvider.notifier,
+                                        )
                                         .toggleSuggestedFavourite(workout.id!);
                                     ref
-                                        .read(prescribedDetailsNotifierProvider.notifier)
+                                        .read(
+                                          prescribedDetailsNotifierProvider
+                                              .notifier,
+                                        )
                                         .togglePrescribedFavourite();
                                     Fluttertoast.showToast(msg: "Error: $e");
                                   }

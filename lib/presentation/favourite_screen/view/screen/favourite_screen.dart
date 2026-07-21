@@ -4,17 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/utils.dart';
 import 'package:touralie33_fo222668a7688/data/models/favourite_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/bottomSheet/bottomSheet_widget.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
-import 'package:touralie33_fo222668a7688/presentation/widget/suggestion_video/suggestion_video_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FavouriteScreen extends ConsumerStatefulWidget {
   const FavouriteScreen({super.key});
@@ -23,12 +21,6 @@ class FavouriteScreen extends ConsumerStatefulWidget {
 }
 
 class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
-  String _formatLevel(String? level) {
-    if (level == null || level.isEmpty) return 'Beginner';
-    final normalized = level.toLowerCase();
-    return normalized[0].toUpperCase() + normalized.substring(1);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -145,45 +137,162 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                       ),
                       itemBuilder: (context, index) {
                         final item = data[index];
-                        return SuggestionWidget(
-                          id: item.id,
-                          duration: Utils.formatDurationLabel(item.duration),
-                          categoryName: item.category ?? "Categories Name",
-                          title: item.title ?? "Back Mobility Program",
-                          level: _formatLevel(item.level),
-                          imageUrl: item.thumbnailUrl ?? ImageManager.gymGuide,
-                          isBookmarked: true,
-                          bookmarkIconColor: ColorManager.blackColor,
+                        final isBookmarked = item.isFavorite ?? true; // In Favourite screen, it defaults to true
 
-                          onBookmarkTap: () async {
-                            try {
-                              await ref
-                                  .read(favouriteIdProvider.notifier)
-                                  .favouriteId(id: item.id!);
-                              ref
-                                  .read(suggestedNotifierProvider.notifier)
-                                  .addSuggestedFromFavourite(item);
-                              await ref
-                                  .read(favouriteProvider.notifier)
-                                  .getFavourite();
-                              if (context.mounted) {
-                                Fluttertoast.showToast(msg: 'Bookmark updated');
-                              }
-                            } catch (_) {
-                              if (context.mounted) {
-                                Fluttertoast.showToast(
-                                  msg: 'Failed to update bookmark',
-                                );
-                              }
+                        return GestureDetector(
+                          onTap: () {
+                            if (item.mediaType == "PDF") {
+                              Navigator.pushNamed(
+                                context,
+                                RoutesName.pdfDetailsScreen,
+                                arguments: {
+                                  'id': item.id,
+                                  'title': item.title,
+                                },
+                              );
+                            } else if (item.mediaType == "IMAGE") {
+                              Navigator.pushNamed(
+                                context,
+                                RoutesName.imageDetailsScreen,
+                                arguments: {'id': item.id},
+                              );
+                            } else {
+                              Navigator.pushNamed(
+                                context,
+                                RoutesName.prescibedDetailsScreen,
+                                arguments: {'id': item.id},
+                              );
                             }
                           },
-                          onPlayTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              RoutesName.prescibedDetailsScreen,
-                              arguments: {'id': item.id},
-                            );
-                          },
+                          child: Container(
+                            padding: EdgeInsets.all(8.sp),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(0xffD3D4D2),
+                              ),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                      8.r,
+                                    ),
+                                    child: item.mediaType == "PDF"
+                                        ? Container(
+                                            width: double.infinity,
+                                            color: Colors.grey[200],
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.picture_as_pdf,
+                                                size: 40.sp,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          )
+                                        : CachedNetworkImage(
+                                            imageUrl:
+                                                item.thumbnailUrl ?? "",
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Center(
+                                                      child: Icon(
+                                                        Icons.error,
+                                                      ),
+                                                    ),
+                                          ),
+                                  ),
+                                ),
+                                8.verticalSpace,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        item.title ?? "",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: getMedium500Style12(
+                                          color: ColorManager.subtextColor,
+                                          fontSize: 16.sp,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        try {
+                                          await ref
+                                              .read(favouriteIdProvider.notifier)
+                                              .favouriteId(id: item.id!);
+                                          ref
+                                              .read(suggestedNotifierProvider.notifier)
+                                              .addSuggestedFromFavourite(item);
+                                          await ref
+                                              .read(favouriteProvider.notifier)
+                                              .getFavourite();
+                                          if (context.mounted) {
+                                            Fluttertoast.showToast(msg: 'Bookmark updated');
+                                          }
+                                        } catch (_) {
+                                          if (context.mounted) {
+                                            Fluttertoast.showToast(
+                                              msg: 'Failed to update bookmark',
+                                            );
+                                          }
+                                        }
+                                      },
+                                      child: Image.asset(
+                                        isBookmarked ? IconManager.bookMarkFill : IconManager.bookMark,
+                                        height: 16.h,
+                                        color: isBookmarked ? ColorManager.backgroundColorgreen : ColorManager.subtextColorGrey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (item.mediaType == "VIDEO" ||
+                                    item.mediaType == null) ...[
+                                  4.verticalSpace,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        IconManager.clock,
+                                        height: 14.h,
+                                        width: 14.w,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Flexible(
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            item.duration?.toString() ??
+                                                "0",
+                                            maxLines: 1,
+                                            style: getMedium500Style10(
+                                              color: ColorManager
+                                                  .subtextColorGrey,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
                         );
                       },
                     ),

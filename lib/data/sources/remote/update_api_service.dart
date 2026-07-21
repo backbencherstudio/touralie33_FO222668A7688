@@ -9,24 +9,23 @@ class UpdateApiService {
   UpdateApiService({required this.apiClient});
 
   Future<bool> updateUser({
-    required String name,
-    required String email,
-    required String dateOfBirth,
-    required num weight,
-    required num height,
-    required String gender,
+    String? name,
+    String? email,
+    String? dateOfBirth,
+    num? weight,
+    num? height,
+    String? gender,
     File? image,
   }) async {
     try {
       await ApiClient.headerSet(null);
-      final payload = {
-        'name': name,
-        'email': email,
-        'weight': weight,
-        'height': height,
-        'gender': gender,
-      };
-      if (dateOfBirth.trim().isNotEmpty) {
+      final payload = <String, dynamic>{};
+      if (name != null && name.trim().isNotEmpty) payload['name'] = name;
+      if (email != null && email.trim().isNotEmpty) payload['email'] = email;
+      if (weight != null) payload['weight'] = weight;
+      if (height != null) payload['height'] = height;
+      if (gender != null && gender.trim().isNotEmpty) payload['gender'] = gender;
+      if (dateOfBirth != null && dateOfBirth.trim().isNotEmpty) {
         payload['date_of_birth'] = dateOfBirth.trim();
       }
 

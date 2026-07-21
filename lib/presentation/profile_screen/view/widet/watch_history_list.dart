@@ -10,6 +10,7 @@ import 'package:touralie33_fo222668a7688/data/models/watch_history_model.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/library_progress_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/play_list/playlist_screen_widget.dart';
+import 'package:intl/intl.dart';
 
 class WatchHistoryList extends ConsumerWidget {
   const WatchHistoryList({
@@ -22,6 +23,19 @@ class WatchHistoryList extends ConsumerWidget {
   final bool showAll;
   final bool showProgress;
   final bool showCompleted;
+
+  String _formatDate(String? rawDate) {
+    if (rawDate == null || rawDate.trim().isEmpty) {
+      return '';
+    }
+
+    final parsedDate = DateTime.tryParse(rawDate);
+    if (parsedDate == null) {
+      return rawDate;
+    }
+
+    return DateFormat('dd MMM yyyy').format(parsedDate);
+  }
 
   int _normalizeStoredPositionMilliseconds(
     int rawPosition,
@@ -43,7 +57,8 @@ class WatchHistoryList extends ConsumerWidget {
     final allItems = profileState.getData?.data ?? <WatchHistoryItem>[];
 
     final filteredItems = allItems.where((item) {
-      final isCompleted = progressState.completedIds.contains(item.id) ||
+      final isCompleted =
+          progressState.completedIds.contains(item.id) ||
           item.isCompleted == true ||
           (item.watchStatus ?? '').toUpperCase() == 'COMPLETED';
       final lastPlayedPosition =
@@ -101,18 +116,18 @@ class WatchHistoryList extends ConsumerWidget {
       itemCount: filteredItems.length,
       itemBuilder: (context, index) {
         final item = filteredItems[index];
-        final isCompleted = progressState.completedIds.contains(item.id) ||
+        final isCompleted =
+            progressState.completedIds.contains(item.id) ||
             item.isCompleted == true ||
             (item.watchStatus ?? '').toUpperCase() == 'COMPLETED';
-        final effectiveLastPlayedPosition =
-            isCompleted
-                ? 0
-                : _normalizeStoredPositionMilliseconds(
-                    progressState.syncedPositionById[item.id] ??
-                        item.lastPlayedPosition ??
-                        0,
-                    item.duration,
-                  );
+        final effectiveLastPlayedPosition = isCompleted
+            ? 0
+            : _normalizeStoredPositionMilliseconds(
+                progressState.syncedPositionById[item.id] ??
+                    item.lastPlayedPosition ??
+                    0,
+                item.duration,
+              );
         final buttonText = _getButtonText(
           item,
           effectiveLastPlayedPosition,
@@ -127,7 +142,7 @@ class WatchHistoryList extends ConsumerWidget {
               "${item.chaptersCount ?? 0} video${(item.chaptersCount ?? 0) == 1 ? '' : 's'}",
           title: item.title ?? "Untitled",
           videoDuration: Utils.formatDurationLabel(item.duration),
-          totalTime: item.level ?? "Beginner",
+          totalTime: _formatDate(item.createdAt),
           buttonText: buttonText,
           sufImage: isProgress ? IconManager.playButton : null,
           buttonIconColor: isProgress ? Colors.black : Colors.white,
