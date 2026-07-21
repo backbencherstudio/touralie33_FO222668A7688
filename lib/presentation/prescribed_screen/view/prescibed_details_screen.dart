@@ -14,6 +14,10 @@ import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewMode
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
+import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/suggested_provider.dart';
 
 class PrescibedDetailsScreen extends ConsumerStatefulWidget {
   const PrescibedDetailsScreen({
@@ -191,6 +195,7 @@ class _PrescibedDetailsScreenState
   Widget build(BuildContext context) {
     final detailsState = ref.watch(prescribedDetailsNotifierProvider);
     final workout = detailsState.prescribedDetailsData?.data;
+    final isBookmarked = workout?.isFavorite ?? false;
 
     if (detailsState.isLoading) {
       return Scaffold(
@@ -406,7 +411,49 @@ class _PrescibedDetailsScreenState
                               ),
                             ),
                             SizedBox(width: 12.w),
-                            Image.asset(IconManager.bookMark, height: 16.h),
+                            GestureDetector(
+                              onTap: () async {
+                                if (workout.id == null) return;
+                                final videoId = workout.id!;
+
+                                // Optimistic update
+                                ref
+                                    .read(suggestedNotifierProvider.notifier)
+                                    .toggleSuggestedFavourite(videoId);
+                                ref
+                                    .read(prescribedDetailsNotifierProvider.notifier)
+                                    .togglePrescribedFavourite();
+
+                                try {
+                                  await ref
+                                      .read(favouriteIdProvider.notifier)
+                                      .favouriteId(id: videoId);
+                                  await ref
+                                      .read(favouriteProvider.notifier)
+                                      .getFavourite();
+                                  
+                                  if (context.mounted) {
+                                    Fluttertoast.showToast(msg: 'Bookmark updated');
+                                  }
+                                } catch (e) {
+                                  // Revert on failure
+                                  ref
+                                      .read(suggestedNotifierProvider.notifier)
+                                      .toggleSuggestedFavourite(videoId);
+                                  ref
+                                      .read(prescribedDetailsNotifierProvider.notifier)
+                                      .togglePrescribedFavourite();
+                                  if (context.mounted) {
+                                    Fluttertoast.showToast(msg: "Error: $e");
+                                  }
+                                }
+                              },
+                              child: Image.asset(
+                                isBookmarked ? IconManager.bookMarkFill : IconManager.bookMark, 
+                                height: 16.h,
+                                color: isBookmarked ? ColorManager.backgroundColorgreen1 : null,
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 5.h),

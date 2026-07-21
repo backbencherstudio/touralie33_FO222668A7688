@@ -6,12 +6,12 @@ class UpdateRepository {
   UpdateApiService resource ;
   UpdateRepository({required this.resource});
   Future<bool> updateUser({
-    required String name,
-    required String email,
-    required String dateOfBirth,
-    required num weight,
-    required num height,
-    required String gender,
+    String? name,
+    String? email,
+    String? dateOfBirth,
+    num? weight,
+    num? height,
+    String? gender,
     File? image,
   }) async {
     return await resource.updateUser(

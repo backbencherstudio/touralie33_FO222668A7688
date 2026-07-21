@@ -36,6 +36,7 @@ class Data {
   String? url;
   String? thumbnailUrl;
   String? category;
+  String? mediaType;
   List<VideoChapters>? videoChapters;
 
   Data({
@@ -52,6 +53,7 @@ class Data {
     this.url,
     this.thumbnailUrl,
     this.category,
+    this.mediaType,
     this.videoChapters,
   });
 
@@ -69,6 +71,7 @@ class Data {
     url = json['url'];
     thumbnailUrl = json['thumbnail_url'];
     category = json['category'];
+    mediaType = json['media_type'];
     if (json['video_chapters'] != null) {
       videoChapters = <VideoChapters>[];
       json['video_chapters'].forEach((v) {
@@ -92,6 +95,7 @@ class Data {
     data['url'] = this.url;
     data['thumbnail_url'] = this.thumbnailUrl;
     data['category'] = this.category;
+    data['media_type'] = this.mediaType;
     if (this.videoChapters != null) {
       data['video_chapters'] = this.videoChapters!
           .map((v) => v.toJson())

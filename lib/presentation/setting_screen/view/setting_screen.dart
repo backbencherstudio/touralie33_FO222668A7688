@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
@@ -349,9 +348,13 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                                               ? Image.network(
                                                   resolvedAvatarUrl,
                                                   fit: BoxFit.cover,
-                                                  errorBuilder: (context, error, stackTrace) => Image.asset(ImageManager.profilePic, fit: BoxFit.cover),
+                                                  errorBuilder: (context, error, stackTrace) => Center(
+                                                    child: Icon(Icons.person, size: 48.r, color: Colors.grey[700]),
+                                                  ),
                                                 )
-                                              : Image.asset(ImageManager.profilePic, fit: BoxFit.cover),
+                                              : Center(
+                                                  child: Icon(Icons.person, size: 48.r, color: Colors.grey[700]),
+                                                ),
                                     ),
                                     Positioned(
                                       right: -2.w,
@@ -397,14 +400,33 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                             ),
                             SizedBox(height: 16.h),
                             Text("Date of Birth", style: getMedium500Style10(color: ColorManager.textPrimary, fontSize: 16.sp)),
-                            TextField(
-                              controller: _dateOfBirthController,
-                              keyboardType: TextInputType.datetime,
-                              decoration: InputDecoration(
-                                hintText: 'dd/mm/yyyy',
-                                suffixIcon: Padding(padding: EdgeInsets.all(11.r), child: Image.asset(IconManager.edit, height: 12.h, width: 12.w)),
-                                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
-                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ColorManager.hintTextColor)),
+                            GestureDetector(
+                              onTap: () async {
+                                final now = DateTime.now();
+                                final picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime(1990),
+                                  firstDate: DateTime(1900),
+                                  lastDate: now,
+                                );
+                                if (picked != null) {
+                                  final day = picked.day.toString().padLeft(2, '0');
+                                  final month = picked.month.toString().padLeft(2, '0');
+                                  final year = picked.year.toString().padLeft(4, '0');
+                                  _dateOfBirthController.text = '$day/$month/$year';
+                                }
+                              },
+                              child: AbsorbPointer(
+                                child: TextField(
+                                  controller: _dateOfBirthController,
+                                  keyboardType: TextInputType.datetime,
+                                  decoration: InputDecoration(
+                                    hintText: 'dd/mm/yyyy',
+                                    suffixIcon: Padding(padding: EdgeInsets.all(11.r), child: Image.asset(IconManager.edit, height: 12.h, width: 12.w)),
+                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300)),
+                                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ColorManager.hintTextColor)),
+                                  ),
+                                ),
                               ),
                             ),
                             SizedBox(height: 20.h),
@@ -503,13 +525,17 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                           final gender = _genderFromIndex(ref.read(genderIndexProvider));
                           final imageFile = pickerState.singleImage != null ? File(pickerState.singleImage!.path) : null;
 
-                          if (name.isEmpty || email.isEmpty || weight.isEmpty || height.isEmpty) {
-                            Fluttertoast.showToast(msg: 'All fields are required');
-                            return;
-                          }
+                          // The 'All fields are required' check has been removed.
+                          // Allows partial patching of only modified/filled fields.
 
                           final ok = await ref.read(settingProvider.notifier).updateUser(
-                            name: name, email: email, dateOfBirth: dateOfBirth, weight: parsedWeight!, height: parsedHeight!, gender: gender, image: imageFile,
+                            name: name.isEmpty ? null : name, 
+                            email: email.isEmpty ? null : email, 
+                            dateOfBirth: dateOfBirth.isEmpty ? null : dateOfBirth, 
+                            weight: parsedWeight, 
+                            height: parsedHeight, 
+                            gender: gender.isEmpty ? null : gender, 
+                            image: imageFile,
                           );
 
                           if (ok) {

@@ -12,11 +12,7 @@ class OnlyDetailsState {
   static const _noErrorMessage = Object();
   static const _noData = Object();
 
-  OnlyDetailsState({
-    this.errorMessage,
-    required this.isloading,
-    this.getData,
-  });
+  OnlyDetailsState({this.errorMessage, required this.isloading, this.getData});
 
   OnlyDetailsState copyWith({
     bool? isloading,
@@ -28,8 +24,9 @@ class OnlyDetailsState {
           ? this.errorMessage
           : errormessage as String?,
       isloading: isloading ?? this.isloading,
-      getData:
-          identical(getData, _noData) ? this.getData : getData as PrescriptionDetialsModel?,
+      getData: identical(getData, _noData)
+          ? this.getData
+          : getData as PrescriptionDetialsModel?,
     );
   }
 }
@@ -38,7 +35,7 @@ class OnlyDetailsNotifier extends StateNotifier<OnlyDetailsState> {
   final PrescriptionDetailsRepository repository;
 
   OnlyDetailsNotifier({required this.repository})
-      : super(OnlyDetailsState(isloading: false));
+    : super(OnlyDetailsState(isloading: false));
 
   Future<void> fetchPrescriptionDetails({required String id}) async {
     state = state.copyWith(isloading: true, errormessage: null);
@@ -52,18 +49,16 @@ class OnlyDetailsNotifier extends StateNotifier<OnlyDetailsState> {
         errormessage: null,
       );
     } catch (e) {
-      state = state.copyWith(
-        isloading: false,
-        errormessage: e.toString(),
-      );
+      state = state.copyWith(isloading: false, errormessage: e.toString());
     }
   }
 }
 
-final onlyDetailsProvider = StateNotifierProvider<OnlyDetailsNotifier, OnlyDetailsState>((ref) {
-  return OnlyDetailsNotifier(
-    repository: PrescriptionDetailsRepository(
-      resource: PrescriptionDetailsService(apiClient: ApiClient()),
-    ),
-  );
-});
+final onlyDetailsProvider =
+    StateNotifierProvider<OnlyDetailsNotifier, OnlyDetailsState>((ref) {
+      return OnlyDetailsNotifier(
+        repository: PrescriptionDetailsRepository(
+          resource: PrescriptionDetailsService(apiClient: ApiClient()),
+        ),
+      );
+    });

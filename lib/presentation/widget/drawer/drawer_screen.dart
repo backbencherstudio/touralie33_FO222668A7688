@@ -5,7 +5,6 @@ import 'package:touralie33_fo222668a7688/core/network/api_clients.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/icon_manager.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/core/service/notification_service.dart';
 import 'package:touralie33_fo222668a7688/data/repositories/auth_repository.dart';
@@ -51,20 +50,24 @@ class DrawerScreen extends ConsumerWidget {
                 child: Container(
                   width: 60.r * 2,
                   height: 60.r * 2,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[300], // Added background color for the placeholder
+                  ),
                   clipBehavior: Clip.antiAlias,
                   child: resolvedAvatarUrl != null
                       ? Image.network(
                           resolvedAvatarUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              ImageManager.profilePic,
-                              fit: BoxFit.cover,
+                            return Center(
+                              child: Icon(Icons.person, size: 60.r, color: Colors.grey[700]),
                             );
                           },
                         )
-                      : Image.asset(ImageManager.profilePic, fit: BoxFit.cover),
+                      : Center(
+                          child: Icon(Icons.person, size: 60.r, color: Colors.grey[700]),
+                        ),
                 ),
               ),
               SizedBox(height: 12.h),

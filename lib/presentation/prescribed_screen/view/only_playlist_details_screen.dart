@@ -10,15 +10,12 @@ import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/data/models/prescription_details_model.dart'
     as detail_model;
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
-import 'package:touralie33_fo222668a7688/presentation/favourite_screen/viewModel/favourite_provider.dart';
-import 'package:touralie33_fo222668a7688/presentation/home_screen/viewModel/favourite_id_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/library_progress_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/prescribed_screen/viewModel/only_details_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/profile_screen/viewModel/profile_provider.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/custom_video_player/Custom_video_player.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/customebar/customebar.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/workout_set/workOut_set.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class OnlyPlaylistDetailsScreen extends ConsumerStatefulWidget {
   const OnlyPlaylistDetailsScreen({
@@ -47,7 +44,6 @@ class _OnlyPlaylistDetailsScreen
   String? _selectedThumbnail;
   int? _selectedVideoIndex;
   int? _selectedPositionMilliseconds;
-  final Map<String, bool> _favoriteOverrides = {};
   int _playRequestId = 0;
   late final LibraryProgressProvider _libraryProgressNotifier;
   late final ProfileProvider _profileNotifier;
@@ -262,27 +258,39 @@ class _OnlyPlaylistDetailsScreen
     }).toList();
   }
 
-  Future<void> _handleBookmarkTap({
-    required String videoId,
-    required bool isBookmarked,
-  }) async {
-    try {
-      await ref.read(favouriteIdProvider.notifier).favouriteId(id: videoId);
-      if (!mounted) return;
+  // Future<void> _handleBookmarkTap({
+  //   required String videoId,
+  //   required bool isBookmarked,
+  // }) async {
+  //   try {
+  //     ref
+  //         .read(suggestedNotifierProvider.notifier)
+  //         .toggleSuggestedFavourite(videoId);
+  //     ref
+  //         .read(prescribedDetailsNotifierProvider.notifier)
+  //         .togglePrescribedFavourite();
 
-      setState(() {
-        _favoriteOverrides[videoId] = !isBookmarked;
-      });
-
-      await ref.read(favouriteProvider.notifier).getFavourite();
-      if (!mounted) return;
-
-      Fluttertoast.showToast(msg: 'Bookmark updated');
-    } catch (_) {
-      if (!mounted) return;
-      Fluttertoast.showToast(msg: 'Failed to update bookmark');
-    }
-  }
+  //     try {
+  //       await ref.read(favouriteIdProvider.notifier).favouriteId(id: videoId);
+  //       await ref.read(favouriteProvider.notifier).getFavourite();
+  //       Fluttertoast.showToast(msg: 'Bookmark updated');
+  //     } catch (_) {
+  //       // Revert optimistic updates on error
+  //       ref
+  //           .read(suggestedNotifierProvider.notifier)
+  //           .toggleSuggestedFavourite(videoId);
+  //       ref
+  //           .read(prescribedDetailsNotifierProvider.notifier)
+  //           .togglePrescribedFavourite();
+  //       if (mounted) {
+  //         Fluttertoast.showToast(msg: 'Failed to update bookmark');
+  //       }
+  //     }
+  //   } catch (_) {
+  //     if (!mounted) return;
+  //     Fluttertoast.showToast(msg: 'Failed to update bookmark');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -422,10 +430,9 @@ class _OnlyPlaylistDetailsScreen
     final note = selectedVideo.note?.trim() ?? '';
     final selectedVideoId = selectedVideo.id;
     final prescriptionId = playlistData.id;
-    final isBookmarked = selectedVideoId != null
-        ? (_favoriteOverrides[selectedVideoId] ??
-              (selectedVideo.isFavorite ?? false))
-        : false;
+    // final isBookmarked = selectedVideoId != null
+    //     ? (selectedVideo.isFavorite ?? false)
+    //     : false;
 
     return PopScope(
       canPop: false,
@@ -537,31 +544,31 @@ class _OnlyPlaylistDetailsScreen
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 12.w),
-                              GestureDetector(
-                                onTap:
-                                    selectedVideoId == null ||
-                                        selectedVideoId.isEmpty
-                                    ? null
-                                    : () => _handleBookmarkTap(
-                                        videoId: selectedVideoId,
-                                        isBookmarked: isBookmarked,
-                                      ),
-                                child: Opacity(
-                                  opacity:
-                                      selectedVideoId == null ||
-                                          selectedVideoId.isEmpty
-                                      ? 0.5
-                                      : 1,
-                                  child: Image.asset(
-                                    IconManager.bookMark,
-                                    height: 16.h,
-                                    color: isBookmarked
-                                        ? ColorManager.blackColor
-                                        : ColorManager.subtextColorGrey,
-                                  ),
-                                ),
-                              ),
+                              // SizedBox(width: 12.w),
+                              // GestureDetector(
+                              //   onTap:
+                              //       selectedVideoId == null ||
+                              //           selectedVideoId.isEmpty
+                              //       ? null
+                              //       : () => _handleBookmarkTap(
+                              //           videoId: selectedVideoId,
+                              //           isBookmarked: isBookmarked,
+                              //         ),
+                              //   child: Opacity(
+                              //     opacity:
+                              //         selectedVideoId == null ||
+                              //             selectedVideoId.isEmpty
+                              //         ? 0.5
+                              //         : 1,
+                              //     child: Image.asset(
+                              //       IconManager.bookMark,
+                              //       height: 16.h,
+                              //       color: isBookmarked
+                              //           ? ColorManager.backgroundColorgreen1
+                              //           : ColorManager.subtextColorGrey,
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
                           SizedBox(height: 5.h),

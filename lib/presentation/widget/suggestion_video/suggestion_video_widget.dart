@@ -155,13 +155,15 @@ class SuggestionWidget extends ConsumerWidget {
                               return;
                             }
 
+                            // Optimistic update
+                            ref
+                                .read(suggestedNotifierProvider.notifier)
+                                .toggleSuggestedFavourite(id!);
+
                             try {
                               await ref
                                   .read(favouriteIdProvider.notifier)
                                   .favouriteId(id: id!);
-                              ref
-                                  .read(suggestedNotifierProvider.notifier)
-                                  .markSuggestedAsFavourite(id!);
                               await ref
                                   .read(favouriteProvider.notifier)
                                   .getFavourite();
@@ -169,10 +171,12 @@ class SuggestionWidget extends ConsumerWidget {
                                 Fluttertoast.showToast(msg: 'Bookmark updated');
                               }
                             } catch (e) {
+                              // Revert on failure
+                              ref
+                                  .read(suggestedNotifierProvider.notifier)
+                                  .toggleSuggestedFavourite(id!);
                               if (context.mounted) {
-                                Fluttertoast.showToast(
-                                  msg: "Error: $e",
-                                );
+                                Fluttertoast.showToast(msg: "Error: $e");
                               }
                             }
                           },
@@ -181,13 +185,15 @@ class SuggestionWidget extends ConsumerWidget {
                           ? 0.5
                           : 1,
                       child: Image.asset(
-                        IconManager.bookMark,
+                        isBookmarked
+                            ? IconManager.bookMarkFill
+                            : IconManager.bookMark,
                         height: 12.h,
                         color:
                             bookmarkIconColor ??
                             (isBookmarked
-                                ? ColorManager.blackColor
-                                : ColorManager.subtextColorGrey),
+                                ? ColorManager.backgroundColorgreen1
+                                : null),
                       ),
                     ),
                   ),

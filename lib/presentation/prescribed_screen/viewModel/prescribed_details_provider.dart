@@ -60,6 +60,41 @@ class PrescribedDetailsProvider extends StateNotifier<PrescribedDetailsState> {
       );
     }
   }
+
+  void togglePrescribedFavourite() {
+    final currentModel = state.prescribedDetailsData;
+    final currentData = currentModel?.data;
+
+    if (currentModel == null || currentData == null) {
+      return;
+    }
+
+    final updatedData = Data(
+      id: currentData.id,
+      prescriptionId: currentData.prescriptionId,
+      title: currentData.title,
+      description: currentData.description,
+      duration: currentData.duration,
+      level: currentData.level,
+      createdAt: currentData.createdAt,
+      isFavorite: !(currentData.isFavorite ?? false),
+      lastWatchPosition: currentData.lastWatchPosition,
+      isCompleted: currentData.isCompleted,
+      url: currentData.url,
+      thumbnailUrl: currentData.thumbnailUrl,
+      category: currentData.category,
+      mediaType: currentData.mediaType,
+      videoChapters: currentData.videoChapters,
+    );
+
+    final updatedModel = PriscirbedDetailsModel(
+      success: currentModel.success,
+      message: currentModel.message,
+      data: updatedData,
+    );
+
+    state = state.copyWith(prescribedDetailsData: updatedModel);
+  }
 }
 
 final prescribedDetailsNotifierProvider =

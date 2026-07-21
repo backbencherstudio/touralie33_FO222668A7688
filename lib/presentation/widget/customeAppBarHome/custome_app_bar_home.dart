@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/network/api_endpoints.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/presentation/widget/notification/notification_screen.dart';
 
@@ -53,12 +52,22 @@ class CustomeAppBarHome extends StatelessWidget {
                 width: 42.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  color: Colors.grey[300],
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: Image.asset(
-                  ImageManager.profilePic,
-                  fit: BoxFit.cover,
-                ),
+                child: resolvedAvatarUrl != null
+                    ? Image.network(
+                        resolvedAvatarUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Icon(Icons.person, size: 24.r, color: Colors.grey[700]),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Icon(Icons.person, size: 24.r, color: Colors.grey[700]),
+                      ),
               ),
             ),
             SizedBox(width: 12.w),

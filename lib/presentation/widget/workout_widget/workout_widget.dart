@@ -167,7 +167,7 @@ class WorkoutWidget extends ConsumerWidget {
                     SizedBox(height: 10.h),
                     // Remaining progress section
                     Container(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withValues(alpha: 0.3),
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                       child: Row(
                         children: [
@@ -213,7 +213,7 @@ class WorkoutWidget extends ConsumerWidget {
                                 width: 48.w,
                                 height: 48.h,
                                 decoration: BoxDecoration(
-                                  color: ColorManager.backgroundColorgreen.withOpacity(0.2),
+                                  color: ColorManager.backgroundColorgreen.withValues(alpha: 0.2),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Column(

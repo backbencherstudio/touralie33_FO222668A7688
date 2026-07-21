@@ -27,12 +27,12 @@ class SettingProvider extends StateNotifier<SettingState> {
       : super(SettingState(isloading: false));
 
   Future<bool> updateUser({
-    required String name,
-    required String email,
-    required String dateOfBirth,
-    required num weight,
-    required num height,
-    required String gender,
+    String? name,
+    String? email,
+    String? dateOfBirth,
+    num? weight,
+    num? height,
+    String? gender,
     File? image,
   }) async {
     state = state.copyWith(isloading: true, errormessage: null);
