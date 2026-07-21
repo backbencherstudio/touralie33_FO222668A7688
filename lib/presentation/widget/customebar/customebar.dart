@@ -10,12 +10,17 @@ class Customebar extends StatelessWidget {
   final String? icon;
   final bool showBackIcon;
   final VoidCallback? ontap;
+  final bool showNotification;
+  final Widget? trailing;
 
   const Customebar({
     super.key,
     this.text,
     this.icon,
-    this.showBackIcon = true, this.ontap,
+    this.showBackIcon = true,
+    this.ontap,
+    this.showNotification = true,
+    this.trailing,
   });
 
   @override
@@ -25,10 +30,11 @@ class Customebar extends StatelessWidget {
       children: [
         showBackIcon
             ? InkWell(
-
-                onTap:ontap ?? () {
-                  Navigator.pop(context);
-                },
+                onTap:
+                    ontap ??
+                    () {
+                      Navigator.pop(context);
+                    },
                 child: Image.asset(
                   icon ?? IconManager.arrowLeft,
                   height: 24.h,
@@ -36,8 +42,15 @@ class Customebar extends StatelessWidget {
                 ),
               )
             : SizedBox(width: 24.w),
-        Text(text ?? "",style: getMedium500Style12(color: ColorManager.textPrimary,fontSize: 18.sp,fontWeight: FontWeight.w600),),
-        NotificationScreen()
+        Text(
+          text ?? "",
+          style: getMedium500Style12(
+            color: ColorManager.textPrimary,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        trailing ?? (showNotification ? const NotificationScreen() : SizedBox(width: 24.w)),
       ],
     );
   }
