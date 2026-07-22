@@ -212,7 +212,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        "I Accept the",
+                                        "I Accept the ",
                                         style: getMedium500Style14(
                                           color: ColorManager.textPrimary,
                                           fontSize: 14.sp,
@@ -222,7 +222,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                                       InkWell(
                                         onTap: () async {
                                           final Uri url = Uri.parse(
-                                            'https://www.dashboard.irclinic.com.au/legal/terms-and-condition',
+                                            'https://dashboard.irclinic.com.au/legal/terms-and-condition',
                                           );
                                           if (!await launchUrl(
                                             url,
@@ -239,7 +239,7 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                                           style: getMedium500Style14(
                                             color: ColorManager.textPrimary,
                                             fontSize: 14.sp,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w800,
                                           ),
                                         ),
                                       ),
@@ -258,7 +258,10 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                                 ? null
                                 : () async {
                                     if (!isCheck) {
-                                      Fluttertoast.showToast(msg: 'Please accept the Terms & Conditions');
+                                      Fluttertoast.showToast(
+                                        msg:
+                                            'Please accept the Terms & Conditions',
+                                      );
                                       return;
                                     }
                                     final success = await ref
