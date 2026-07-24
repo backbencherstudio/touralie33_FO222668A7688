@@ -12,7 +12,7 @@ class RemainingProgressWidget extends ConsumerWidget {
   const RemainingProgressWidget({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(getPrescriptionResumeProvider).prescriptionData;
     final int rawProgress = data?.data?.watchProgress ?? 0;
     final double progressValue = (rawProgress.clamp(0, 100)) / 100;
@@ -47,7 +47,7 @@ class RemainingProgressWidget extends ConsumerWidget {
                 Padding(
                   padding: EdgeInsets.only(right: 78.w),
                   child: Text(
-                    "Great progress, buddy! Stay\nconsistent and keep up your\nfitness routine.",
+                    "Great progress! Stay\nconsistent and keep up your\nrehab routine.",
                     style: getMedium500Style12(
                       color: ColorManager.subtextColor,
                       fontSize: 14.sp,
@@ -100,7 +100,6 @@ class RemainingProgressWidget extends ConsumerWidget {
             top: -6.h,
             right: -13.w,
             child: Container(
-              
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: ColorManager.primary,
@@ -112,14 +111,16 @@ class RemainingProgressWidget extends ConsumerWidget {
                   lineWidth: 6.w,
                   percent: progressValue,
                   backgroundColor: Colors.transparent,
-            
+
                   progressColor: ColorManager.backgroundColorgreen1,
                   circularStrokeCap: CircularStrokeCap.round,
                   center: Container(
                     width: 54.w,
                     height: 54.h,
                     decoration: BoxDecoration(
-                      color: ColorManager.backgroundColorgreen.withValues(alpha: .2),
+                      color: ColorManager.backgroundColorgreen.withValues(
+                        alpha: .2,
+                      ),
                       shape: BoxShape.circle,
                     ),
                     child: Column(
