@@ -7,7 +7,20 @@ import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 
 class DialogWidget extends StatelessWidget {
-  const DialogWidget({super.key});
+  final String title;
+  final String subtitle;
+  final String description;
+  final String buttonText;
+  final VoidCallback? onTap;
+
+  const DialogWidget({
+    super.key,
+    this.title = "Password Update",
+    this.subtitle = "Successfully",
+    this.description = "Your password has been updated successfully",
+    this.buttonText = "Back to Login",
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +41,15 @@ class DialogWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(ImageManager.success,fit: BoxFit.cover,width: 240.w,height: 240.h,),
-              Text("Password Update",style: getMedium500Style22(color: ColorManager.subtextColor,fontSize: 24.sp)),
-              Text("Suceesfully",style: getMedium500Style22(color: ColorManager.subtextColor,fontSize: 24.sp),),
-              Text("Your password has been updated successfully",
+              Text(title,style: getMedium500Style22(color: ColorManager.subtextColor,fontSize: 24.sp)),
+              Text(subtitle,style: getMedium500Style22(color: ColorManager.subtextColor,fontSize: 24.sp),),
+              Text(description,
               textAlign: TextAlign.center,
               style: getMedium500Style16(color: const Color.fromARGB(255, 149, 149, 149)),),
               SizedBox(height: 8.h,),
               Customebutton(
-                text: "Back to Login",
-                onTap: () {
+                text: buttonText,
+                onTap: onTap ?? () {
                   Navigator.pushReplacementNamed(context, RoutesName.signInScreen);
                 },
               )

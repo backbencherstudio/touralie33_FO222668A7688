@@ -44,6 +44,21 @@ class EmailOtpVerifyProvider extends StateNotifier<EmailOtpState>{
     }
     }
 
+    Future<bool>resendOtp({required String email})async{
+      state = state.copyWith(loading: true, errorMessage: null);
+      try{
+       final success = await repository.resendOtp(email: email);
+       state = state.copyWith(loading: false);
+       return success;
+    } catch (e) {
+      state = state.copyWith(
+        loading: false,
+        errorMessage: ErrorHandle.formatErrorMessage(e),
+      );
+      return false;
+    }
+    }
+
 }
 
 final emailOtpVerifyProvider = StateNotifierProvider<EmailOtpVerifyProvider,EmailOtpState>((ref){

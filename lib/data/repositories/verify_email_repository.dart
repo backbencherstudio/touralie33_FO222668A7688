@@ -7,5 +7,9 @@ class VerifyEmailRepository {
    Future<bool>verifyOtp({required String email,required String otp})async{
     return await remoteSource.verifyOtp(email: email, otp: otp);
    }
+
+   Future<bool>resendOtp({required String email})async{
+    return await remoteSource.resendOtp(email: email);
+   }
    
 }

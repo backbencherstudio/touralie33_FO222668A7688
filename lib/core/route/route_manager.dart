@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:touralie33_fo222668a7688/presentation/auth/email_otp_verify.dart';
+import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/email_otp_verify.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/forget_password/view/forgot_password.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/new_password_screen/view/screen/new_password_screen.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/otp/view/otp_screen.dart';

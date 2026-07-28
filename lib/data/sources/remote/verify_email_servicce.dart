@@ -10,8 +10,25 @@ class VerifyEmailServicce {
     required String token,
   }) async {
     final body = {'email': email, 'token': token};
-    final dynamic response =
-        await apiClient.postRequest(endpoints: ApiEndpoints.verifyOtp, body: body);
+    final dynamic response = await apiClient.postRequest(
+      endpoints: ApiEndpoints.verifyOtp,
+      body: body,
+    );
+
+    if (response is Map) {
+      return Map<String, dynamic>.from(response);
+    }
+    return {'success': false, 'message': 'Unexpected response'};
+  }
+
+    Future<Map<String, dynamic>> resendOtp({
+    required String email,
+  }) async {
+    final body = {'email': email};
+    final dynamic response = await apiClient.postRequest(
+      endpoints: ApiEndpoints.resendVerificationEmail,
+      body: body,
+    );
 
     if (response is Map) {
       return Map<String, dynamic>.from(response);

@@ -22,4 +22,24 @@ class VerifyEmailApiService {
     rethrow;
   }
 }
+
+ Future<bool> resendOtp({required String email}) async {
+  try {
+    final body = {"email": email};
+
+    final dynamic response = await apiClient.postRequest(
+      body: body,
+      endpoints: ApiEndpoints.resendVerificationEmail,
+    );
+   
+    if (response['success'] == true || response['status'] == 'success') {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    rethrow;
+  }
+}
+
 }
