@@ -62,11 +62,21 @@ class WorkoutWidget extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Today's workout",
-                        style: getMedium500Style14(
-                          color: ColorManager.subtextColor,
-                          fontSize: 14.sp,
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 3.h,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          color: ColorManager.primary,
+                        ),
+                        child: Text(
+                          "Today's workout",
+                          style: getMedium500Style14(
+                            color: ColorManager.subtextColor,
+                            fontSize: 14.sp,
+                          ),
                         ),
                       ),
                       SizedBox(height: 10.h),

@@ -11,19 +11,26 @@ class Customebutton extends StatelessWidget {
   final Color? borderColor;
   final Color? textColor,sufImageColor;
   final double? border;
+  final bool loading;
 
   const Customebutton({
     super.key,
     this.text,
     this.onTap,
     this.color,
-    this.image, this.borderColor, this.border, this.textColor, this.sufImage, this.sufImageColor,
+    this.image,
+    this.borderColor,
+    this.border,
+    this.textColor,
+    this.sufImage,
+    this.sufImageColor,
+    this.loading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: loading ? null : onTap,
       borderRadius: BorderRadius.circular(8.r),
       child: Container(
         
@@ -40,33 +47,42 @@ class Customebutton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center, 
           children: [
-          
-            if (image != null) ...[
-              Image.asset(
-                image!, 
-                width: 20.w, 
+            if (loading) ...[
+              SizedBox(
+                width: 20.w,
                 height: 20.h,
+                child: CircularProgressIndicator(
+                  color: textColor ?? ColorManager.subtextColor,
+                  strokeWidth: 2.r,
+                ),
               ),
-              SizedBox(width: 10.w), 
-            ],
-            
-            Text(
-              text ?? "Button",
-              style: getMedium500Style16(
-                color:textColor?? ColorManager.subtextColor,
-                fontSize: 16.sp,
-                fontWeight:  FontWeight.w500,
+            ] else ...[
+              if (image != null) ...[
+                Image.asset(
+                  image!, 
+                  width: 20.w, 
+                  height: 20.h,
+                ),
+                SizedBox(width: 10.w), 
+              ],
+              Text(
+                text ?? "Button",
+                style: getMedium500Style16(
+                  color:textColor?? ColorManager.subtextColor,
+                  fontSize: 16.sp,
+                  fontWeight:  FontWeight.w500,
+                ),
               ),
-            ),
-            SizedBox(width: 15.w,),
+              SizedBox(width: 15.w,),
               if (sufImage != null) ...[
-              Image.asset(
-                sufImage!, 
-                width: 20.w, 
-                height: 20.h,
-                color: sufImageColor,
-              ),
-              SizedBox(width: 10.w), 
+                Image.asset(
+                  sufImage!, 
+                  width: 20.w, 
+                  height: 20.h,
+                  color: sufImageColor,
+                ),
+                SizedBox(width: 10.w), 
+              ],
             ],
           ],
         ),

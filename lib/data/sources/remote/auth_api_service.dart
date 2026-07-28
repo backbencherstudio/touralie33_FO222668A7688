@@ -123,6 +123,13 @@ class AuthApiService {
         log("$token");
         return true;
       } else {
+        if (response is Map) {
+          final innerData = response['data'];
+          if (innerData is Map && innerData['status'] == 'UNVERIFIED') {
+            final unverifiedEmail = innerData['email']?.toString() ?? email;
+            throw Exception("UNVERIFIED:$unverifiedEmail");
+          }
+        }
         final message = response is Map ? response['message'] : null;
         if (message is String && message.isNotEmpty) {
           throw Exception(message);
@@ -130,6 +137,14 @@ class AuthApiService {
         return false;
       }
     } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map) {
+        final innerData = data['data'];
+        if (innerData is Map && innerData['status'] == 'UNVERIFIED') {
+          final unverifiedEmail = innerData['email']?.toString() ?? email;
+          throw Exception("UNVERIFIED:$unverifiedEmail");
+        }
+      }
       throw Exception(ErrorHandle.handleDioError(e));
     } catch (error) {
       rethrow;

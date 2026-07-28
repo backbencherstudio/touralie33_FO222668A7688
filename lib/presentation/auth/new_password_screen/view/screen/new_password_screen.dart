@@ -39,7 +39,10 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
 
     return Scaffold(
       backgroundColor: ColorManager.primary,
-      appBar: CustomeApp(text: "Change Password", onBackTap: () => Navigator.pop(context)),
+      appBar: CustomeApp(
+        text: "Change Password",
+        onBackTap: () => Navigator.pop(context),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -53,7 +56,13 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
           child: Column(
             children: [
               SizedBox(height: 50.h),
-              Text("Enter New Password", style: getMedium500Style22(fontSize: 24.sp,color: Colors.black)),
+              Text(
+                "Enter New Password",
+                style: getMedium500Style22(
+                  fontSize: 24.sp,
+                  color: Colors.black,
+                ),
+              ),
               SizedBox(height: 40.h),
               Container(
                 padding: EdgeInsets.all(16.r),
@@ -71,7 +80,9 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                       hintText: "Enter password",
                       obscureText: !_isEyeOn,
                       suffixIcon: IconButton(
-                        icon: Icon(_isEyeOn ? Icons.visibility : Icons.visibility_off),
+                        icon: Icon(
+                          _isEyeOn ? Icons.visibility : Icons.visibility_off,
+                        ),
                         onPressed: () => setState(() => _isEyeOn = !_isEyeOn),
                       ),
                     ),
@@ -82,39 +93,54 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                       hintText: "Re-enter password",
                       obscureText: !_isEyeOn1,
                       suffixIcon: IconButton(
-                        icon: Icon(_isEyeOn1 ? Icons.visibility : Icons.visibility_off),
+                        icon: Icon(
+                          _isEyeOn1 ? Icons.visibility : Icons.visibility_off,
+                        ),
                         onPressed: () => setState(() => _isEyeOn1 = !_isEyeOn1),
                       ),
                     ),
                     SizedBox(height: 30.h),
-                    if (resetState.isLoading)
-                      const Center(child: CircularProgressIndicator())
-                    else
                       Customebutton(
-                        text: "Reset Password",
-                        onTap: () async {
-                          final pass = _passwordController.text.trim();
-                          final confirm = _confirmPasswordController.text.trim();
+                        text: resetState.isLoading
+                            ? "Resetting..."
+                            : "Reset Password",
+                        onTap: resetState.isLoading
+                            ? null
+                            : () async {
+                                final pass = _passwordController.text.trim();
+                                final confirm = _confirmPasswordController.text
+                                    .trim();
 
-                          if (pass != confirm) {
-                            Fluttertoast.showToast(msg: 'Passwords do not match');
-                            return;
-                          }
+                                if (pass != confirm) {
+                                  Fluttertoast.showToast(
+                                    msg: 'Passwords do not match',
+                                  );
+                                  return;
+                                }
 
-                          final ok = await ref.read(resetPasswordProvider.notifier).resetPass(
-                                email: widget.email ?? "",
-                                token: widget.token ?? "",
-                                pass: pass,
-                              );
+                                final ok = await ref
+                                    .read(resetPasswordProvider.notifier)
+                                    .resetPass(
+                                      email: widget.email ?? "",
+                                      token: widget.token ?? "",
+                                      pass: pass,
+                                    );
 
-                          if (ok) {
-                            if (!context.mounted) return;
-                            showDialog(context: context, builder: (context) => const DialogWidget());
-                          } else {
-                            if (!context.mounted) return;
-                            Fluttertoast.showToast(msg: resetState.errorMessage ?? 'Error resetting password');
-                          }
-                        },
+                                if (ok) {
+                                  if (!context.mounted) return;
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => const DialogWidget(),
+                                  );
+                                } else {
+                                  if (!context.mounted) return;
+                                  Fluttertoast.showToast(
+                                    msg:
+                                        resetState.errorMessage ??
+                                        'Error resetting password',
+                                  );
+                                }
+                              },
                       ),
                   ],
                 ),

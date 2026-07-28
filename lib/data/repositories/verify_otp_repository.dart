@@ -10,4 +10,8 @@ class VerifyOtpRepository {
   }) async {
     return resource.verifyEmail(email: email, token: token);
   }
+
+  Future<Map<String, dynamic>> resendOtp({required String email}) async {
+    return resource.resendOtp(email: email);
+  }
 }
