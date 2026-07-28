@@ -273,14 +273,10 @@ class _SingInUpScreenState extends ConsumerState<SingInUpScreen> {
                                         );
                                     if (!mounted) return;
                                     if (success) {
-                                      Navigator.pushAndRemoveUntil(
+                                      Navigator.pushNamed(
                                         context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EmailOtpVerify(
-                                            email: _emailController.text.trim(),
-                                          ),
-                                        ),
-                                        (route) => false,
+                                        RoutesName.emailOtpVerify,
+                                        arguments: _emailController.text.trim(),
                                       );
                                     } else {
                                       final msg =
