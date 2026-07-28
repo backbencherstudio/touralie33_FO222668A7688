@@ -11,7 +11,7 @@ class VerifyEmailServicce {
   }) async {
     final body = {'email': email, 'token': token};
     final dynamic response = await apiClient.postRequest(
-      endpoints: ApiEndpoints.verifyOtp,
+      endpoints: ApiEndpoints.checkOtp,
       body: body,
     );
 

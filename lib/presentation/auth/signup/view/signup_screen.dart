@@ -9,7 +9,6 @@ import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.da
 import 'package:touralie33_fo222668a7688/core/resource/constants/image_manager.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
-import 'package:touralie33_fo222668a7688/presentation/auth/successfull_screen/view/email_otp_verify.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customeButton.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signup/viewmodel/signup_viewmodel.dart';
