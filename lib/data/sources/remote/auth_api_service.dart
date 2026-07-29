@@ -58,7 +58,27 @@ class AuthApiService {
         body['gender'] = gender.trim();
       }
       if (dateOfBirth.trim().isNotEmpty) {
-        body['date_of_birth'] = dateOfBirth.trim();
+        final raw = dateOfBirth.trim();
+        DateTime? parsed;
+        final parts = raw.split('-');
+        if (parts.length == 3) {
+          final year = int.tryParse(parts[0]);
+          final month = int.tryParse(parts[1]);
+          final day = int.tryParse(parts[2]);
+          if (year != null && month != null && day != null &&
+              month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+            final tempParsed = DateTime.utc(year, month, day);
+            if (tempParsed.year == year && tempParsed.month == month && tempParsed.day == day) {
+              parsed = tempParsed;
+            }
+          }
+        }
+        
+        parsed ??= DateTime.tryParse(raw);
+        if (parsed == null) {
+          throw Exception('Invalid date of birth');
+        }
+        body['date_of_birth'] = parsed.toUtc().toIso8601String();
       }
       if (personalizationList.isNotEmpty) {
         body['personalization'] = personalizationList;

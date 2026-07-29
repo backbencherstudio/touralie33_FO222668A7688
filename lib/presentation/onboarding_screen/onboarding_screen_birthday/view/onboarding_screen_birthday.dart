@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
@@ -24,12 +25,29 @@ class _OnboardingScreenBirthdayState
     final day = _dayController.text.trim();
     final month = _MonthController.text.trim();
     final year = _yearController.text.trim();
-    if (day.isEmpty || month.isEmpty || year.isEmpty) return;
+    if (day.isEmpty || month.isEmpty || year.isEmpty) {
+      SharedPreferenceData.setOnboardingDateOfBirth('');
+      return;
+    }
 
     final normalizedYear = year.length == 2 ? '20$year' : year;
     final formatted =
         '${normalizedYear.padLeft(4, '0')}-${month.padLeft(2, '0')}-${day.padLeft(2, '0')}';
-    SharedPreferenceData.setOnboardingDateOfBirth(formatted);
+
+    final yNum = int.tryParse(normalizedYear);
+    final mNum = int.tryParse(month);
+    final dNum = int.tryParse(day);
+
+    if (yNum != null && mNum != null && dNum != null) {
+      if (mNum >= 1 && mNum <= 12 && dNum >= 1 && dNum <= 31) {
+        final parsed = DateTime.utc(yNum, mNum, dNum);
+        if (parsed.year == yNum && parsed.month == mNum && parsed.day == dNum) {
+          SharedPreferenceData.setOnboardingDateOfBirth(formatted);
+          return;
+        }
+      }
+    }
+    SharedPreferenceData.setOnboardingDateOfBirth('');
   }
 
   @override
@@ -97,12 +115,17 @@ class _OnboardingScreenBirthdayState
                           controller: _dayController,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
+                          maxLength: 2,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           style: getMedium500Style16(
                             color: ColorManager.textPrimary,
                             fontSize: 32.sp,
                           ),
                           decoration: InputDecoration(
                             border: InputBorder.none,
+                            counterText: '',
                             hintText: "DD",
                             hintStyle: getMedium500Style14(
                               color: ColorManager.backgroundColorgreen,
@@ -140,6 +163,10 @@ class _OnboardingScreenBirthdayState
                           controller: _MonthController,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
+                          maxLength: 2,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           style: getMedium500Style16(
                             color: ColorManager.textPrimary,
                             fontSize: 32.sp,
@@ -147,6 +174,7 @@ class _OnboardingScreenBirthdayState
                           decoration: InputDecoration(
                             border: InputBorder
                                 .none, 
+                            counterText: '',
                             hintText: "MM",
                             hintStyle: getMedium500Style14(
                               color: ColorManager.backgroundColorgreen,
@@ -185,6 +213,10 @@ class _OnboardingScreenBirthdayState
                           controller: _yearController,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
+                          maxLength: 4,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           style: getMedium500Style16(
                             color: ColorManager.textPrimary,
                             fontSize: 32.sp,
@@ -192,6 +224,7 @@ class _OnboardingScreenBirthdayState
                           decoration: InputDecoration(
                             border: InputBorder
                                 .none,
+                            counterText: '',
                             hintText: "YY",
                             hintStyle: getMedium500Style14(
                               color: ColorManager.backgroundColorgreen,
