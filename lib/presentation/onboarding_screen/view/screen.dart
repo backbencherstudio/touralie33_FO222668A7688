@@ -54,10 +54,38 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           _showSnack('Please enter your date of birth.');
           return false;
         }
-        try {
-          DateTime.parse(dob);
-        } catch (_) {
+        final parts = dob.split('-');
+        if (parts.length != 3) {
           _showSnack('Please enter a valid date of birth.');
+          return false;
+        }
+        final year = int.tryParse(parts[0]);
+        final month = int.tryParse(parts[1]);
+        final day = int.tryParse(parts[2]);
+        if (year == null || month == null || day == null) {
+          _showSnack('Please enter a valid date of birth.');
+          return false;
+        }
+        if (month < 1 || month > 12) {
+          _showSnack('Please enter a valid month (1-12).');
+          return false;
+        }
+        if (day < 1 || day > 31) {
+          _showSnack('Please enter a valid day (1-31).');
+          return false;
+        }
+        final parsed = DateTime.utc(year, month, day);
+        if (parsed.year != year || parsed.month != month || parsed.day != day) {
+          _showSnack('Please enter a valid date of birth.');
+          return false;
+        }
+        final now = DateTime.now();
+        if (parsed.isAfter(now)) {
+          _showSnack('Date of birth cannot be in the future.');
+          return false;
+        }
+        if (year < 1900) {
+          _showSnack('Please enter a valid year.');
           return false;
         }
         return true;
