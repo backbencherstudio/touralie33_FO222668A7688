@@ -11,3 +11,7 @@ ios/Flutter/flutter_export_environment.sh
 *.jar
 *.so
 .DS_Store
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

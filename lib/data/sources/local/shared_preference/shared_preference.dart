@@ -10,6 +10,7 @@ class SharedPreferenceData {
   static const _keyEmail = 'email';
   static const _keyFcmToken = 'fcm_token';
 
+  static const _keyIsFirstTime = 'is_first_time';
   static const _keyOnboardingCompleted = 'onboarding_completed';
   static const _keyOnboardingWeight = 'onboarding_weight';
   static const _keyOnboardingWeightUnit = 'onboarding_weight_unit';
@@ -95,6 +96,23 @@ class SharedPreferenceData {
   Future<void> removeEmailId() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove(_keyEmail);
+  }
+
+  // --- First Time / App Open ---
+  static Future<void> setFirstTime(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyIsFirstTime, value);
+  }
+
+  static Future<bool> isFirstTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey(_keyIsFirstTime)) {
+      return prefs.getBool(_keyIsFirstTime) ?? true;
+    }
+    if (prefs.getBool(_keyOnboardingCompleted) == true) {
+      return false;
+    }
+    return true;
   }
 
   // --- Onboarding (local) ---
