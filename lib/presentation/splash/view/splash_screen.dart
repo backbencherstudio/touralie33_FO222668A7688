@@ -19,11 +19,17 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 5), () async {
       if (!mounted) return;
       final token = await SharedPreferenceData.getToken();
-      final completed = await SharedPreferenceData.getOnboardingCompleted();
-      Navigator.pushReplacementNamed(
-        context,
-      token != null && token !='null' && token.isNotEmpty ? RoutesName.parentScreen : completed ? RoutesName.signInScreen : RoutesName.onboardingScreen,
-      );
+      final hasToken =
+          token != null && token != 'null' && token.trim().isNotEmpty;
+
+      await SharedPreferenceData.setFirstTime(false);
+      if (!mounted) return;
+
+      if (hasToken) {
+        Navigator.pushReplacementNamed(context, RoutesName.parentScreen);
+      } else {
+        Navigator.pushReplacementNamed(context, RoutesName.signInScreen);
+      }
     });
   }
   @override
