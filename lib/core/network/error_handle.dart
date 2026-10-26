@@ -39,6 +39,8 @@ class ErrorHandle {
         return "Send timeout. Please try again.";
       case DioExceptionType.unknown:
         return serverMessage ?? "Unknown error occurred. Please try again.";
+      case DioExceptionType.transformTimeout:
+        return "Data transformation timeout. Please try again.";
     }
   }
 
