@@ -1,12 +1,10 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:touralie33_fo222668a7688/core/resource/constants/color_manger.dart';
-import 'package:touralie33_fo222668a7688/core/resource/constants/style_manager.dart';
 import 'package:touralie33_fo222668a7688/core/route/routes_name.dart';
 import 'package:touralie33_fo222668a7688/data/sources/local/shared_preference/shared_preference.dart';
 import 'package:touralie33_fo222668a7688/presentation/auth/signin/view/widget/customTextField.dart';
@@ -232,30 +230,54 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
                   ),
                   SizedBox(height: 30.h),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Didn't have an account ?",
-                        style: getMedium500Style16(
-                          color: ColorManager.subtextColor,
-                          fontSize: 15.sp,
-                        ),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 14.w,
+                      vertical: 12.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: ColorManager.primaryLight,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: ColorManager.drawrColor.withValues(alpha: 0.25),
                       ),
-                      InkWell(
-                        onTap: () => Navigator.pushReplacementNamed(
-                          context,
-                          RoutesName.singInUpScreen,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 20.sp,
+                          color: ColorManager.drawrColor,
                         ),
-                        child: Text(
-                          " Sign Up",
-                          style: getMedium500Style16(
-                            color: ColorManager.drawrColor,
-                            fontSize: 16.sp,
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Don't have an account?",
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorManager.titleText,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                "Accounts are created from the admin dashboard. Please contact your clinic to receive your login credentials.",
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: ColorManager.subtitleText1,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SizedBox(height: 20.h),
                 ],
